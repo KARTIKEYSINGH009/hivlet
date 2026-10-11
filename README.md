@@ -47,7 +47,3 @@ Useful scripts: `npm run build`, `npm run start`, `npm run typecheck`.
 - [ ] Full audit trail + agent pause button
 - [ ] Realtime agent activity feed
 - [ ] Paid tiers: free for 3 agents, per-agent seat after
-
-## Repo
-
-`github.com/KARTIKEYSINGH009/crewly` (to be created) — all Crewly work is pushed here.
