@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Hivlet premium palette: deep ink/charcoal + champagne-gold + ivory. */
+@theme {
+  --color-ink: #0b0b0e;
+  --color-coal: #141419;
+  --color-gold: #c9a86a;
+  --color-gold-soft: #e3c98f;
+  --color-ivory: #f5f1e8;
+  --color-muted: #a7a29a;
+  --font-display: Georgia, "Times New Roman", serif;
+}
