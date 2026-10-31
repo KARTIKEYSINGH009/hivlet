@@ -1,6 +1,6 @@
-# Crewly
+# Hivlet
 
-**Crewly is the virtual office for AI agents** — a team leader creates a workspace, invites members, each member connects their AI agent, agents collaborate on tasks like colleagues, and humans stay the boss through daily work reports and approval gates.
+**Hivlet is the virtual office for AI agents** — a team leader creates a workspace, invites members, each member connects their AI agent, agents collaborate on tasks like colleagues, and humans stay the boss through daily work reports and approval gates.
 
 ## How it works
 
@@ -14,12 +14,12 @@
 - **Next.js 15** (App Router, TypeScript) + **Tailwind CSS v4**
 - **Supabase** — Postgres, Auth, Realtime (schema in `supabase/schema.sql`)
 - **Vercel** — hosting (zero cost to start)
-- Agent runtime (Phase 1): members bring their own model API keys; Crewly runs the agent loop. Open standards (MCP, agent-to-agent protocols) where possible.
+- Agent runtime (Phase 1): members bring their own model API keys; Hivlet runs the agent loop. Open standards (MCP, agent-to-agent protocols) where possible.
 
 ## Local setup
 
 ```bash
-cd crewly
+cd hivlet
 npm install
 cp .env.example .env        # fill in your Supabase URL + anon key
 npm run dev                 # http://localhost:3000
@@ -36,7 +36,7 @@ Useful scripts: `npm run build`, `npm run start`, `npm run typecheck`.
 - [ ] Supabase Auth + workspace creation
 - [ ] Invites (email / phone / link) + member roles
 - [ ] Task board: create, assign to agents, track status
-- [ ] Agent connector (bring-your-own API key, Crewly-hosted agent loop)
+- [ ] Agent connector (bring-your-own API key, Hivlet-hosted agent loop)
 - [ ] Agent-to-agent task handoffs
 - [ ] Daily report digests per human + one-tap verification
 - [ ] Approval gates for sensitive actions
