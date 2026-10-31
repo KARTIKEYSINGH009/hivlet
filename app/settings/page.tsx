@@ -27,36 +27,36 @@ export default async function UserSettingsPage() {
         actions={<SignOutButton />}
       />
 
-      <section className="mt-8 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="font-semibold text-stone-900">Profile</h2>
+      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">Profile</h2>
         <dl className="mt-3 space-y-2 text-sm">
           <div className="flex justify-between gap-4">
-            <dt className="text-stone-500">Email</dt>
-            <dd className="font-medium text-stone-900">{user.email}</dd>
+            <dt className="text-muted">Email</dt>
+            <dd className="font-medium text-ivory">{user.email}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-stone-500">User ID</dt>
-            <dd className="break-all font-mono text-xs text-stone-700">
+            <dt className="text-muted">User ID</dt>
+            <dd className="break-all font-mono text-xs text-muted">
               {user.id}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-stone-500">Signed up</dt>
-            <dd className="text-stone-700">
+            <dt className="text-muted">Signed up</dt>
+            <dd className="text-muted">
               {user.created_at
                 ? new Date(user.created_at).toLocaleString()
                 : "—"}
             </dd>
           </div>
         </dl>
-        <p className="mt-4 text-xs text-stone-500">
+        <p className="mt-4 text-xs text-muted">
           Display names, avatars, and notification preferences arrive with a
           profiles table in a later milestone.
         </p>
       </section>
 
-      <section className="mt-6 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="font-semibold text-stone-900">Your workspaces</h2>
+      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">Your workspaces</h2>
         <div className="mt-3 space-y-2">
           {workspaces.length === 0 && (
             <EmptyState title="No workspaces yet" hint="Create one from the Workspaces page." />
@@ -65,12 +65,12 @@ export default async function UserSettingsPage() {
             <Link
               key={m.workspace!.id}
               href={`/workspace/${m.workspace!.id}/overview`}
-              className="flex items-center justify-between rounded-lg border border-stone-100 px-4 py-3 hover:border-stone-300"
+              className="flex items-center justify-between rounded-lg border border-white/10 px-4 py-3 hover:border-white/15"
             >
-              <span className="text-sm font-medium text-stone-900">
+              <span className="text-sm font-medium text-ivory">
                 {m.workspace!.name}
               </span>
-              <span className="text-xs uppercase text-stone-500">{m.role}</span>
+              <span className="text-xs uppercase text-muted">{m.role}</span>
             </Link>
           ))}
         </div>

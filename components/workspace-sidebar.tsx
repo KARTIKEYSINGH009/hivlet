@@ -64,7 +64,7 @@ export default function WorkspaceSidebar({
         </p>
       </div>
 
-      <nav className="flex flex-col gap-1">
+      <nav className="flex flex-row gap-1 overflow-x-auto sm:flex-col sm:overflow-visible">
         {nav.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(item.href + "/");
@@ -72,9 +72,9 @@ export default function WorkspaceSidebar({
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-lg px-3 py-2 text-sm ${
+              className={`shrink-0 rounded-lg px-3 py-2 text-sm ${
                 active
-                  ? "bg-white/10 font-medium text-ivory"
+                  ? "bg-white/10 font-medium text-gold-soft"
                   : "text-muted hover:bg-white/5 hover:text-ivory"
               }`}
             >

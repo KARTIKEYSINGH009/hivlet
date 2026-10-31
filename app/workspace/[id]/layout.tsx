@@ -43,7 +43,7 @@ export default async function WorkspaceLayout({
     .filter((w): w is { id: string; name: string } => w !== null);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#faf8f3] sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-ink sm:flex-row">
       <WorkspaceSidebar
         workspaceId={workspace.id}
         workspaceName={workspace.name}

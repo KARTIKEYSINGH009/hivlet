@@ -136,7 +136,7 @@ export default async function AgentsPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-stone-900 focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
 
   return (
     <div>
@@ -146,8 +146,8 @@ export default async function AgentsPage({
       />
 
       {leader && (
-        <section className="mt-8 rounded-xl border border-stone-200 bg-white p-5">
-          <h2 className="font-semibold text-stone-900">Add an agent</h2>
+        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Add an agent</h2>
           <form
             action={createAgent.bind(null, id)}
             className="mt-4 grid gap-3 sm:grid-cols-2"
@@ -173,12 +173,12 @@ export default async function AgentsPage({
             />
             <button
               type="submit"
-              className="w-fit rounded-lg bg-stone-900 px-5 py-2 text-sm font-medium text-white hover:bg-stone-700 sm:col-span-2"
+              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
             >
               Add agent
             </button>
           </form>
-          <p className="mt-3 text-xs text-stone-500">
+          <p className="mt-3 text-xs text-muted">
             No credentials are stored here. Provider keys are connected through
             the secure vault in a later milestone.
           </p>
@@ -195,28 +195,28 @@ export default async function AgentsPage({
         {agentList.map((a) => (
           <article
             key={a.id}
-            className="rounded-xl border border-stone-200 bg-white p-5"
+            className="rounded-xl border border-white/10 bg-coal p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <Link
                   href={`/workspace/${id}/agents/${a.id}`}
-                  className="font-semibold text-stone-900 hover:underline"
+                  className="font-semibold text-ivory hover:underline"
                 >
                   {a.name}
                 </Link>
-                <p className="mt-0.5 text-sm text-stone-500">
+                <p className="mt-0.5 text-sm text-muted">
                   {a.role ?? "No role"} · {a.provider}
                   {a.model ? ` · ${a.model}` : ""}
                 </p>
               </div>
               <AgentStatusPill status={a.status} />
             </div>
-            <p className="mt-3 text-sm text-stone-600">
+            <p className="mt-3 text-sm text-muted">
               Current task:{" "}
               {currentTasks.get(a.id) ?? "Nothing assigned right now"}
             </p>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-muted">
               Usage: {doneCounts.get(a.id) ?? 0} done /{" "}
               {totalCounts.get(a.id) ?? 0} tasks total
               {a.allowed_tools && a.allowed_tools.length > 0
@@ -224,14 +224,14 @@ export default async function AgentsPage({
                 : " · No tools allowed"}
             </p>
             {leader && (
-              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-stone-100 pt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/10 pt-4">
                 {a.status === "disabled" ? (
                   <form
                     action={setAgentStatus.bind(null, id, a.id, "idle")}
                   >
                     <button
                       type="submit"
-                      className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-stone-700"
+                      className="rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft"
                     >
                       Enable
                     </button>
@@ -242,14 +242,14 @@ export default async function AgentsPage({
                   >
                     <button
                       type="submit"
-                      className="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:border-stone-500"
+                      className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
                     >
                       Disable
                     </button>
                   </form>
                 )}
                 <details className="w-full">
-                  <summary className="cursor-pointer text-xs font-medium text-stone-600">
+                  <summary className="cursor-pointer text-xs font-medium text-muted">
                     Edit agent
                   </summary>
                   <form
@@ -290,7 +290,7 @@ export default async function AgentsPage({
                     />
                     <button
                       type="submit"
-                      className="w-fit rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-700 hover:border-stone-500 sm:col-span-2"
+                      className="w-fit rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-muted hover:border-gold sm:col-span-2"
                     >
                       Save changes
                     </button>

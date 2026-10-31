@@ -309,11 +309,11 @@ export default async function TasksPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-stone-900 focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
   const btnCls =
-    "rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-stone-700";
+    "rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft";
   const ghostBtnCls =
-    "rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:border-stone-500";
+    "rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold";
 
   return (
     <div>
@@ -329,8 +329,8 @@ export default async function TasksPage({
         }
       />
 
-      <section className="mt-8 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="font-semibold text-stone-900">Create a task</h2>
+      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">Create a task</h2>
         <form
           action={createTask.bind(null, id)}
           className="mt-4 grid gap-3 sm:grid-cols-2"
@@ -382,9 +382,9 @@ export default async function TasksPage({
             const colTasks = taskList.filter((t) => t.status === col.key);
             return (
               <div key={col.key}>
-                <h2 className="flex items-center justify-between text-sm font-semibold text-stone-900">
+                <h2 className="flex items-center justify-between text-sm font-semibold text-ivory">
                   {col.label}
-                  <span className="rounded-full bg-stone-200 px-2 py-0.5 text-xs">
+                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">
                     {colTasks.length}
                   </span>
                 </h2>
@@ -403,26 +403,26 @@ export default async function TasksPage({
                     return (
                       <article
                         key={t.id}
-                        className="rounded-xl border border-stone-200 bg-white p-4"
+                        className="rounded-xl border border-white/10 bg-coal p-4"
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="text-sm font-semibold text-stone-900">
+                          <h3 className="text-sm font-semibold text-ivory">
                             {t.title}
                           </h3>
                           <TaskStatusPill status={t.status} />
                         </div>
                         {t.description && (
-                          <p className="mt-1 text-sm text-stone-600">
+                          <p className="mt-1 text-sm text-muted">
                             {t.description}
                           </p>
                         )}
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <PriorityPill priority={t.priority} />
-                          <span className="text-xs text-stone-500">
+                          <span className="text-xs text-muted">
                             Due {fmtDate(t.due_at)}
                           </span>
                         </div>
-                        <p className="mt-2 text-xs text-stone-500">
+                        <p className="mt-2 text-xs text-muted">
                           Agent:{" "}
                           {t.assigned_agent_id
                             ? agentName.get(t.assigned_agent_id) ?? "Unknown"
@@ -434,7 +434,7 @@ export default async function TasksPage({
                           </p>
                         )}
                         {t.status === "done" && t.result && (
-                          <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+                          <p className="mt-2 rounded-lg border border-[#9db89a]/30 bg-[#1a2a1d] px-3 py-2 text-xs text-[#9db89a]">
                             Result: {t.result}
                           </p>
                         )}
@@ -528,7 +528,7 @@ export default async function TasksPage({
                               <input
                                 name="result"
                                 placeholder="Acceptance note (optional)"
-                                className="w-full rounded-lg border border-stone-300 px-2 py-1.5 text-xs"
+                                className="w-full rounded-lg border border-white/15 px-2 py-1.5 text-xs"
                               />
                               <button type="submit" className={btnCls}>
                                 Accept
@@ -549,7 +549,7 @@ export default async function TasksPage({
                               <input
                                 name="failure_reason"
                                 placeholder="Why did it fail?"
-                                className="w-full rounded-lg border border-stone-300 px-2 py-1.5 text-xs"
+                                className="w-full rounded-lg border border-white/15 px-2 py-1.5 text-xs"
                               />
                               <button type="submit" className={ghostBtnCls}>
                                 Mark failed
@@ -558,8 +558,8 @@ export default async function TasksPage({
                           )}
                         </div>
 
-                        <details className="mt-3 border-t border-stone-100 pt-3">
-                          <summary className="cursor-pointer text-xs font-medium text-stone-600">
+                        <details className="mt-3 border-t border-white/10 pt-3">
+                          <summary className="cursor-pointer text-xs font-medium text-muted">
                             Edit &amp; execution history
                           </summary>
                           <form
@@ -621,7 +621,7 @@ export default async function TasksPage({
                             {taskHandoffs.length === 0 &&
                               taskEvents.length === 0 &&
                               taskExecutions.length === 0 && (
-                                <p className="text-xs text-stone-500">
+                                <p className="text-xs text-muted">
                                   No executions or handoffs recorded yet. Run
                                   a demo execution below to see the history
                                   UI, or start the worker for real runs.
@@ -630,9 +630,9 @@ export default async function TasksPage({
                             {taskExecutions.map((x) => (
                               <div
                                 key={x.id}
-                                className="rounded-lg border border-stone-100 px-3 py-2"
+                                className="rounded-lg border border-white/10 px-3 py-2"
                               >
-                                <p className="flex flex-wrap items-center gap-2 text-xs text-stone-600">
+                                <p className="flex flex-wrap items-center gap-2 text-xs text-muted">
                                   <ExecutionStatusPill status={x.status} />
                                   {x.is_demo && <DemoPill />}
                                   <span>
@@ -644,7 +644,7 @@ export default async function TasksPage({
                                   )}
                                 </p>
                                 {x.output && (
-                                  <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-xs text-stone-600">
+                                  <p className="mt-1 line-clamp-3 whitespace-pre-wrap text-xs text-muted">
                                     {x.output}
                                   </p>
                                 )}
@@ -658,7 +658,7 @@ export default async function TasksPage({
                             {taskHandoffs.map((h) => (
                               <p
                                 key={h.id}
-                                className="text-xs text-stone-600"
+                                className="text-xs text-muted"
                               >
                                 Handoff: {agentName.get(h.from_agent_id) ?? "?"} →{" "}
                                 {agentName.get(h.to_agent_id) ?? "?"} ({h.status}
@@ -667,7 +667,7 @@ export default async function TasksPage({
                               </p>
                             ))}
                             {taskEvents.map((e) => (
-                              <p key={e.id} className="text-xs text-stone-600">
+                              <p key={e.id} className="text-xs text-muted">
                                 {e.event_type.replace(/_/g, " ")} ·{" "}
                                 {fmtDateTime(e.created_at)}
                               </p>
@@ -686,13 +686,13 @@ export default async function TasksPage({
                               <button type="submit" className={ghostBtnCls}>
                                 Run demo execution
                               </button>
-                              <p className="mt-1 text-xs text-stone-500">
+                              <p className="mt-1 text-xs text-muted">
                                 Fixture output, labeled DEMO. No provider
                                 call, no tokens, task status unchanged.
                               </p>
                             </form>
                           ) : (
-                            <p className="mt-3 text-xs text-stone-500">
+                            <p className="mt-3 text-xs text-muted">
                               Assign an agent to run a demo execution.
                             </p>
                           )}
@@ -707,7 +707,7 @@ export default async function TasksPage({
         </section>
       )}
       {!leader && (
-        <p className="mt-6 text-xs text-stone-500">
+        <p className="mt-6 text-xs text-muted">
           Note: task assignment and agent configuration are leader actions in
           later milestones; task status updates are open to members working
           their tasks.

@@ -122,7 +122,7 @@ export default async function ApprovalsPage({
     .limit(50);
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-stone-900 focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
 
   return (
     <div>
@@ -131,9 +131,9 @@ export default async function ApprovalsPage({
         description={`Sensitive actions in ${workspace.name} wait here. An agent never acts alone on money, publishing, or messages — a human signs off on the exact payload first.`}
       />
 
-      <section className="mt-8 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="font-semibold text-stone-900">Request an approval</h2>
-        <p className="mt-1 text-xs text-stone-500">
+      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">Request an approval</h2>
+        <p className="mt-1 text-xs text-muted">
           Approving enqueues an execution carrying only the approved
           payload, which the worker then runs. The app never performs the
           sensitive side effect itself — spend, publish, and send executors
@@ -176,7 +176,7 @@ export default async function ApprovalsPage({
           />
           <button
             type="submit"
-            className="w-fit rounded-lg bg-stone-900 px-5 py-2 text-sm font-medium text-white hover:bg-stone-700 sm:col-span-2"
+            className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
           >
             Request approval
           </button>
@@ -184,7 +184,7 @@ export default async function ApprovalsPage({
       </section>
 
       <section className="mt-10">
-        <h2 className="font-semibold text-stone-900">
+        <h2 className="font-semibold text-ivory">
           Pending ({pending.length})
         </h2>
         <div className="mt-3 space-y-4">
@@ -194,14 +194,14 @@ export default async function ApprovalsPage({
           {pending.map((a) => (
             <article
               key={a.id}
-              className="rounded-xl border border-stone-200 bg-white p-5"
+              className="rounded-xl border border-white/10 bg-coal p-5"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium text-stone-900">
+                  <p className="font-medium text-ivory">
                     {a.agents?.name ?? "Agent"} wants to: {a.action_type.replace("_", " ")}
                   </p>
-                  <p className="mt-0.5 text-sm text-stone-500">
+                  <p className="mt-0.5 text-sm text-muted">
                     {a.tasks ? `Task: ${a.tasks.title}` : "No linked task"} ·{" "}
                     {fmtDateTime(a.created_at)}
                   </p>
@@ -209,9 +209,9 @@ export default async function ApprovalsPage({
                 <ApprovalStatusPill status={a.status} />
               </div>
               {a.reason && (
-                <p className="mt-2 text-sm text-stone-600">Reason: {a.reason}</p>
+                <p className="mt-2 text-sm text-muted">Reason: {a.reason}</p>
               )}
-              <pre className="mt-3 overflow-x-auto rounded-lg bg-stone-100 p-3 text-xs text-stone-800">
+              <pre className="mt-3 overflow-x-auto rounded-lg bg-ink p-3 text-xs text-ivory">
                 {JSON.stringify(a.action_detail, null, 2)}
               </pre>
               {leader ? (
@@ -222,7 +222,7 @@ export default async function ApprovalsPage({
                     <input type="hidden" name="approval_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600"
+                      className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
                     >
                       Approve exact payload
                     </button>
@@ -233,14 +233,14 @@ export default async function ApprovalsPage({
                     <input type="hidden" name="approval_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:border-red-500"
+                      className="rounded-lg border border-red-300 bg-coal px-4 py-2 text-sm font-medium text-red-700 hover:border-red-500"
                     >
                       Reject
                     </button>
                   </form>
                 </div>
               ) : (
-                <p className="mt-3 text-xs text-stone-500">
+                <p className="mt-3 text-xs text-muted">
                   Only workspace leaders can decide approvals.
                 </p>
               )}
@@ -251,19 +251,19 @@ export default async function ApprovalsPage({
 
       {decided.length > 0 && (
         <section className="mt-10">
-          <h2 className="font-semibold text-stone-900">Decision history</h2>
+          <h2 className="font-semibold text-ivory">Decision history</h2>
           <div className="mt-3 space-y-3">
             {decided.map((a) => (
               <div
                 key={a.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3"
+                className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3"
               >
-                <p className="text-sm text-stone-700">
+                <p className="text-sm text-muted">
                   {a.agents?.name ?? "Agent"} — {a.action_type.replace("_", " ")}
                   {a.tasks ? ` (${a.tasks.title})` : ""}
                 </p>
                 <span className="flex items-center gap-3">
-                  <span className="hidden text-xs text-stone-500 sm:inline">
+                  <span className="hidden text-xs text-muted sm:inline">
                     {a.decided_at ? fmtDateTime(a.decided_at) : ""}
                   </span>
                   <ApprovalStatusPill status={a.status} />

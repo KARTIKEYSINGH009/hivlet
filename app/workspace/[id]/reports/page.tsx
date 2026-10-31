@@ -93,7 +93,7 @@ export default async function ReportsPage({
   const myAgentList = (myAgents ?? []) as { id: string; name: string }[];
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-stone-900 focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
 
   return (
     <div>
@@ -110,8 +110,8 @@ export default async function ReportsPage({
       />
 
       {myAgentList.length > 0 && (
-        <section className="mt-8 rounded-xl border border-stone-200 bg-white p-5">
-          <h2 className="font-semibold text-stone-900">File a daily report</h2>
+        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">File a daily report</h2>
           <form
             action={submitReport.bind(null, id)}
             className="mt-4 grid gap-3 sm:grid-cols-2"
@@ -150,7 +150,7 @@ export default async function ReportsPage({
             />
             <button
               type="submit"
-              className="w-fit rounded-lg bg-stone-900 px-5 py-2 text-sm font-medium text-white hover:bg-stone-700 sm:col-span-2"
+              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
             >
               Submit report
             </button>
@@ -168,17 +168,17 @@ export default async function ReportsPage({
         {reportList.map((r) => (
           <article
             key={r.id}
-            className="rounded-xl border border-stone-200 bg-white p-5"
+            className="rounded-xl border border-white/10 bg-coal p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h3 className="font-semibold text-stone-900">
+                <h3 className="font-semibold text-ivory">
                   {r.agents?.name ?? "Agent"} — {r.period_date}
                 </h3>
-                <p className="mt-1 text-sm text-stone-600">{r.summary}</p>
+                <p className="mt-1 text-sm text-muted">{r.summary}</p>
               </div>
               {r.verified ? (
-                <span className="rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
+                <span className="rounded-full border border-[#9db89a]/40 bg-[#1a2a1d] px-2.5 py-0.5 text-xs font-medium text-[#9db89a]">
                   Verified
                 </span>
               ) : (
@@ -186,7 +186,7 @@ export default async function ReportsPage({
                   <input type="hidden" name="report_id" value={r.id} />
                   <button
                     type="submit"
-                    className="rounded-lg bg-stone-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-stone-700"
+                    className="rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft"
                   >
                     Verify
                   </button>
@@ -195,10 +195,10 @@ export default async function ReportsPage({
             </div>
             {r.completed_tasks && r.completed_tasks.length > 0 && (
               <div className="mt-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">
                   Completed tasks
                 </p>
-                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-stone-700">
+                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-muted">
                   {r.completed_tasks.map((t, i) => (
                     <li key={i}>{t}</li>
                   ))}
@@ -206,8 +206,8 @@ export default async function ReportsPage({
               </div>
             )}
             {r.next_steps && (
-              <p className="mt-2 text-sm text-stone-600">
-                <span className="font-medium text-stone-900">Next steps: </span>
+              <p className="mt-2 text-sm text-muted">
+                <span className="font-medium text-ivory">Next steps: </span>
                 {r.next_steps}
               </p>
             )}

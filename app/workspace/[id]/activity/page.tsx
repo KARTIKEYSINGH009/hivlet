@@ -130,15 +130,15 @@ export default async function ActivityPage({
         {feed.map((item) => (
           <div
             key={item.key}
-            className="flex items-start justify-between gap-4 rounded-xl border border-stone-200 bg-white px-4 py-3"
+            className="flex items-start justify-between gap-4 rounded-xl border border-white/10 bg-coal px-4 py-3"
           >
             <div>
-              <p className="text-sm font-medium capitalize text-stone-900">
+              <p className="text-sm font-medium capitalize text-ivory">
                 {item.label}
               </p>
-              <p className="text-sm text-stone-600">{item.detail}</p>
+              <p className="text-sm text-muted">{item.detail}</p>
             </div>
-            <span className="shrink-0 text-xs text-stone-500">
+            <span className="shrink-0 text-xs text-muted">
               {fmtDateTime(item.at)}
             </span>
           </div>

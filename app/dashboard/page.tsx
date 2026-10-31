@@ -117,7 +117,7 @@ export default async function DashboardPage() {
         actions={
           <Link
             href="/workspaces"
-            className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700"
+            className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
           >
             Manage workspaces
           </Link>
@@ -155,7 +155,7 @@ export default async function DashboardPage() {
 
           <section className="mt-10 grid gap-6 lg:grid-cols-2">
             <div>
-              <h2 className="font-semibold text-stone-900">Recent reports</h2>
+              <h2 className="font-semibold text-ivory">Recent reports</h2>
               <div className="mt-3 space-y-3">
                 {recentReports.length === 0 && (
                   <EmptyState title="No reports yet" hint="Agents file a daily report per workspace; verified ones show up here too." />
@@ -163,17 +163,17 @@ export default async function DashboardPage() {
                 {recentReports.map((r) => (
                   <article
                     key={r.id}
-                    className="rounded-xl border border-stone-200 bg-white p-4"
+                    className="rounded-xl border border-white/10 bg-coal p-4"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium text-stone-900">
+                      <p className="text-sm font-medium text-ivory">
                         {r.agents?.name ?? "Agent"} — {r.period_date}
                       </p>
-                      <span className="text-xs font-medium text-stone-500">
+                      <span className="text-xs font-medium text-muted">
                         {r.verified ? "Verified" : "Unverified"}
                       </span>
                     </div>
-                    <p className="mt-1 line-clamp-2 text-sm text-stone-600">
+                    <p className="mt-1 line-clamp-2 text-sm text-muted">
                       {r.summary}
                     </p>
                   </article>
@@ -182,7 +182,7 @@ export default async function DashboardPage() {
             </div>
 
             <div>
-              <h2 className="font-semibold text-stone-900">
+              <h2 className="font-semibold text-ivory">
                 Failed executions needing attention
               </h2>
               <div className="mt-3 space-y-3">
@@ -192,21 +192,21 @@ export default async function DashboardPage() {
                 {failedTasks.map((t) => (
                   <article
                     key={t.id}
-                    className="rounded-xl border border-stone-200 bg-white p-4"
+                    className="rounded-xl border border-white/10 bg-coal p-4"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium text-stone-900">
+                      <p className="text-sm font-medium text-ivory">
                         {t.title}
                       </p>
                       <TaskStatusPill status="failed" />
                     </div>
-                    <p className="mt-1 text-xs text-stone-500">
+                    <p className="mt-1 text-xs text-muted">
                       {wsName.get(t.workspace_id) ?? "Workspace"}
                       {t.failure_reason ? ` — ${t.failure_reason}` : ""}
                     </p>
                     <Link
                       href={`/workspace/${t.workspace_id}/tasks`}
-                      className="mt-2 inline-block text-sm font-medium text-stone-900 underline"
+                      className="mt-2 inline-block text-sm font-medium text-ivory underline"
                     >
                       Open task board →
                     </Link>
@@ -217,7 +217,7 @@ export default async function DashboardPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-stone-900">Recent activity</h2>
+            <h2 className="font-semibold text-ivory">Recent activity</h2>
             <div className="mt-3 space-y-2">
               {events.length === 0 && (
                 <EmptyState title="No activity yet" hint="Task creation, status changes, reviews and retries will appear here." />
@@ -225,12 +225,12 @@ export default async function DashboardPage() {
               {events.map((e) => (
                 <p
                   key={e.id}
-                  className="rounded-lg border border-stone-200 bg-white px-4 py-3 text-sm text-stone-700"
+                  className="rounded-lg border border-white/10 bg-coal px-4 py-3 text-sm text-muted"
                 >
-                  <span className="font-medium text-stone-900">
+                  <span className="font-medium text-ivory">
                     {e.event_type.replace(/_/g, " ")}
                   </span>{" "}
-                  <span className="text-stone-500">
+                  <span className="text-muted">
                     · {fmtDateTime(e.created_at)}
                   </span>
                 </p>
@@ -239,7 +239,7 @@ export default async function DashboardPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-stone-900">Your agents</h2>
+            <h2 className="font-semibold text-ivory">Your agents</h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {agents.length === 0 && (
                 <EmptyState title="No agents connected yet" hint="Add an agent from any workspace's Agents page." />
@@ -248,7 +248,7 @@ export default async function DashboardPage() {
                 <Link
                   key={a.id}
                   href={`/workspace/${a.workspace_id}/agents/${a.id}`}
-                  className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm text-stone-800 hover:border-stone-400"
+                  className="rounded-full border border-white/10 bg-coal px-3 py-1.5 text-sm text-ivory hover:border-gold"
                 >
                   {a.name} <AgentStatusPill status={a.status} />
                 </Link>

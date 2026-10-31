@@ -65,7 +65,7 @@ export default async function WorkspaceSettingsPage({
   }[];
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-stone-900 focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
 
   return (
     <div>
@@ -74,11 +74,11 @@ export default async function WorkspaceSettingsPage({
         description={`Configuration for ${workspace.name}.`}
       />
 
-      <section className="mt-8 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="font-semibold text-stone-900">Invite</h2>
-        <p className="mt-1 text-sm text-stone-500">
+      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">Invite</h2>
+        <p className="mt-1 text-sm text-muted">
           Anyone with this link can join as a member (invite code:{" "}
-          <span className="font-medium text-stone-900">
+          <span className="font-medium text-ivory">
             {workspace.invite_code}
           </span>
           ).
@@ -89,8 +89,8 @@ export default async function WorkspaceSettingsPage({
       </section>
 
       {leader ? (
-        <section className="mt-6 rounded-xl border border-stone-200 bg-white p-5">
-          <h2 className="font-semibold text-stone-900">Edit workspace</h2>
+        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Edit workspace</h2>
           <form action={updateWorkspace.bind(null, id)} className="mt-4 space-y-3">
             <input name="name" defaultValue={workspace.name} className={inputCls} />
             <input
@@ -100,20 +100,20 @@ export default async function WorkspaceSettingsPage({
             />
             <button
               type="submit"
-              className="rounded-lg bg-stone-900 px-5 py-2 text-sm font-medium text-white hover:bg-stone-700"
+              className="rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
             >
               Save changes
             </button>
           </form>
         </section>
       ) : (
-        <p className="mt-6 text-sm text-stone-500">
+        <p className="mt-6 text-sm text-muted">
           Only workspace leaders can edit settings. You are a member.
         </p>
       )}
 
-      <section className="mt-6 rounded-xl border border-stone-200 bg-white p-5">
-        <h2 className="font-semibold text-stone-900">
+      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">
           Members ({memberList.length})
         </h2>
         <div className="mt-3 space-y-2">
@@ -123,13 +123,13 @@ export default async function WorkspaceSettingsPage({
           {memberList.map((m) => (
             <div
               key={m.id}
-              className="flex items-center justify-between gap-3 rounded-lg border border-stone-100 px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-lg border border-white/10 px-4 py-3"
             >
-              <span className="text-sm text-stone-700">
+              <span className="text-sm text-muted">
                 {m.user_id === membership.user_id
                   ? "You"
                   : `Member ${m.user_id.slice(0, 8)}…`}
-                <span className="ml-2 text-xs font-medium uppercase text-stone-500">
+                <span className="ml-2 text-xs font-medium uppercase text-muted">
                   {m.role}
                 </span>
               </span>
@@ -138,7 +138,7 @@ export default async function WorkspaceSettingsPage({
                   <input type="hidden" name="member_id" value={m.id} />
                   <button
                     type="submit"
-                    className="rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 hover:border-red-400 hover:text-red-700"
+                    className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-red-400 hover:text-red-700"
                   >
                     {m.id === membership.id ? "Leave" : "Remove"}
                   </button>
@@ -150,16 +150,16 @@ export default async function WorkspaceSettingsPage({
       </section>
 
       {leader && (
-        <section className="mt-6 rounded-xl border border-red-200 bg-white p-5">
+        <section className="mt-6 rounded-xl border border-red-200 bg-coal p-5">
           <h2 className="font-semibold text-red-700">Danger zone</h2>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-muted">
             Deleting a workspace removes its agents, tasks, reports, and
             approvals permanently.
           </p>
           <form action={deleteWorkspace.bind(null, id)} className="mt-3">
             <button
               type="submit"
-              className="rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600"
+              className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-2 text-sm font-medium text-[#d98c8c] hover:border-[#d98c8c]"
             >
               Delete workspace
             </button>
