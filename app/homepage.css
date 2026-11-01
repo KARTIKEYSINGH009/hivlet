@@ -3884,3 +3884,24 @@
     padding: 17px;
   }
 }
+
+/* Homepage only: align the real app header with the homepage container.
+   The header lives outside .hp, so :has() scopes this to pages that
+   render the homepage. Other pages keep their original header width. */
+body:has(.hp) > header > div {
+  width: min(1280px, calc(100% - 112px));
+  max-width: none;
+  padding-inline: 0;
+}
+
+@media (max-width: 1199px) {
+  body:has(.hp) > header > div {
+    width: calc(100% - 80px);
+  }
+}
+
+@media (max-width: 759px) {
+  body:has(.hp) > header > div {
+    width: calc(100% - 40px);
+  }
+}

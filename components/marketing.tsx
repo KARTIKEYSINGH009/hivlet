@@ -191,12 +191,12 @@ const faqs = [
   {
     question: "Can I try it before connecting anything?",
     answer:
-      "Yes. The interactive preview on this page and the full product demo use illustrative local data. No provider is connected, no credentials are needed, and no external action is executed.",
+      "Yes. The interactive preview on this page uses illustrative local data. No provider is connected, no credentials are needed, and no external action is executed.",
   },
   {
     question: "What does it cost?",
     answer:
-      "Hivlet is in early access and pricing has not been set. You can explore the interactive demo before deciding how it fits your team.",
+      "Hivlet is in early access and pricing has not been set. You can explore the interactive preview before deciding how it fits your team.",
   },
 ];
 
@@ -216,7 +216,7 @@ function Wordmark({ footer = false }: { footer?: boolean }) {
         />
       </svg>
       <span>
-        hivlet<span className="hp-brand-dot">.</span>
+        Hivlet<span className="hp-brand-dot">.</span>
       </span>
     </Link>
   );
@@ -334,11 +334,12 @@ export function MarketingPage() {
   const [activeTab, setActiveTab] = useState<PreviewTab>("tasks");
   const [filter, setFilter] = useState<TaskState | "all">("all");
   const [decision, setDecision] = useState<Decision>("pending");
-  const [workflowStep, setWorkflowStep] = useState(1);
+  const [workflowStep, setWorkflowStep] = useState(0);
   const [faq, setFaq] = useState<number | null>(0);
   const [record, setRecord] = useState<PreviewRecord>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogReturnRef = useRef<HTMLElement | null>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
   const [notification, setNotification] = useState<{
     title: string;
@@ -396,8 +397,13 @@ export function MarketingPage() {
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (record && !dialog.open) dialog.showModal();
-    else if (!record && dialog.open) dialog.close();
+    if (record) {
+      dialogReturnRef.current = document.activeElement as HTMLElement;
+      if (!dialog.open) dialog.showModal();
+    } else if (dialog.open) {
+      dialog.close();
+      dialogReturnRef.current?.focus();
+    }
   }, [record]);
 
   const reviewRequest = () => {
@@ -1202,11 +1208,17 @@ export function MarketingPage() {
           aria-labelledby="hp-control-title"
           data-reveal
         >
+          <div className="hp-section-topline">
+            <span className="hp-kicker">
+              <span />
+              AUTONOMY, WITH ACCOUNTABILITY
+            </span>
+            <span className="hp-section-index">03 / THE DECISION</span>
+          </div>
           <div className="hp-control-copy">
             <span className="hp-control-symbol">
               <ShieldCheck size={31} strokeWidth={1.2} />
             </span>
-            <span className="hp-kicker">AUTONOMY, WITH ACCOUNTABILITY</span>
             <h2 id="hp-control-title">
               More capable agents.
               <br />
@@ -1259,8 +1271,14 @@ export function MarketingPage() {
           id="questions"
           aria-labelledby="hp-faq-title"
         >
+          <div className="hp-section-topline" data-reveal>
+            <span className="hp-kicker">
+              <span />
+              A FEW THINGS YOU MIGHT WONDER
+            </span>
+            <span className="hp-section-index">04 / GOOD QUESTIONS</span>
+          </div>
           <div data-reveal>
-            <span className="hp-kicker">A FEW THINGS YOU MIGHT WONDER</span>
             <h2 id="hp-faq-title">
               Good questions.
               <br />
@@ -1310,7 +1328,7 @@ export function MarketingPage() {
         <section className="hp-section hp-container" id="about" aria-labelledby="hp-about-title" data-reveal>
           <div className="hp-section-topline">
             <span className="hp-kicker">ABOUT</span>
-            <span className="hp-section-index">03 / THE BUILDER</span>
+            <span className="hp-section-index">05 / THE BUILDER</span>
           </div>
           <div>
             <h2 id="hp-about-title">
@@ -1382,6 +1400,13 @@ export function MarketingPage() {
             <a href="#how-it-works">How it works</a>
             <a href="#control">Human, in the loop</a>
             <a href="#questions">Good questions</a>
+            <a href="#about">About</a>
+          </nav>
+          <nav aria-label="Site navigation">
+            <a href="/docs">Docs</a>
+            <a href="/changelog">Changelog</a>
+            <a href="/legal/terms">Terms</a>
+            <a href="/legal/privacy">Privacy</a>
           </nav>
           <a href="#top" className="hp-back-top">
             Back to top
