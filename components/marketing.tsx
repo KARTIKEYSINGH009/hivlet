@@ -1149,7 +1149,13 @@ export function MarketingPage() {
                 ].map((node, index) => (
                   <div
                     key={node.label}
-                    className={workflowStep === index ? "is-active" : ""}
+                    className={
+                      workflowStep === index
+                        ? "is-active"
+                        : workflowStep > index
+                          ? "is-done"
+                          : ""
+                    }
                   >
                     <span>
                       <node.icon size={21} strokeWidth={1.4} />
@@ -1157,8 +1163,8 @@ export function MarketingPage() {
                     <strong>{node.label}</strong>
                   </div>
                 ))}
-                <div className="hp-flow-line">
-                  <span />
+                <div className="hp-flow-line" aria-hidden="true">
+                  <span style={{ width: `${workflowStep * 50}%` }} />
                 </div>
               </div>
               <div
