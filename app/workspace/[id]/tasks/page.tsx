@@ -309,11 +309,11 @@ export default async function TasksPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-3 text-base text-ivory focus:border-gold";
   const btnCls =
-    "rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft";
+    "rounded-lg bg-gold px-4 py-3 text-sm font-medium text-ink hover:bg-gold-soft";
   const ghostBtnCls =
-    "rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold";
+    "rounded-lg border border-white/15 bg-coal px-4 py-3 text-sm font-medium text-muted hover:border-gold";
 
   return (
     <div>
@@ -335,35 +335,62 @@ export default async function TasksPage({
           action={createTask.bind(null, id)}
           className="mt-4 grid gap-3 sm:grid-cols-2"
         >
-          <input
-            name="title"
-            required
-            placeholder="Task title"
-            className={inputCls}
-          />
-          <select name="assigned_agent_id" className={inputCls} defaultValue="">
-            <option value="">Unassigned</option>
-            {agentList
-              .filter((a) => a.status !== "disabled" && a.status !== "paused")
-              .map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-          </select>
-          <input
-            name="description"
-            placeholder="Description (optional)"
-            className={`${inputCls} sm:col-span-2`}
-          />
-          <select name="priority" className={inputCls} defaultValue="medium">
-            <option value="low">Low priority</option>
-            <option value="medium">Medium priority</option>
-            <option value="high">High priority</option>
-            <option value="urgent">Urgent</option>
-          </select>
-          <input name="due_at" type="date" className={inputCls} />
-          <button type="submit" className={`${btnCls} sm:col-span-2 w-fit px-5 py-2 text-sm`}>
+          <div>
+            <label htmlFor="task-title" className="text-sm font-medium text-ivory">
+              Task title
+            </label>
+            <input
+              id="task-title"
+              name="title"
+              required
+              placeholder="Task title"
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <label htmlFor="task-agent" className="text-sm font-medium text-ivory">
+              Assigned agent
+            </label>
+            <select id="task-agent" name="assigned_agent_id" className={inputCls} defaultValue="">
+              <option value="">Unassigned</option>
+              {agentList
+                .filter((a) => a.status !== "disabled" && a.status !== "paused")
+                .map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="task-description" className="text-sm font-medium text-ivory">
+              Description
+            </label>
+            <input
+              id="task-description"
+              name="description"
+              placeholder="Description (optional)"
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <label htmlFor="task-priority" className="text-sm font-medium text-ivory">
+              Priority
+            </label>
+            <select id="task-priority" name="priority" className={inputCls} defaultValue="medium">
+              <option value="low">Low priority</option>
+              <option value="medium">Medium priority</option>
+              <option value="high">High priority</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="task-due" className="text-sm font-medium text-ivory">
+              Due date
+            </label>
+            <input id="task-due" name="due_at" type="date" className={inputCls} />
+          </div>
+          <button type="submit" className={`${btnCls} sm:col-span-2 w-fit px-5`}>
             Create task
           </button>
         </form>
@@ -377,12 +404,39 @@ export default async function TasksPage({
           />
         </div>
       ) : (
-        <section className="mt-8 grid items-start gap-4 lg:grid-cols-5">
+        <>
+        <nav
+          aria-label="Task status"
+          className="mt-8 flex gap-2 overflow-x-auto pb-1 lg:hidden"
+        >
+          <a href="#tasks-all" className="shrink-0 rounded-full border border-white/15 px-3 py-2 text-sm text-muted">
+            All tasks
+          </a>
+          {COLUMNS.map((col) => (
+            <a
+              key={col.key}
+              href={`#col-${col.key}`}
+              className="shrink-0 rounded-full border border-white/15 px-3 py-2 text-sm text-muted"
+            >
+              {col.label}
+            </a>
+          ))}
+        </nav>
+        <section id="tasks-all" className="mt-8 lg:overflow-x-auto lg:pb-2">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-4">
           {COLUMNS.map((col) => {
             const colTasks = taskList.filter((t) => t.status === col.key);
             return (
-              <div key={col.key}>
-                <h2 className="flex items-center justify-between text-sm font-semibold text-ivory">
+              <div
+                key={col.key}
+                id={`col-${col.key}`}
+                className={
+                  colTasks.length === 0
+                    ? "hidden lg:block lg:w-[280px] lg:shrink-0"
+                    : "w-full lg:w-[280px] lg:shrink-0"
+                }
+              >
+                <h2 className="flex items-center justify-between font-display text-lg text-ivory">
                   {col.label}
                   <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">
                     {colTasks.length}
@@ -704,7 +758,9 @@ export default async function TasksPage({
               </div>
             );
           })}
+          </div>
         </section>
+        </>
       )}
       {!leader && (
         <p className="mt-6 text-xs text-muted">

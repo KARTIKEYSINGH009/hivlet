@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
 import CopyInviteLink from "@/components/copy-invite-link";
+import DeleteWorkspaceForm from "@/components/delete-workspace-form";
 import {
   getInviteProviderStatus,
   requestInvite,
@@ -53,10 +54,13 @@ async function requestInviteAction(workspaceId: string, formData: FormData) {
   redirect(`/workspace/${workspaceId}/settings?invite=not-configured`);
 }
 
-async function deleteWorkspace(workspaceId: string) {
+async function deleteWorkspace(workspaceId: string, formData: FormData) {
   "use server";
-  const { supabase, membership } = await requireWorkspace(workspaceId);
+  const { supabase, workspace, membership } = await requireWorkspace(workspaceId);
   if (!isLeader(membership)) return;
+  // Server-side guard, not just UI: the typed name must match exactly,
+  // otherwise nothing is deleted, even if the form is submitted directly.
+  if (String(formData.get("confirm") ?? "") !== workspace.name) return;
   await supabase.from("workspaces").delete().eq("id", workspaceId);
   redirect("/workspaces");
 }
@@ -222,14 +226,12 @@ export default async function WorkspaceSettingsPage({
             Deleting a workspace removes its agents, tasks, reports, and
             approvals permanently.
           </p>
-          <form action={deleteWorkspace.bind(null, id)} className="mt-3">
-            <button
-              type="submit"
-              className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-2 text-sm font-medium text-[#d98c8c] hover:border-[#d98c8c]"
-            >
-              Delete workspace
-            </button>
-          </form>
+          <div className="mt-3">
+            <DeleteWorkspaceForm
+              workspaceName={workspace.name}
+              onDelete={deleteWorkspace.bind(null, id)}
+            />
+          </div>
         </section>
       )}
     </div>

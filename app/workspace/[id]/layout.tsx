@@ -49,7 +49,7 @@ export default async function WorkspaceLayout({
         workspaceName={workspace.name}
         workspaces={workspaces}
       />
-      <main className="min-w-0 flex-1 px-4 py-8 sm:px-8">{children}</main>
+      <main className="min-w-0 flex-1 px-4 py-4 sm:px-8 sm:py-8">{children}</main>
     </div>
   );
 }

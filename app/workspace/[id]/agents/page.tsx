@@ -244,7 +244,7 @@ export default async function AgentsPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-3 text-base text-ivory focus:border-gold";
 
   return (
     <div>
@@ -260,29 +260,49 @@ export default async function AgentsPage({
             action={createAgent.bind(null, id)}
             className="mt-4 grid gap-3 sm:grid-cols-2"
           >
-            <input name="name" required placeholder="Agent name" className={inputCls} />
-            <input name="role" placeholder="Role (e.g. Researcher)" className={inputCls} />
-            <select name="provider" className={inputCls} defaultValue="custom">
-              <option value="openai">OpenAI</option>
-              <option value="anthropic">Anthropic</option>
-              <option value="gemini">Google Gemini</option>
-              <option value="groq">Groq</option>
-              <option value="custom">Custom / other</option>
-            </select>
-            <input name="model" placeholder="Model (e.g. gpt-4o)" className={inputCls} />
-            <textarea
-              name="system_prompt"
-              placeholder="Instructions for this agent"
-              className={`${inputCls} sm:col-span-2`}
-            />
-            <input
-              name="allowed_tools"
-              placeholder="Allowed tools, comma-separated (e.g. web_search, file_read)"
-              className={`${inputCls} sm:col-span-2`}
-            />
+            <div>
+              <label htmlFor="agent-name" className="text-sm font-medium text-ivory">Agent name</label>
+              <input id="agent-name" name="name" required placeholder="Agent name" className={inputCls} />
+            </div>
+            <div>
+              <label htmlFor="agent-role" className="text-sm font-medium text-ivory">Role</label>
+              <input id="agent-role" name="role" placeholder="Role (e.g. Researcher)" className={inputCls} />
+            </div>
+            <div>
+              <label htmlFor="agent-provider" className="text-sm font-medium text-ivory">Provider</label>
+              <select id="agent-provider" name="provider" className={inputCls} defaultValue="custom">
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Anthropic</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="groq">Groq</option>
+                <option value="custom">Custom / other</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="agent-model" className="text-sm font-medium text-ivory">Model</label>
+              <input id="agent-model" name="model" placeholder="Model (e.g. gpt-4o)" className={inputCls} />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="agent-instructions" className="text-sm font-medium text-ivory">Instructions</label>
+              <textarea
+                id="agent-instructions"
+                name="system_prompt"
+                placeholder="Instructions for this agent"
+                className={inputCls}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="agent-tools" className="text-sm font-medium text-ivory">Allowed tools</label>
+              <input
+                id="agent-tools"
+                name="allowed_tools"
+                placeholder="Allowed tools, comma-separated (e.g. web_search, file_read)"
+                className={inputCls}
+              />
+            </div>
             <button
               type="submit"
-              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
+              className="w-fit rounded-lg bg-gold px-5 py-3 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
             >
               Add agent
             </button>
