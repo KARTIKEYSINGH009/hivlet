@@ -135,59 +135,68 @@ export default function Home() {
           <p className="mt-1 text-sm text-muted">
             Here is what is happening in Marketing Team.
           </p>
-          <div className="mt-4 grid grid-cols-3 gap-3">
+          <div className="mt-4 grid grid-cols-3 items-stretch gap-3">
             <div className="rounded-xl border border-white/10 bg-raised p-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted">Working</p>
-              <p className="mt-1 text-sm text-muted">Agents at work</p>
+              <p className="text-xs font-bold uppercase leading-tight tracking-widest text-muted">Working</p>
+              <p className="mt-1 text-sm leading-snug text-muted">Agents at work</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-raised p-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted">In review</p>
-              <p className="mt-1 text-sm text-muted">Waiting for verification</p>
+              <p className="text-xs font-bold uppercase leading-tight tracking-widest text-muted">In review</p>
+              <p className="mt-1 text-sm leading-snug text-muted">Waiting for verification</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-raised p-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted">Completed today</p>
-              <p className="mt-1 text-sm text-muted">Verified work</p>
+              <p className="text-xs font-bold uppercase leading-tight tracking-widest text-muted">Completed today</p>
+              <p className="mt-1 text-sm leading-snug text-muted">Verified work</p>
             </div>
           </div>
           <p className="mt-5 font-semibold">Active agents</p>
           <div className="mt-2 space-y-2">
             {activeAgents.map((agent) => (
-              <p key={agent.name}>
-                <strong>{agent.name}</strong>{" "}
+              <div key={agent.name} className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="w-36 shrink-0 font-semibold">{agent.name}</span>
                 <span
                   className={
                     agent.status === "In review"
-                      ? "inline-flex rounded-full border border-gold px-2.5 py-0.5 text-xs font-semibold text-gold-soft"
-                      : "inline-flex rounded-full border border-gold bg-gold px-2.5 py-0.5 text-xs font-semibold text-ink"
+                      ? "inline-flex w-24 shrink-0 justify-center rounded-full border border-gold px-2.5 py-0.5 text-xs font-semibold text-gold-soft"
+                      : "inline-flex w-24 shrink-0 justify-center rounded-full border border-gold bg-gold px-2.5 py-0.5 text-xs font-semibold text-ink"
                   }
                 >
                   {agent.status}
-                </span>{" "}
+                </span>
                 <span className="text-sm text-muted">{agent.detail}</span>
-              </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="how" className="mt-20">
+      <section id="how" className="mt-20 border-t border-white/10 pt-20">
         <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-gold-soft">
           How it works
         </p>
         <h2 className="mt-3 text-center font-display text-3xl font-semibold">
           From idea to done, with your AI team.
         </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          {howSteps.map((step) => (
-            <div key={step.title} className="rounded-xl border border-white/10 bg-coal p-5">
+        <div aria-hidden="true" className="how-track relative mx-auto mt-10 hidden h-px max-w-2xl bg-white/10 sm:block">
+          <span className="how-track-dot absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full bg-gold" />
+          <span className="absolute -top-[3px] left-1/2 h-[7px] w-[7px] -translate-x-1/2 rounded-full border border-gold bg-ink" />
+          <span className="absolute -top-[3px] right-0 h-[7px] w-[7px] rounded-full border border-gold bg-ink" />
+        </div>
+        <div className="mt-8 grid items-stretch gap-4 sm:grid-cols-3">
+          {howSteps.map((step, i) => (
+            <div
+              key={step.title}
+              style={{ animationDelay: `${i * 180}ms` }}
+              className="how-step flex flex-col rounded-xl border border-white/10 bg-coal p-5"
+            >
               <p className="font-bold text-gold-soft">{step.title}</p>
-              <p className="mt-2 text-sm text-muted">{step.body}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{step.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="product" className="mt-20 grid items-start gap-8 lg:grid-cols-[1.2fr_1fr]">
+      <section id="product" className="mt-20 grid items-start gap-8 border-t border-white/10 pt-20 lg:grid-cols-[1.2fr_1fr]">
         <div className="rounded-xl border border-white/10 bg-coal p-5">
           <h2 className="font-semibold">Tasks</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -229,7 +238,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="trust" className="mt-20 text-center">
+      <section id="trust" className="mt-20 border-t border-white/10 pt-20 text-center">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-soft">
           Trust and control
         </p>
@@ -242,7 +251,7 @@ export default function Home() {
         </p>
         <div className="mt-8 grid gap-4 text-left sm:grid-cols-3">
           {trustPoints.map((point) => (
-            <div key={point.title} className="rounded-xl border border-white/10 bg-coal p-5">
+            <div key={point.title} className="flex flex-col rounded-xl border border-white/10 bg-coal p-5">
               <h3 className="font-semibold">{point.title}</h3>
               <p className="mt-2 text-sm text-muted">{point.body}</p>
             </div>
@@ -250,7 +259,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="mt-20">
+      <section id="about" className="mt-20 border-t border-white/10 pt-20">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted">About</p>
         <p className="mt-3 max-w-2xl text-muted">
           {PRODUCT_NAME} is a virtual office for AI agents, built by Kartikey
@@ -261,7 +270,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="mt-16">
+      <section className="mt-20 border-t border-white/10 pt-20">
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-white/10 bg-coal p-6">
           <div>
             <h2 className="font-display text-2xl font-semibold">
