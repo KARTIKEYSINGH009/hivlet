@@ -93,7 +93,7 @@ export default async function ReportsPage({
   const myAgentList = (myAgents ?? []) as { id: string; name: string }[];
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
 
   return (
     <div>
@@ -212,7 +212,7 @@ export default async function ReportsPage({
               </p>
             )}
             {r.blockers && (
-              <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p className="mt-2 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-3 py-2 text-sm text-[#d98c8c]">
                 Blockers: {r.blockers}
               </p>
             )}

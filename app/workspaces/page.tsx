@@ -7,6 +7,27 @@ type WorkspacesPageProps = {
 };
 
 // Server Action: create a workspace and make the creator its leader.
+//
+// BUG FIX 2026-11-01: the old code inserted into workspaces, then
+// .select("id"), then inserted the leader member row. That select was
+// filtered by the members-only RLS read policy, and the user was not a
+// member yet, so the select returned no row, the code took the error
+// path, and the member insert never ran. The workspace row was already
+// inserted, but invisible, because the list is driven by
+// workspace_members. That is why a valid name failed with the generic
+// error and the list still said "No workspaces yet".
+//
+// The fix is atomic: create_workspace_with_leader (migration 004,
+// SECURITY DEFINER, same pattern as join_workspace_by_code) inserts
+// the workspace and the leader member row in one transaction and
+// returns the id directly. If either insert fails, nothing is left
+// behind. No orphan, no two-step race. The creator-read policy added
+// to policies.sql is belt and braces for any direct select, not the
+// primary path. Errors are logged server-side with the database
+// message and code, so a missing function (migration 004 not yet run
+// live) shows up in logs instead of only as a generic banner. The
+// user-facing banner stays generic on purpose, so database internals
+// are not leaked to the browser.
 async function createWorkspace(formData: FormData) {
   "use server";
 
@@ -20,27 +41,22 @@ async function createWorkspace(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   if (!name) redirect("/workspaces?error=name");
 
-  const { data: workspace, error } = await supabase
-    .from("workspaces")
-    .insert({ name, description: description || null, created_by: user.id })
-    .select("id")
-    .single();
+  const { data: workspaceId, error } = await supabase.rpc(
+    "create_workspace_with_leader",
+    { p_name: name, p_description: description || null }
+  );
 
-  if (error || !workspace) redirect("/workspaces?error=create");
-
-  // RLS policy allows the workspace creator to add themselves as leader.
-  // If this fails, the workspace would be invisible to its own creator
-  // (RLS only shows workspaces you belong to), so surface the error.
-  const { error: memberError } = await supabase
-    .from("workspace_members")
-    .insert({
-      workspace_id: workspace.id,
-      user_id: user.id,
-      role: "leader",
+  if (error || !workspaceId) {
+    console.error("createWorkspace failed:", {
+      message: error?.message ?? "no workspace id returned",
+      code: error?.code ?? null,
+      details: error?.details ?? null,
+      hint: error?.hint ?? null,
     });
+    redirect("/workspaces?error=create");
+  }
 
-  if (memberError) redirect("/workspaces?error=create");
-
+  void workspaceId;
   redirect("/workspaces");
 }
 
@@ -83,7 +99,7 @@ export default async function WorkspacesPage({
       </p>
 
       {errorText && (
-        <p className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
           {errorText}
         </p>
       )}
@@ -100,7 +116,7 @@ export default async function WorkspacesPage({
               name="name"
               required
               placeholder="e.g. Atlas Builders"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold focus:outline-none"
+              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
             />
           </div>
           <div>
@@ -111,7 +127,7 @@ export default async function WorkspacesPage({
               id="description"
               name="description"
               placeholder="What does this team build?"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold focus:outline-none"
+              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
             />
           </div>
           <button

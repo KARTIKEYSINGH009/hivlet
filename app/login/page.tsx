@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </p>
 
       {sp.error && (
-        <p className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
           Sign-in failed. Please try again.
         </p>
       )}

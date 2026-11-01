@@ -122,7 +122,7 @@ export default async function ApprovalsPage({
     .limit(50);
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
 
   return (
     <div>
@@ -233,7 +233,7 @@ export default async function ApprovalsPage({
                     <input type="hidden" name="approval_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg border border-red-300 bg-coal px-4 py-2 text-sm font-medium text-red-700 hover:border-red-500"
+                      className="rounded-lg border border-[#d98c8c]/40 bg-coal px-4 py-2 text-sm font-medium text-[#d98c8c] hover:border-[#d98c8c]"
                     >
                       Reject
                     </button>

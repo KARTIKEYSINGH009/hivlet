@@ -11,3 +11,29 @@
   --color-muted: #a7a29a;
   --font-display: Georgia, "Times New Roman", serif;
 }
+
+/* Phase 1 token: exact focus treatment everywhere, not a gold border alone.
+   Applies to links, buttons, inputs, tabs, menus, icon buttons, task
+   controls, and navigation. :focus-visible keeps mouse clicks clean. */
+:focus-visible {
+  outline: 2px solid #c9a86a;
+  outline-offset: 2px;
+}
+
+/* Section titles use Georgia by default; a Tailwind size class on the
+   element still wins where a page needs a different size. */
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  line-height: 30px;
+}
+
+/* Dark autofill: browsers otherwise paint a light autofill background
+   over the dark form. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f5f1e8;
+  caret-color: #f5f1e8;
+  transition: background-color 9999s ease-in-out 0s;
+}

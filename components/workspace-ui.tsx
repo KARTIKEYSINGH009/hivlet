@@ -16,7 +16,7 @@ export function PageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-ivory">
+        <h1 className="font-display text-[28px] font-bold leading-[36px] tracking-tight text-ivory sm:text-[32px] sm:leading-[40px]">
           {title}
         </h1>
         {description && (
@@ -42,7 +42,7 @@ export function MetricCard({
       <p className="text-xs font-semibold uppercase tracking-wider text-muted">
         {label}
       </p>
-      <p className="mt-2 text-3xl font-bold tracking-tight text-ivory">
+      <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ivory">
         {value}
       </p>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
@@ -72,8 +72,15 @@ export function TaskStatusPill({ status }: { status: string }) {
     failed: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
     blocked: "border-white/15 bg-coal text-muted",
   };
-  const label = status.replace("_", " ");
-  return pill(label, map[status] ?? map.todo);
+  const labels: Record<string, string> = {
+    todo: "To do",
+    in_progress: "In progress",
+    in_review: "In review",
+    done: "Done",
+    failed: "Failed",
+    blocked: "Blocked",
+  };
+  return pill(labels[status] ?? status, map[status] ?? map.todo);
 }
 
 export function AgentStatusPill({ status }: { status: string }) {
@@ -86,7 +93,16 @@ export function AgentStatusPill({ status }: { status: string }) {
     paused: "border-white/15 bg-coal text-muted",
     error: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
   };
-  return pill(status.replace("_", " "), map[status] ?? map.idle);
+  const labels: Record<string, string> = {
+    idle: "Idle",
+    working: "Working",
+    awaiting_approval: "Awaiting approval",
+    failed: "Failed",
+    disabled: "Disabled",
+    paused: "Paused",
+    error: "Error",
+  };
+  return pill(labels[status] ?? status, map[status] ?? map.idle);
 }
 
 export function PriorityPill({ priority }: { priority: string | null }) {
@@ -97,7 +113,8 @@ export function PriorityPill({ priority }: { priority: string | null }) {
     high: "border-gold bg-gold text-ink",
     urgent: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
   };
-  return pill(p, map[p] ?? map.medium);
+  const label = p.charAt(0).toUpperCase() + p.slice(1);
+  return pill(label, map[p] ?? map.medium);
 }
 
 export function ApprovalStatusPill({ status }: { status: string }) {
@@ -107,7 +124,13 @@ export function ApprovalStatusPill({ status }: { status: string }) {
     rejected: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
     expired: "border-white/15 bg-coal text-muted",
   };
-  return pill(status, map[status] ?? map.pending);
+  const labels: Record<string, string> = {
+    pending: "Pending",
+    approved: "Approved",
+    rejected: "Rejected",
+    expired: "Expired",
+  };
+  return pill(labels[status] ?? status, map[status] ?? map.pending);
 }
 
 export function ExecutionStatusPill({ status }: { status: string }) {
@@ -117,7 +140,13 @@ export function ExecutionStatusPill({ status }: { status: string }) {
     succeeded: "border-[#9db89a]/40 bg-[#1a2a1d] text-[#9db89a]",
     failed: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
   };
-  return pill(status, map[status] ?? map.queued);
+  const labels: Record<string, string> = {
+    queued: "Queued",
+    running: "Running",
+    succeeded: "Succeeded",
+    failed: "Failed",
+  };
+  return pill(labels[status] ?? status, map[status] ?? map.queued);
 }
 
 // DEMO executions are fixture outputs, never real model runs. The pill is

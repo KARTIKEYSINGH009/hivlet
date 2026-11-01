@@ -192,7 +192,7 @@ export default async function AgentDetailPage({
                 </p>
               )}
               {x.error && (
-                <p className="mt-1 text-sm text-red-700">{x.error}</p>
+                <p className="mt-1 text-sm text-[#d98c8c]">{x.error}</p>
               )}
             </div>
           ))}

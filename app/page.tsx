@@ -158,7 +158,7 @@ export default function Home() {
                   className={
                     agent.status === "In review"
                       ? "inline-flex rounded-full border border-gold px-2.5 py-0.5 text-xs font-semibold text-gold-soft"
-                      : "inline-flex rounded-full border border-white/15 px-2.5 py-0.5 text-xs font-semibold text-muted"
+                      : "inline-flex rounded-full border border-gold bg-gold px-2.5 py-0.5 text-xs font-semibold text-ink"
                   }
                 >
                   {agent.status}
@@ -281,6 +281,12 @@ export default function Home() {
         <footer className="mt-6 border-t border-white/10 pt-6 text-sm text-muted">
           {PRODUCT_NAME} — workspaces, agents, tasks, reports and approvals.
           Built India-first.
+          <span className="mt-2 flex flex-wrap gap-4">
+            <a href="/docs">Docs</a>
+            <a href="/changelog">Changelog</a>
+            <a href="/legal/terms">Terms (draft)</a>
+            <a href="/legal/privacy">Privacy (draft)</a>
+          </span>
         </footer>
       </section>
     </main>

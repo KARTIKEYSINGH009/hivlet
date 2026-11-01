@@ -22,15 +22,18 @@ export default function WorkspaceSidebar({
   const nav = [
     { href: `${base}/overview`, label: "Overview" },
     { href: `${base}/tasks`, label: "Tasks" },
+    { href: `${base}/handoffs`, label: "Handoffs" },
     { href: `${base}/agents`, label: "Agents" },
+    { href: `${base}/usage`, label: "Usage" },
     { href: `${base}/reports`, label: "Reports" },
     { href: `${base}/approvals`, label: "Approvals" },
     { href: `${base}/activity`, label: "Activity" },
+    { href: `${base}/onboarding`, label: "Get started" },
     { href: `${base}/settings`, label: "Settings" },
   ];
 
   return (
-    <aside className="flex w-full shrink-0 flex-col gap-6 bg-ink px-4 py-5 text-ivory sm:w-60">
+    <aside className="flex w-full shrink-0 flex-col gap-6 border-b border-white/10 bg-coal px-4 py-5 text-ivory sm:w-56 sm:border-b-0 sm:border-r">
       <Link
         href="/dashboard"
         className="px-2 text-sm font-bold uppercase tracking-[0.25em] text-gold"
@@ -51,7 +54,7 @@ export default function WorkspaceSidebar({
           onChange={(e) =>
             router.push(`/workspace/${e.target.value}/overview`)
           }
-          className="mt-2 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none"
+          className="mt-2 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold"
         >
           {workspaces.map((w) => (
             <option key={w.id} value={w.id}>
@@ -64,7 +67,7 @@ export default function WorkspaceSidebar({
         </p>
       </div>
 
-      <nav className="flex flex-row gap-1 overflow-x-auto sm:flex-col sm:overflow-visible">
+      <nav className="flex flex-row gap-1 overflow-x-auto py-1 sm:flex-col sm:overflow-visible">
         {nav.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(item.href + "/");

@@ -309,7 +309,7 @@ export default async function TasksPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
   const btnCls =
     "rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft";
   const ghostBtnCls =
@@ -344,7 +344,7 @@ export default async function TasksPage({
           <select name="assigned_agent_id" className={inputCls} defaultValue="">
             <option value="">Unassigned</option>
             {agentList
-              .filter((a) => a.status !== "disabled")
+              .filter((a) => a.status !== "disabled" && a.status !== "paused")
               .map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.name}
@@ -429,7 +429,7 @@ export default async function TasksPage({
                             : "Unassigned"}
                         </p>
                         {t.status === "failed" && t.failure_reason && (
-                          <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
+                          <p className="mt-2 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-3 py-2 text-xs text-[#d98c8c]">
                             Failed: {t.failure_reason}
                           </p>
                         )}
@@ -649,7 +649,7 @@ export default async function TasksPage({
                                   </p>
                                 )}
                                 {x.error && (
-                                  <p className="mt-1 text-xs text-red-700">
+                                  <p className="mt-1 text-xs text-[#d98c8c]">
                                     {x.error}
                                   </p>
                                 )}

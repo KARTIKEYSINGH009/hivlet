@@ -3,6 +3,11 @@ import { revalidatePath } from "next/cache";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
 import CopyInviteLink from "@/components/copy-invite-link";
 import {
+  getInviteProviderStatus,
+  requestInvite,
+  type InviteChannel,
+} from "@/lib/invite-providers";
+import {
   PageHeader,
   EmptyState,
 } from "@/components/workspace-ui";
@@ -35,6 +40,19 @@ async function removeMember(workspaceId: string, formData: FormData) {
   revalidatePath(`/workspace/${workspaceId}/settings`);
 }
 
+// Invite request handler. This deliberately sends nothing. It runs the
+// provider abstraction in lib/invite-providers.ts, which returns
+// configured: false for email and phone, and then redirects back with a
+// plain message. No provider is hardcoded and no secret is read here.
+async function requestInviteAction(workspaceId: string, formData: FormData) {
+  "use server";
+  await requireWorkspace(workspaceId);
+  const channel = String(formData.get("channel") ?? "") as InviteChannel;
+  const result = requestInvite(channel);
+  void result;
+  redirect(`/workspace/${workspaceId}/settings?invite=not-configured`);
+}
+
 async function deleteWorkspace(workspaceId: string) {
   "use server";
   const { supabase, membership } = await requireWorkspace(workspaceId);
@@ -45,10 +63,13 @@ async function deleteWorkspace(workspaceId: string) {
 
 export default async function WorkspaceSettingsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ invite?: string }>;
 }) {
   const { id } = await params;
+  const sp = await searchParams;
   const { supabase, workspace, membership } = await requireWorkspace(id);
   const leader = isLeader(membership);
 
@@ -65,7 +86,7 @@ export default async function WorkspaceSettingsPage({
   }[];
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
 
   return (
     <div>
@@ -85,6 +106,51 @@ export default async function WorkspaceSettingsPage({
         </p>
         <div className="mt-3">
           <CopyInviteLink code={workspace.invite_code} />
+        </div>
+      </section>
+
+      {sp.invite === "not-configured" && (
+        <p className="mt-6 rounded-lg border border-gold/40 bg-coal px-4 py-3 text-sm text-gold-soft">
+          Email and phone invites are not configured, so nothing was sent.
+          Link invites work today.
+        </p>
+      )}
+
+      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+        <h2 className="font-semibold text-ivory">
+          Email and phone invites, not working yet
+        </h2>
+        <p className="mt-1 text-sm text-muted">
+          These buttons exist so the option is visible, but they do not
+          send anything. A provider must be chosen and configured
+          server-side before email or SMS invites work. No provider is
+          hardcoded here, and no secret is stored here.
+        </p>
+        <div className="mt-4 space-y-3">
+          {getInviteProviderStatus().map((p) => (
+            <div
+              key={p.channel}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/10 px-4 py-3"
+            >
+              <div>
+                <p className="text-sm font-medium text-ivory">{p.label}</p>
+                <p className="text-xs text-muted">{p.note}</p>
+              </div>
+              {p.configured ? (
+                <span className="text-xs font-medium text-muted">Working</span>
+              ) : (
+                <form action={requestInviteAction.bind(null, id)}>
+                  <input type="hidden" name="channel" value={p.channel} />
+                  <button
+                    type="submit"
+                    className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
+                  >
+                    Try {p.label} (not configured)
+                  </button>
+                </form>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -138,7 +204,7 @@ export default async function WorkspaceSettingsPage({
                   <input type="hidden" name="member_id" value={m.id} />
                   <button
                     type="submit"
-                    className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-red-400 hover:text-red-700"
+                    className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-[#d98c8c] hover:text-[#d98c8c]"
                   >
                     {m.id === membership.id ? "Leave" : "Remove"}
                   </button>
@@ -150,8 +216,8 @@ export default async function WorkspaceSettingsPage({
       </section>
 
       {leader && (
-        <section className="mt-6 rounded-xl border border-red-200 bg-coal p-5">
-          <h2 className="font-semibold text-red-700">Danger zone</h2>
+        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Danger zone</h2>
           <p className="mt-1 text-sm text-muted">
             Deleting a workspace removes its agents, tasks, reports, and
             approvals permanently.

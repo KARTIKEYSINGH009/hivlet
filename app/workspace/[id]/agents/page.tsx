@@ -6,6 +6,8 @@ import {
   EmptyState,
   AgentStatusPill,
 } from "@/components/workspace-ui";
+import { SQUAD_TEMPLATES, getSquadTemplate } from "@/lib/squad-templates";
+import { logTaskEvent } from "@/lib/events";
 
 // Agent management. Leaders create, edit, and disable agents; members can
 // view. No API keys are ever stored here — agents reference a provider +
@@ -74,6 +76,112 @@ async function setAgentStatus(
   revalidatePath(`/workspace/${workspaceId}/agents`);
 }
 
+// Agent pause and resume. This reuses the existing 'paused' status, which
+// is already in the agents status check and in AgentStatusPill, so no
+// new status and no migration is needed. Pause is only allowed from
+// idle, and resume returns the agent to idle. Disabled agents are not
+// paused or resumed here; they use Enable and Disable. Paused agents are
+// excluded from new task assignment on the Tasks page, but existing
+// tasks are left untouched, so pausing never deletes or rewrites work.
+async function pauseAgent(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const agentId = String(formData.get("agent_id") ?? "");
+  const { data: agent } = await supabase
+    .from("agents")
+    .select("id, status")
+    .eq("id", agentId)
+    .eq("workspace_id", workspaceId)
+    .single();
+  if (!agent || agent.status !== "idle") return;
+  await supabase
+    .from("agents")
+    .update({ status: "paused" })
+    .eq("id", agentId)
+    .eq("workspace_id", workspaceId);
+  revalidatePath(`/workspace/${workspaceId}/agents`);
+}
+
+async function resumeAgent(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const agentId = String(formData.get("agent_id") ?? "");
+  const { data: agent } = await supabase
+    .from("agents")
+    .select("id, status")
+    .eq("id", agentId)
+    .eq("workspace_id", workspaceId)
+    .single();
+  if (!agent || agent.status !== "paused") return;
+  await supabase
+    .from("agents")
+    .update({ status: "idle" })
+    .eq("id", agentId)
+    .eq("workspace_id", workspaceId);
+  revalidatePath(`/workspace/${workspaceId}/agents`);
+}
+
+// One-click squad template. Leaders only. Creates the template's agents
+// (provider custom, no credentials, no model) and then its tasks, each
+// assigned to the agent created from the matching definition. Every
+// task creation is logged as a task_created event. No provider call, no
+// spend, no publish, no send.
+async function createSquad(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const template = getSquadTemplate(String(formData.get("template_key") ?? ""));
+  if (!template) return;
+  const createdAgentIds: string[] = [];
+  for (const def of template.agents) {
+    const { data } = await supabase
+      .from("agents")
+      .insert({
+        workspace_id: workspaceId,
+        member_id: membership.id,
+        name: def.name,
+        role: def.role,
+        provider: "custom",
+        model: null,
+        system_prompt: def.systemPrompt,
+        allowed_tools: [],
+        status: "idle",
+      })
+      .select("id")
+      .single();
+    if (data) createdAgentIds.push(data.id);
+  }
+  for (const def of template.tasks) {
+    const agentId = createdAgentIds[def.agentIndex] ?? null;
+    const { data } = await supabase
+      .from("tasks")
+      .insert({
+        workspace_id: workspaceId,
+        title: def.title,
+        description: def.description,
+        priority: def.priority,
+        assigned_agent_id: agentId,
+        created_by_member_id: membership.id,
+        status: "todo",
+      })
+      .select("id")
+      .single();
+    if (data) {
+      await logTaskEvent(supabase, {
+        workspaceId,
+        taskId: data.id,
+        eventType: "task_created",
+        memberId: membership.id,
+        detail: { title: def.title, assigned_agent_id: agentId, template: template.key },
+      });
+    }
+  }
+  revalidatePath(`/workspace/${workspaceId}/agents`);
+  revalidatePath(`/workspace/${workspaceId}/tasks`);
+}
+
 export default async function AgentsPage({
   params,
 }: {
@@ -136,7 +244,7 @@ export default async function AgentsPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold focus:outline-none";
+    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
 
   return (
     <div>
@@ -182,6 +290,42 @@ export default async function AgentsPage({
             No credentials are stored here. Provider keys are connected through
             the secure vault in a later milestone.
           </p>
+        </section>
+      )}
+
+      {leader && (
+        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Squad templates</h2>
+          <p className="mt-1 text-sm text-muted">
+            One click creates the template agents and their starter tasks.
+            No provider call, no spend, no publish, no send. Running a
+            template again creates a second set, so check the list below
+            before clicking twice.
+          </p>
+          <div className="mt-4 space-y-4">
+            {SQUAD_TEMPLATES.map((t) => (
+              <div
+                key={t.key}
+                className="rounded-xl border border-white/10 bg-raised p-4"
+              >
+                <p className="font-medium text-ivory">{t.name}</p>
+                <p className="mt-1 text-sm text-muted">{t.description}</p>
+                <p className="mt-2 text-xs text-muted">
+                  Agents: {t.agents.map((a) => a.name).join(", ")} · Tasks:{" "}
+                  {t.tasks.map((task) => task.title).join(", ")}
+                </p>
+                <form action={createSquad.bind(null, id)} className="mt-3">
+                  <input type="hidden" name="template_key" value={t.key} />
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+                  >
+                    Create {t.name}
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
         </section>
       )}
 
@@ -247,6 +391,34 @@ export default async function AgentsPage({
                       Disable
                     </button>
                   </form>
+                )}
+                {a.status === "paused" && (
+                  <form action={resumeAgent.bind(null, id)}>
+                    <input type="hidden" name="agent_id" value={a.id} />
+                    <button
+                      type="submit"
+                      className="rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft"
+                    >
+                      Resume
+                    </button>
+                  </form>
+                )}
+                {a.status === "idle" && (
+                  <form action={pauseAgent.bind(null, id)}>
+                    <input type="hidden" name="agent_id" value={a.id} />
+                    <button
+                      type="submit"
+                      className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
+                    >
+                      Pause
+                    </button>
+                  </form>
+                )}
+                {a.status === "paused" && (
+                  <span className="text-xs text-muted">
+                    Paused agents are not offered for new task assignment.
+                    Existing tasks are left untouched.
+                  </span>
                 )}
                 <details className="w-full">
                   <summary className="cursor-pointer text-xs font-medium text-muted">

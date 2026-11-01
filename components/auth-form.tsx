@@ -57,7 +57,7 @@ export default function AuthForm({ mode, redirectTo }: AuthFormProps) {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-white/15 bg-coal px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold focus:outline-none";
+    "w-full rounded-lg border border-white/15 bg-coal px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold";
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -92,7 +92,7 @@ export default function AuthForm({ mode, redirectTo }: AuthFormProps) {
       </div>
 
       {error && (
-        <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
           {error}
         </p>
       )}
