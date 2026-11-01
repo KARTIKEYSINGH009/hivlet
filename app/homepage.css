@@ -1770,6 +1770,16 @@
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: 27px 90px;
+  padding-bottom: 64px;
+}
+/* Divider between the FAQ section and the About section, which
+   previously ran into each other across a large blank gap with
+   nothing marking the boundary. The tighter paddings on both sides
+   keep the divider close to the content instead of floating in
+   the middle of the old 194px gap. */
+#about {
+  border-top: 1px solid var(--line);
+  padding-top: 64px;
 }
 /* Same grid bug as Control: with 3 children, the topline sat left,
    the heading sat right, and the list sat below the topline, leaving
