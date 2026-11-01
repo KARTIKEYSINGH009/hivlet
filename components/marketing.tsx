@@ -86,8 +86,8 @@ const agents = [
   {
     id: "reviewer",
     name: "Reviewer",
-    owner: "Asha",
-    initial: "A",
+    owner: "Patrick",
+    initial: "P",
     role: "Keeps the bar where it belongs",
     status: "awaiting_approval",
     icon: ShieldCheck,
@@ -741,9 +741,9 @@ export function MarketingPage() {
                 ))}
               </div>
               <div className="hp-demo-sidebar-bottom">
-                <span className="hp-owner-avatar">A</span>
+                <span className="hp-owner-avatar">P</span>
                 <div>
-                  <strong>Asha</strong>
+                  <strong>Patrick</strong>
                   <span>The human in the loop</span>
                 </div>
               </div>
@@ -978,7 +978,7 @@ export function MarketingPage() {
                         <div>
                           <span>Requested by</span>
                           <strong>
-                            Reviewer <span>· Owned by Asha</span>
+                            Reviewer <span>· Owned by Patrick</span>
                           </strong>
                         </div>
                         <div>
@@ -1188,7 +1188,7 @@ export function MarketingPage() {
                   <span className="hp-avatar-stack">
                     <i>D</i>
                     <i>M</i>
-                    <i>A</i>
+                    <i>P</i>
                   </span>
                   <span>Context included. Always.</span>
                   <CornerDownRight size={16} />
@@ -1596,7 +1596,7 @@ export function MarketingPage() {
               Nothing between the lines.
             </h2>
             <p id="hp-dialog-description">
-              Requested by Reviewer, owned by Asha. This is the unchanged
+              Requested by Reviewer, owned by Patrick. This is the unchanged
               payload shown before and after a preview decision.
             </p>
             <pre className="hp-exact-payload">
