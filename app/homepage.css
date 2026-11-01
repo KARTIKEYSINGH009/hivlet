@@ -1769,7 +1769,15 @@
 .hp-faq {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
-  gap: 90px;
+  gap: 27px 90px;
+}
+/* Same grid bug as Control: with 3 children, the topline sat left,
+   the heading sat right, and the list sat below the topline, leaving
+   the whole right-hand bottom empty. The topline spans both columns
+   so the heading and the list share one row. */
+.hp-faq > .hp-section-topline {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
 }
 .hp-faq h2 {
   margin-top: 22px;

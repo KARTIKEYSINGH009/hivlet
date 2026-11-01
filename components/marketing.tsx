@@ -198,6 +198,16 @@ const faqs = [
     answer:
       "Hivlet is in early access and pricing has not been set. You can explore the interactive preview before deciding how it fits your team.",
   },
+  {
+    question: "What happens when an agent needs permission?",
+    answer:
+      "It stops at an approval gate, with the exact action and payload shown. Nothing is published, sent, or spent until a human approves it, and an approval is permission, not proof that the action succeeded.",
+  },
+  {
+    question: "What if an agent's work is wrong?",
+    answer:
+      "It stays in review, not marked done. A human checks the report, and only that verification moves the work forward.",
+  },
 ];
 
 function Wordmark({ footer = false }: { footer?: boolean }) {
