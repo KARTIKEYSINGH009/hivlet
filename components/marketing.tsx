@@ -1339,7 +1339,14 @@ export function MarketingPage() {
               <span />
               THE NEXT CHAPTER OF WORK
             </span>
-            <ArrowUpRight size={27} strokeWidth={1.2} />
+            <Link
+              prefetch={false}
+              href={homepageLinks.signup}
+              className="hp-final-top-link"
+              aria-label="Create your workspace"
+            >
+              <ArrowUpRight size={27} strokeWidth={1.2} />
+            </Link>
           </div>
           <div className="hp-final-main">
             <div>
@@ -1383,6 +1390,7 @@ export function MarketingPage() {
             </p>
           </div>
           <nav aria-label="Footer navigation">
+            <span className="hp-footer-heading">Product</span>
             <a href="#workspace">The workspace</a>
             <a href="#how-it-works">How it works</a>
             <a href="#control">Human, in the loop</a>
@@ -1390,6 +1398,7 @@ export function MarketingPage() {
             <a href="#about">About</a>
           </nav>
           <nav aria-label="Site navigation">
+            <span className="hp-footer-heading">Resources</span>
             <a href="/docs">Docs</a>
             <a href="/changelog">Changelog</a>
             <a href="/legal/terms">Terms</a>
