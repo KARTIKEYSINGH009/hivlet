@@ -28,9 +28,11 @@ h2 {
   line-height: 30px;
 }
 
-/* Homepage, How it works: cards rise in sequence, 1 then 2 then 3,
-   and a gold dot travels the track above them, showing the flow.
-   No glow, no gradient, just a flat gold dot on a hairline track. */
+/* Homepage, How it works: cards rise in sequence, 1 then 2 then 3.
+   The loop above them tells the real story on a 9 second cycle:
+   agent works, then you review, then it is done. Each phase lights
+   up in turn, the agent progress bar fills, the review check draws,
+   and the Verified pill appears last. No glow, no gradient. */
 @keyframes how-rise {
   from {
     opacity: 0;
@@ -42,22 +44,70 @@ h2 {
   }
 }
 
-@keyframes how-dot {
-  0% {
-    left: 0;
-    opacity: 0;
-  }
-  8% {
+@keyframes how-phase {
+  0%,
+  30% {
+    border-color: #c9a86a;
     opacity: 1;
   }
-  50% {
-    left: calc(50% - 3px);
+  34%,
+  100% {
+    border-color: rgba(255, 255, 255, 0.1);
+    opacity: 0.75;
   }
+}
+
+@keyframes how-type {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes how-progress {
+  0% {
+    width: 0;
+  }
+  30%,
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes how-check {
+  0%,
+  32% {
+    opacity: 0;
+    stroke-dasharray: 20;
+    stroke-dashoffset: 20;
+  }
+  44%,
+  92% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes how-done {
+  0%,
+  64% {
+    opacity: 0;
+  }
+  72%,
   92% {
     opacity: 1;
   }
   100% {
-    left: calc(100% - 7px);
     opacity: 0;
   }
 }
@@ -66,13 +116,49 @@ h2 {
   animation: how-rise 0.6s ease both;
 }
 
-.how-track-dot {
-  animation: how-dot 4s ease-in-out infinite;
+.how-phase {
+  animation: how-phase 9s ease infinite;
+}
+
+.how-phase-review {
+  animation-delay: 3s;
+}
+
+.how-phase-done {
+  animation-delay: 6s;
+}
+
+.how-type {
+  animation: how-type 1.2s ease infinite;
+}
+
+.how-type-2 {
+  animation-delay: 0.15s;
+}
+
+.how-type-3 {
+  animation-delay: 0.3s;
+}
+
+.how-progress {
+  animation: how-progress 9s ease infinite;
+}
+
+.how-check {
+  animation: how-check 9s ease infinite;
+}
+
+.how-done {
+  animation: how-done 9s ease infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .how-step,
-  .how-track-dot {
+  .how-phase,
+  .how-type,
+  .how-progress,
+  .how-check,
+  .how-done {
     animation: none;
   }
 }

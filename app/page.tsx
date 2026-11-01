@@ -177,10 +177,49 @@ export default function Home() {
         <h2 className="mt-3 text-center font-display text-3xl font-semibold">
           From idea to done, with your AI team.
         </h2>
-        <div aria-hidden="true" className="how-track relative mx-auto mt-10 hidden h-px max-w-2xl bg-white/10 sm:block">
-          <span className="how-track-dot absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full bg-gold" />
-          <span className="absolute -top-[3px] left-1/2 h-[7px] w-[7px] -translate-x-1/2 rounded-full border border-gold bg-ink" />
-          <span className="absolute -top-[3px] right-0 h-[7px] w-[7px] rounded-full border border-gold bg-ink" />
+        <div className="mx-auto mt-10 max-w-3xl rounded-xl border border-white/10 bg-coal p-5">
+          <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <div className="how-phase how-phase-agent flex-1 rounded-lg border border-white/10 bg-raised p-4">
+              <p className="flex items-center justify-between text-sm font-semibold">
+                Writer Agent
+                <span className="rounded-full border border-gold bg-gold px-2.5 py-0.5 text-xs font-semibold text-ink">Working</span>
+              </p>
+              <p className="mt-2 text-sm text-muted">Drafting launch post</p>
+              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div className="how-progress h-full rounded-full bg-gold" />
+              </div>
+              <p aria-hidden="true" className="mt-3 flex gap-1.5">
+                <span className="how-type h-1.5 w-1.5 rounded-full bg-gold" />
+                <span className="how-type how-type-2 h-1.5 w-1.5 rounded-full bg-gold" />
+                <span className="how-type how-type-3 h-1.5 w-1.5 rounded-full bg-gold" />
+              </p>
+            </div>
+            <span aria-hidden="true" className="hidden text-gold-soft sm:block">→</span>
+            <span aria-hidden="true" className="self-center text-gold-soft sm:hidden">↓</span>
+            <div className="how-phase how-phase-review flex-1 rounded-lg border border-white/10 bg-raised p-4">
+              <p className="flex items-center justify-between text-sm font-semibold">
+                You, reviewing
+                <span className="rounded-full border border-gold px-2.5 py-0.5 text-xs font-semibold text-gold-soft">In review</span>
+              </p>
+              <p className="mt-2 text-sm text-muted">Checking the draft before it goes out</p>
+              <p className="mt-3 flex items-center gap-2 text-sm">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <path className="how-check" d="M4 10.5 L8.5 15 L16 5.5" stroke="#9db89a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-muted">Draft looks right</span>
+              </p>
+            </div>
+            <span aria-hidden="true" className="hidden text-gold-soft sm:block">→</span>
+            <span aria-hidden="true" className="self-center text-gold-soft sm:hidden">↓</span>
+            <div className="how-phase how-phase-done flex-1 rounded-lg border border-white/10 bg-raised p-4">
+              <p className="text-sm font-semibold">Done</p>
+              <p className="mt-2 text-sm text-muted">Approved work, ready to publish</p>
+              <p className="mt-3">
+                <span className="how-done inline-flex rounded-full border border-[#9db89a] px-2.5 py-0.5 text-xs font-semibold text-[#9db89a]">Verified</span>
+              </p>
+            </div>
+          </div>
+          <p className="mt-4 text-center text-xs text-muted">Example flow, not a live run. Agent works, you review, then it is done.</p>
         </div>
         <div className="mt-8 grid items-stretch gap-4 sm:grid-cols-3">
           {howSteps.map((step, i) => (
