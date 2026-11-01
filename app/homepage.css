@@ -1551,7 +1551,7 @@
   position: relative;
   margin: 35px 0 26px;
 }
-.hp-flow-nodes > div:not(.hp-flow-line) {
+.hp-flow-nodes > div {
   display: flex;
   flex-direction: column;
   gap: 11px;
@@ -1588,23 +1588,6 @@
 .hp-flow-nodes > div.is-active > strong,
 .hp-flow-nodes > div.is-done > strong {
   color: var(--ivory);
-}
-.hp-flow-line {
-  position: absolute;
-  top: 24px;
-  left: 16.666%;
-  right: 16.666%;
-  height: 1px;
-  background: var(--line);
-}
-.hp-flow-line > span {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 1px;
-  background: var(--gold);
-  transition: width 0.5s var(--hp-ease);
 }
 .hp-process-artifact {
   padding: 23px;
@@ -3461,9 +3444,6 @@
   }
   .hp-flow-nodes > div > strong {
     font-size: 12px;
-  }
-  .hp-flow-line {
-    top: 22px;
   }
   .hp-process-artifact {
     padding: 20px;

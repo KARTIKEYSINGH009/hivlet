@@ -1163,9 +1163,6 @@ export function MarketingPage() {
                     <strong>{node.label}</strong>
                   </div>
                 ))}
-                <div className="hp-flow-line" aria-hidden="true">
-                  <span style={{ width: `${workflowStep * 50}%` }} />
-                </div>
               </div>
               <div
                 className="hp-process-artifact"
