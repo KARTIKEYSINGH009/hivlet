@@ -1688,12 +1688,19 @@
 .hp-control {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 88px;
+  gap: 27px 64px;
   padding: 45px 46px;
   background: var(--coal);
   border: 1px solid var(--line);
   border-radius: 12px;
   scroll-margin-top: 112px;
+}
+/* The topline must span both columns. Without this, the grid placed
+   the topline left, the copy right, and the principles below the
+   topline, leaving the whole right-hand bottom of the box empty. */
+.hp-control > .hp-section-topline {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
 }
 .hp-control-symbol {
   display: flex;
