@@ -20,7 +20,7 @@ What that means in practice:
 - The working virtual office exists and the site is live, but the product is an early build, not a complete company offering.
 - The execution engine is built locally, not yet verified live (see Milestone 3 below).
 - UI overhaul is pending Mochi's review. Do not treat the current UI as final.
-- Market readiness research is pending Boba's review. Boba is to research what a complete company should have in all aspects before Hivlet goes to market.
+- Market readiness research DELIVERED by Boba (2026-10-31, 8 areas, verdict not market ready). Use it as the launch gate below, before Hivlet goes to market.
 - Nothing ships, posts, or deploys without Kartikey's yes.
 
 ## How it works
@@ -117,10 +117,10 @@ This is the honest gap list, not a launch checklist yet:
 2. Set service-role key, worker secret, and provider key in production.
 3. Push only with Kartikey's approval.
 4. Verify one real run end to end, with the task moving to in_review, never straight to done.
-5. In parallel, Mochi reviews and proposes the UI overhaul, and Boba researches market readiness (see below). Neither change ships without Kartikey's yes.
+5. In parallel, Mochi reviews and proposes the UI overhaul, and use Boba's delivered market readiness brief (see below) as the launch gate. Neither change ships without Kartikey's yes.
 
-**Market readiness - pending Boba research**
-Before Hivlet goes to market, Boba is to research what a complete company should have in all aspects, including at least: product completeness, backend and infrastructure reliability, security and privacy, legal and compliance, pricing and billing, onboarding and support, docs and changelog, and launch operations. No launch until Kartikey reviews that research and approves the gap list.
+**Market readiness - Boba brief delivered**
+Boba delivered the market readiness brief on 2026-10-31, verdict not market ready, covering 8 areas: product completeness, backend and infrastructure reliability, security and privacy, legal and compliance, pricing and billing, onboarding and support, docs and changelog, and launch operations. Launch gate, in order: live execution verified, invites and handoffs working, billing tested, legal pages live, monitoring and status page tested, and a rollback plan. No launch until Kartikey reviews that brief and approves the gap list.
 
 **Phase 2 (after live execution + market readiness review)**
 - [ ] Token/API cost dashboard per agent
