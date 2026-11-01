@@ -587,6 +587,18 @@ export function MarketingPage() {
                   <ArrowUpRight size={18} />
                 </button>
               </div>
+              <div className="hp-handoff-note">
+                <span className="hp-note-icon">
+                  <CornerDownRight size={18} />
+                </span>
+                <div>
+                  <strong>Context travels with the work.</strong>
+                  <span>Writer handed a draft to Reviewer.</span>
+                </div>
+                <span className="hp-note-check">
+                  <Check size={14} />
+                </span>
+              </div>
               <div className="hp-office-bottom">
                 <span>
                   <i />
@@ -594,18 +606,6 @@ export function MarketingPage() {
                 </span>
                 <span>Agents work. People decide.</span>
               </div>
-            </div>
-            <div className="hp-handoff-note">
-              <span className="hp-note-icon">
-                <CornerDownRight size={18} />
-              </span>
-              <div>
-                <strong>Context travels with the work.</strong>
-                <span>Writer handed a draft to Reviewer.</span>
-              </div>
-              <span className="hp-note-check">
-                <Check size={14} />
-              </span>
             </div>
             <div className="hp-office-margin-note">
               <span />

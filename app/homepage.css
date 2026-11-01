@@ -680,10 +680,6 @@
   background: var(--gold);
 }
 .hp-handoff-note {
-  position: absolute;
-  bottom: 18px;
-  left: 25px;
-  right: 22px;
   display: flex;
   align-items: center;
   gap: 11px;
@@ -691,7 +687,7 @@
   padding: 13px 15px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  animation: hp-note-float 6s ease-in-out 1.4s infinite;
+  margin: 0 20px 16px;
 }
 .hp-note-icon {
   width: 30px;
@@ -728,7 +724,7 @@
   border-radius: 50%;
 }
 .hp-office-margin-note {
-  margin-top: 59px;
+  margin-top: 12px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -3144,11 +3140,9 @@
     padding: 10px 16px;
   }
   .hp-handoff-note {
-    left: 13px;
-    right: 13px;
     padding: 12px;
     gap: 9px;
-    bottom: 13px;
+    margin: 0 16px 14px;
   }
   .hp-handoff-note strong {
     font-size: 12px;
@@ -3165,7 +3159,7 @@
     height: 17px;
   }
   .hp-office-margin-note {
-    margin-top: 57px;
+    margin-top: 12px;
     font-size: 12px;
   }
   .hp-capability-strip {
@@ -3674,10 +3668,9 @@
     display: none;
   }
   .hp-handoff-note {
-    left: 9px;
-    right: 9px;
     gap: 7px;
     padding: 11px 9px;
+    margin: 0 12px 12px;
   }
   .hp-handoff-note strong {
     font-size: 12px;
