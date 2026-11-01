@@ -1,6 +1,8 @@
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
-import { enqueueExecutionForApproval } from "@/lib/execution";
+import { enqueueExecutionForApproval, processNextExecution } from "@/lib/execution";
 import {
   PageHeader,
   EmptyState,
@@ -77,14 +79,75 @@ async function decideApproval(
   revalidatePath(`/workspace/${workspaceId}/approvals`);
 }
 
+// Leader-only manual worker trigger. Approving an approval only enqueues
+// a Queued row; nothing in the app auto-calls the worker endpoint, and
+// no cron runs live, so queued runs used to sit forever. This action
+// fills that gap without bypassing approval: it only processes rows
+// that are already queued, which are already approved payloads, and it
+// only records output, exactly like the worker endpoint does. It does
+// NOT spend, publish, or send anything beyond processNextExecution.
+// Fail closed: without the server-only service key it runs nothing and
+// reports that the worker is not configured, instead of failing silently.
+// Note: claim_next_execution claims the oldest queued row from the
+// shared queue, same as the worker endpoint, so a run may process a
+// queued execution from another workspace. The counts below report the
+// shared queue, not just this workspace.
+async function runQueuedExecutions(workspaceId: string) {
+  "use server";
+  const { membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const url =
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) {
+    redirect(
+      `/workspace/${workspaceId}/approvals?run_error=${encodeURIComponent("worker_not_configured")}`
+    );
+  }
+  const serviceClient = createClient(url, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  let processed = 0;
+  let succeeded = 0;
+  let failed = 0;
+  for (let i = 0; i < 5; i++) {
+    const outcome = await processNextExecution(
+      serviceClient,
+      `manual-worker-${Date.now()}`
+    );
+    if (!outcome.claimed) break;
+    processed++;
+    if (outcome.status === "succeeded") succeeded++;
+    else failed++;
+  }
+  revalidatePath(`/workspace/${workspaceId}/approvals`);
+  redirect(
+    `/workspace/${workspaceId}/approvals?run_processed=${processed}&run_succeeded=${succeeded}&run_failed=${failed}`
+  );
+}
+
 export default async function ApprovalsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
   const { supabase, workspace, membership } = await requireWorkspace(id);
   const leader = isLeader(membership);
+  const sp = (await searchParams) ?? {};
+  const runProcessed =
+    typeof sp.run_processed === "string" ? sp.run_processed : null;
+  const runSucceeded =
+    typeof sp.run_succeeded === "string" ? sp.run_succeeded : null;
+  const runFailed = typeof sp.run_failed === "string" ? sp.run_failed : null;
+  const runError = typeof sp.run_error === "string" ? sp.run_error : null;
+  const { count: queuedCount } = await supabase
+    .from("task_executions")
+    .select("id", { count: "exact", head: true })
+    .eq("workspace_id", id)
+    .eq("status", "queued");
 
   const { data: approvals } = await supabase
     .from("approvals")
@@ -130,6 +193,42 @@ export default async function ApprovalsPage({
         title="Approvals"
         description={`Sensitive actions in ${workspace.name} wait here. An agent never acts alone on money, publishing, or messages — a human signs off on the exact payload first.`}
       />
+
+      {runProcessed !== null && (
+        <p className="mt-8 rounded-xl border border-white/10 bg-coal px-4 py-3 text-sm text-ivory">
+          Worker run: processed {runProcessed}, succeeded {runSucceeded ?? 0},
+          failed {runFailed ?? 0} (oldest queued executions first, from the
+          shared queue).
+        </p>
+      )}
+      {runError === "worker_not_configured" && (
+        <p className="mt-8 rounded-xl border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+          Worker not configured: the server-only service key is unset, so no
+          queued execution was run. Set SUPABASE_SERVICE_ROLE_KEY in Vercel,
+          then try again.
+        </p>
+      )}
+
+      {leader && (
+        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Run queued executions now</h2>
+          <p className="mt-1 text-xs text-muted">
+            This workspace has {queuedCount ?? 0} queued execution
+            {(queuedCount ?? 0) === 1 ? "" : "s"}. Approving only enqueues a
+            run; this button runs up to 5 already-queued, already-approved
+            executions and records their output only. It never spends,
+            publishes, or sends anything.
+          </p>
+          <form action={runQueuedExecutions.bind(null, id)} className="mt-4">
+            <button
+              type="submit"
+              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+            >
+              Run queued executions now
+            </button>
+          </form>
+        </section>
+      )}
 
       <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
         <h2 className="font-semibold text-ivory">Request an approval</h2>

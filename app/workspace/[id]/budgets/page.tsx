@@ -31,8 +31,13 @@ export default async function BudgetsPage({ params }: { params: Promise<{ id: st
   type BudgetRow = { monthly_token_budget: number | null; monthly_cost_budget_usd: number | null; hard_stop: boolean };
   let budget: BudgetRow | null = null;
   let tableMissing = false;
-  const { data: b, error: bErr } = await supabase.from("workspace_budgets").select("monthly_token_budget, monthly_cost_budget_usd, hard_stop").eq("workspace_id", id).single();
-  if (bErr) tableMissing = true; else budget = b as unknown as BudgetRow;
+  // maybeSingle, not single: a workspace with no budget row yet is NOT a
+  // missing table. single() errors on zero rows (PGRST116), and the old
+  // code treated that as tableMissing, so workspaces without a budget
+  // wrongly showed "run migration 006" even after 006 had run live.
+  // Only a real query error (e.g. missing table, 42P01) sets tableMissing.
+  const { data: b, error: bErr } = await supabase.from("workspace_budgets").select("monthly_token_budget, monthly_cost_budget_usd, hard_stop").eq("workspace_id", id).maybeSingle();
+  if (bErr) tableMissing = true; else budget = b as unknown as BudgetRow | null;
   let usedTokens = 0; let usedCost = 0;
   const { data: past } = await supabase.from("task_executions").select("prompt_tokens, completion_tokens, cached_tokens, provider").eq("workspace_id", id).eq("is_demo", false);
   for (const r of (past ?? []) as { prompt_tokens: number | null; completion_tokens: number | null; cached_tokens: number | null; provider: string | null }[]) {
