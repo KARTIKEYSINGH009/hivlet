@@ -402,8 +402,8 @@
   display: flex;
   align-items: center;
   gap: 11px;
-  min-height: 69px;
-  padding: 14px 21px;
+  min-height: 60px;
+  padding: 10px 21px;
   border-bottom: 1px solid var(--line);
 }
 .hp-office-mark {
@@ -439,7 +439,7 @@
   letter-spacing: 1.6px;
 }
 .hp-office-content {
-  padding: 24px;
+  padding: 20px 24px;
 }
 .hp-office-greeting {
   position: relative;
@@ -466,9 +466,9 @@
 .hp-office-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin: 23px 0 20px;
+  margin: 16px 0 14px;
   border-bottom: 1px solid var(--line);
-  padding-bottom: 21px;
+  padding-bottom: 16px;
 }
 .hp-office-stats > div {
   display: flex;
@@ -525,7 +525,7 @@
   grid-template-columns: 36px 1fr auto;
   gap: 11px;
   align-items: center;
-  min-height: 65px;
+  min-height: 56px;
   border-bottom: 1px solid var(--line);
 }
 .hp-office-agent:last-child {
@@ -615,8 +615,8 @@
   align-items: center;
   text-align: left;
   width: 100%;
-  padding: 15px 13px !important;
-  margin-top: 14px;
+  padding: 12px 13px !important;
+  margin-top: 12px;
   border: 1px solid rgba(201, 168, 106, 0.3);
   border-radius: 8px;
   background: var(--raised);
