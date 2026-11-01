@@ -4,7 +4,7 @@
 // and never cares which provider an agent uses. Adapters are plain fetch
 // calls — no provider SDKs, no extra dependencies.
 
-export type AgentProvider = "openai" | "anthropic" | "gemini" | "custom";
+export type AgentProvider = "openai" | "anthropic" | "gemini" | "groq" | "custom";
 
 // What an agent row contributes to a run.
 export type AgentRef = {
@@ -39,6 +39,11 @@ export type AgentResult = {
   promptTokens: number | null;
   completionTokens: number | null;
   totalTokens: number | null;
+  // Cached prompt tokens, when the provider reports them. Null means
+  // the provider did not report cache use for this run, not 0% cached.
+  // Phase 1 only: this is captured for the cache-hit-rate section and
+  // for cost math in lib/cost.ts. It is never invented for demo runs.
+  cachedTokens: number | null;
 };
 
 export type ExecuteOptions = {
@@ -46,6 +51,8 @@ export type ExecuteOptions = {
   // never stored, never sent anywhere except the provider's API.
   apiKey?: string;
   timeoutMs?: number;
+  // Phase 2 output cap. Null means the adapter default applies.
+  maxTokens?: number;
 };
 
 export interface AgentAdapter {

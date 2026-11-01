@@ -24,12 +24,14 @@ import { AdapterError } from "./errors";
 import { openaiAdapter } from "./openai";
 import { anthropicAdapter } from "./anthropic";
 import { geminiAdapter } from "./gemini";
+import { groqAdapter } from "./groq";
 import { demoResult } from "./demo";
 
 const ADAPTERS: Record<string, AgentAdapter> = {
   openai: openaiAdapter,
   anthropic: anthropicAdapter,
   gemini: geminiAdapter,
+  groq: groqAdapter,
 };
 
 export function getAdapter(provider: AgentProvider): AgentAdapter {
@@ -55,6 +57,8 @@ export function resolveProviderKey(provider: AgentProvider): string | undefined 
       return (
         process.env.GEMINI_API_KEY ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY
       );
+    case "groq":
+      return process.env.GROQ_API_KEY;
     default:
       return undefined;
   }
@@ -65,6 +69,7 @@ export type ExecuteAgentContext = {
   approvedPayload?: Record<string, unknown>;
   demo?: boolean;
   timeoutMs?: number;
+  maxTokens?: number;
 };
 
 export async function executeAgent(
@@ -86,5 +91,6 @@ export async function executeAgent(
   return adapter.execute(input, {
     apiKey: resolveProviderKey(agent.provider),
     timeoutMs: context.timeoutMs,
+    maxTokens: context.maxTokens,
   });
 }

@@ -28,7 +28,7 @@ export const geminiAdapter: AgentAdapter = {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts }] }),
+        body: JSON.stringify({ contents: [{ parts }], ...(options.maxTokens ? { generationConfig: { maxOutputTokens: options.maxTokens } } : {}) }),
       },
       options.timeoutMs ?? 120_000
     );
@@ -41,6 +41,7 @@ export const geminiAdapter: AgentAdapter = {
         promptTokenCount?: number;
         candidatesTokenCount?: number;
         totalTokenCount?: number;
+        cachedContentTokenCount?: number;
       };
     };
     const output = (data.candidates?.[0]?.content?.parts ?? [])
@@ -56,6 +57,7 @@ export const geminiAdapter: AgentAdapter = {
       promptTokens: data.usageMetadata?.promptTokenCount ?? null,
       completionTokens: data.usageMetadata?.candidatesTokenCount ?? null,
       totalTokens: data.usageMetadata?.totalTokenCount ?? null,
+      cachedTokens: data.usageMetadata?.cachedContentTokenCount ?? null,
     };
   },
 };

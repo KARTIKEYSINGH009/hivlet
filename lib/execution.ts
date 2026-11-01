@@ -16,6 +16,10 @@
 //   * Errors stored in the DB are sanitized (see lib/agents/errors.ts).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { costForRun } from "@/lib/cost";
+import { routeTask, outputCapForTier } from "@/lib/routing";
+import { prunePrompt } from "@/lib/pruning";
+import { checkBudget } from "@/lib/budgets";
 import { executeAgent } from "@/lib/agents";
 import { demoResult } from "@/lib/agents/demo";
 import { sanitizeErrorMessage } from "@/lib/agents/errors";
@@ -35,6 +39,13 @@ export type ExecutionRow = {
   prompt_tokens: number | null;
   completion_tokens: number | null;
   total_tokens: number | null;
+  // Phase 1, migration 005 only. Null on older databases: the worker
+  // best-effort writes these and ignores a missing-column error, so
+  // the main token update above never breaks on an older database.
+  cached_tokens: number | null;
+  provider: string | null;
+  model: string | null;
+  estimated_cost_usd: number | null;
   claimed_at: string | null;
   claimed_by: string | null;
   attempts: number;
@@ -46,7 +57,7 @@ export type ExecutionRow = {
 type AgentRow = {
   id: string;
   name: string;
-  provider: "openai" | "anthropic" | "gemini" | "custom";
+  provider: "openai" | "anthropic" | "gemini" | "groq" | "custom";
   model: string | null;
   system_prompt: string | null;
   status: string;
@@ -226,10 +237,44 @@ export async function processNextExecution(
     patch: Record<string, unknown>,
     eventType: string
   ) => {
+    // Phase 1 cost fields are stripped from the main update so an older
+    // database without migration 005 never breaks the token update.
+    // They are written best-effort afterwards, and always recorded in
+    // the append-only audit summary below, which needs no new column.
+    const {
+      cachedTokens,
+      estimatedCostUsd,
+      provider,
+      model,
+      ...mainPatch
+    } = patch as Record<string, unknown> & {
+      cachedTokens?: number | null;
+      estimatedCostUsd?: number | null;
+      provider?: string | null;
+      model?: string | null;
+    };
     await serviceClient
       .from("task_executions")
-      .update({ ...patch, status, finished_at: new Date().toISOString() })
+      .update({ ...mainPatch, status, finished_at: new Date().toISOString() })
       .eq("id", execution.id);
+    if (
+      cachedTokens !== undefined ||
+      estimatedCostUsd !== undefined ||
+      provider !== undefined
+    ) {
+      const { error } = await serviceClient
+        .from("task_executions")
+        .update({
+          cached_tokens: cachedTokens ?? null,
+          provider: provider ?? null,
+          model: model ?? null,
+          estimated_cost_usd: estimatedCostUsd ?? null,
+        })
+        .eq("id", execution.id);
+      // Missing-column on an older database is expected until 005 runs.
+      // It must never fail the run: tokens are already saved above.
+      if (error) console.error("phase1 cost columns not saved:", error.message);
+    }
     if (task) {
       await logTaskEvent(serviceClient, {
         workspaceId: execution.workspace_id,
@@ -250,6 +295,25 @@ export async function processNextExecution(
         task_id: execution.task_id,
         agent_id: execution.agent_id,
         is_demo: execution.is_demo,
+        // Phase 1 cost logging, real runs only. Demo runs carry null
+        // tokens and null cost here too, never a fake cost.
+        prompt_tokens:
+          typeof mainPatch.prompt_tokens === "number"
+            ? mainPatch.prompt_tokens
+            : null,
+        completion_tokens:
+          typeof mainPatch.completion_tokens === "number"
+            ? mainPatch.completion_tokens
+            : null,
+        total_tokens:
+          typeof mainPatch.total_tokens === "number"
+            ? mainPatch.total_tokens
+            : null,
+        cached_tokens: cachedTokens ?? null,
+        provider: provider ?? null,
+        model: model ?? null,
+        estimated_cost_usd: estimatedCostUsd ?? null,
+        cost_is_placeholder: estimatedCostUsd !== undefined,
       },
     });
     return { claimed: true as const, executionId: execution.id, status };
@@ -268,42 +332,78 @@ export async function processNextExecution(
     return finish("failed", { error: reason }, "execution_failed");
   }
 
+  // Phase 2 budget check, before any provider call. Missing budget
+  // table = no budget set = run allowed. A hard stop blocks the run
+  // and fails the task, it never calls the provider.
+  try {
+    const { data: budget } = await serviceClient
+      .from("workspace_budgets")
+      .select("monthly_token_budget, monthly_cost_budget_usd, hard_stop")
+      .eq("workspace_id", execution.workspace_id)
+      .single();
+    if (budget) {
+      const { data: past } = await serviceClient
+        .from("task_executions")
+        .select("prompt_tokens, completion_tokens, cached_tokens, provider")
+        .eq("workspace_id", execution.workspace_id)
+        .eq("is_demo", false);
+      let usedTokens = 0; let usedCost = 0;
+      for (const r of (past ?? []) as { prompt_tokens: number | null; completion_tokens: number | null; cached_tokens: number | null; provider: string | null }[]) {
+        usedTokens += (r.prompt_tokens ?? 0) + (r.completion_tokens ?? 0);
+        usedCost += costForRun({ provider: r.provider, promptTokens: r.prompt_tokens, completionTokens: r.completion_tokens, cachedTokens: r.cached_tokens }) ?? 0;
+      }
+      const check = checkBudget({ budgetTokens: budget.monthly_token_budget ?? null, budgetCostUsd: budget.monthly_cost_budget_usd ? Number(budget.monthly_cost_budget_usd) : null, usedTokens, usedCostUsd: usedCost, hardStop: budget.hard_stop !== false });
+      if (!check.allowed) {
+        if (task && (task.status === "todo" || task.status === "in_progress")) {
+          await serviceClient.from("tasks").update({ status: "failed", failure_reason: check.reason }).eq("id", task.id);
+        }
+        return finish("failed", { error: check.reason }, "execution_failed");
+      }
+    }
+  } catch { /* budget table missing or unreadable: do not block on it */ }
+
   await serviceClient
     .from("agents")
     .update({ status: "working" })
     .eq("id", agent.id);
 
+  const rawPrompt = buildUserPrompt(execution.input, task);
+  const routed = routeTask({ provider: agent.provider, configuredModel: agent.model, title: task?.title ?? "", description: task?.description ?? null });
+  const routedAgent = { ...agent, model: routed.model };
+  const prunedPrompt = prunePrompt(rawPrompt);
+
   try {
     const result = execution.is_demo
       ? demoResult({
           agent: {
-            id: agent.id,
-            name: agent.name,
-            provider: agent.provider,
-            model: agent.model,
-            system_prompt: agent.system_prompt,
+            id: routedAgent.id,
+            name: routedAgent.name,
+            provider: routedAgent.provider,
+            model: routedAgent.model,
+            system_prompt: routedAgent.system_prompt,
           },
           task: task
             ? { id: task.id, title: task.title, description: task.description }
             : null,
-          userPrompt: buildUserPrompt(execution.input, task),
+          userPrompt: prunedPrompt,
           approvedPayload:
             (execution.input.payload as Record<string, unknown> | undefined) ??
             undefined,
         })
       : await executeAgent(
           {
-            id: agent.id,
-            name: agent.name,
-            provider: agent.provider,
-            model: agent.model,
-            system_prompt: agent.system_prompt,
+            id: routedAgent.id,
+            name: routedAgent.name,
+            provider: routedAgent.provider,
+            model: routedAgent.model,
+            system_prompt: routedAgent.system_prompt,
           },
           task
             ? { id: task.id, title: task.title, description: task.description }
             : null,
           {
-            userPrompt: buildUserPrompt(execution.input, task),
+            userPrompt: prunedPrompt,
+            maxTokens: outputCapForTier(routed.tier),
             approvedPayload:
               (execution.input.payload as Record<string, unknown> | undefined) ??
               undefined,
@@ -323,6 +423,17 @@ export async function processNextExecution(
       .from("agents")
       .update({ status: "idle" })
       .eq("id", agent.id);
+    // Phase 1: real runs only. Demo runs keep null tokens and null
+    // cost, exactly as demoResult() already returns. The cost is a
+    // placeholder-rate estimate (see lib/cost.ts), never a charge.
+    const estimatedCostUsd = execution.is_demo
+      ? null
+      : costForRun({
+          provider: result.provider,
+          promptTokens: result.promptTokens,
+          completionTokens: result.completionTokens,
+          cachedTokens: result.cachedTokens,
+        });
     return finish(
       "succeeded",
       {
@@ -330,6 +441,10 @@ export async function processNextExecution(
         prompt_tokens: result.promptTokens,
         completion_tokens: result.completionTokens,
         total_tokens: result.totalTokens,
+        cachedTokens: execution.is_demo ? null : result.cachedTokens,
+        estimatedCostUsd,
+        provider: result.provider,
+        model: result.model,
       },
       "execution_succeeded"
     );

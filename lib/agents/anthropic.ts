@@ -17,7 +17,7 @@ export const anthropicAdapter: AgentAdapter = {
     const model = input.agent.model ?? "claude-sonnet-4-5";
     const body: Record<string, unknown> = {
       model,
-      max_tokens: 4096,
+      max_tokens: options.maxTokens ?? 4096,
       messages: [{ role: "user", content: input.userPrompt }],
     };
     if (input.agent.system_prompt) {
@@ -42,7 +42,11 @@ export const anthropicAdapter: AgentAdapter = {
     }
     const data = (await res.json()) as {
       content?: { type?: string; text?: string }[];
-      usage?: { input_tokens?: number; output_tokens?: number };
+      usage?: {
+        input_tokens?: number;
+        output_tokens?: number;
+        cache_read_input_tokens?: number;
+      };
     };
     const output = (data.content ?? [])
       .filter((b) => b.type === "text" && typeof b.text === "string")
@@ -63,6 +67,7 @@ export const anthropicAdapter: AgentAdapter = {
         promptTokens !== null && completionTokens !== null
           ? promptTokens + completionTokens
           : null,
+      cachedTokens: data.usage?.cache_read_input_tokens ?? null,
     };
   },
 };

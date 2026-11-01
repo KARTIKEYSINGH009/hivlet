@@ -32,5 +32,6 @@ export function demoResult(input: AgentInput): AgentResult {
     promptTokens: null,
     completionTokens: null,
     totalTokens: null,
+    cachedTokens: null,
   };
 }

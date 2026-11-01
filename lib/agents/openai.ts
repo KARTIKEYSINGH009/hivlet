@@ -29,7 +29,7 @@ export const openaiAdapter: AgentAdapter = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ model, messages }),
+        body: JSON.stringify({ model, messages, ...(options.maxTokens ? { max_completion_tokens: options.maxTokens } : {}) }),
       },
       options.timeoutMs ?? 120_000
     );
@@ -42,6 +42,7 @@ export const openaiAdapter: AgentAdapter = {
         prompt_tokens?: number;
         completion_tokens?: number;
         total_tokens?: number;
+        prompt_tokens_details?: { cached_tokens?: number };
       };
     };
     const output = data.choices?.[0]?.message?.content;
@@ -55,6 +56,7 @@ export const openaiAdapter: AgentAdapter = {
       promptTokens: data.usage?.prompt_tokens ?? null,
       completionTokens: data.usage?.completion_tokens ?? null,
       totalTokens: data.usage?.total_tokens ?? null,
+      cachedTokens: data.usage?.prompt_tokens_details?.cached_tokens ?? null,
     };
   },
 };

@@ -169,6 +169,27 @@ export const SQUAD_TEMPLATES: SquadTemplate[] = [
   },
 ];
 
+export const AGENCY_TEMPLATE: SquadTemplate = {
+  key: "agency",
+  name: "Marketing agency squad",
+  description:
+    "Phase 6 niche template: researcher, writer, and reviewer for agency content and a client-ready report. Nothing is published by an agent; a human reviews first.",
+  agents: [
+    { name: "Agency Researcher", role: "Researcher", systemPrompt: "Research the client topic and hand a short, sourced summary to the writer. Do not publish anything." },
+    { name: "Agency Writer", role: "Writer", systemPrompt: "Draft client content from the research summary. Submit it for review; do not publish it yourself." },
+    { name: "Agency Reviewer", role: "Reviewer", systemPrompt: "Check the draft for accuracy and clarity, and list fixes. Prepare a short client report note; do not send it to a client yourself." },
+  ],
+  tasks: [
+    { title: "Research the client topic", description: "Gather facts and hand a short summary to the writer. Done means a summary with key facts is ready for review.", agentIndex: 0, priority: "high" },
+    { title: "Draft the client content", description: "Write a clear draft from the research summary. Done means a draft is ready in review format.", agentIndex: 1, priority: "medium" },
+    { title: "Review and prepare the client report", description: "Review the draft, list fixes, and prepare a client report note. Done means the report note is ready for the founder to send.", agentIndex: 2, priority: "medium" },
+  ],
+};
+
+// Agency template is appended to the list so the existing Agents page
+// template picker shows it without any other code change.
+SQUAD_TEMPLATES.push(AGENCY_TEMPLATE);
+
 export function getSquadTemplate(key: string): SquadTemplate | null {
   return SQUAD_TEMPLATES.find((t) => t.key === key) ?? null;
 }

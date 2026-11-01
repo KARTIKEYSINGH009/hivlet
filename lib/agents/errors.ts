@@ -28,7 +28,8 @@ export function sanitizeErrorMessage(message: string): string {
   return message
     .replace(/sk-[A-Za-z0-9-_]{10,}/g, "[redacted-key]")
     .replace(/sk-ant-[A-Za-z0-9-_]{10,}/g, "[redacted-key]")
-    .replace(/AIza[A-Za-z0-9-_]{20,}/g, "[redacted-key]");
+    .replace(/AIza[A-Za-z0-9-_]{20,}/g, "[redacted-key]")
+    .replace(/gsk_[A-Za-z0-9-_]{10,}/g, "[redacted-key]");
 }
 
 // fetch with a timeout that reports as AdapterError('timeout').

@@ -266,6 +266,7 @@ export default async function AgentsPage({
               <option value="openai">OpenAI</option>
               <option value="anthropic">Anthropic</option>
               <option value="gemini">Google Gemini</option>
+              <option value="groq">Groq</option>
               <option value="custom">Custom / other</option>
             </select>
             <input name="model" placeholder="Model (e.g. gpt-4o)" className={inputCls} />
@@ -443,6 +444,7 @@ export default async function AgentsPage({
                       <option value="openai">OpenAI</option>
                       <option value="anthropic">Anthropic</option>
                       <option value="gemini">Google Gemini</option>
+                      <option value="groq">Groq</option>
                       <option value="custom">Custom / other</option>
                     </select>
                     <input
