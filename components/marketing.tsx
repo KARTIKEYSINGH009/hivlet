@@ -1142,6 +1142,7 @@ export function MarketingPage() {
                 </span>
               </div>
               <div className="hp-flow-nodes">
+                <div className="hp-flow-line" aria-hidden="true" />
                 {[
                   { label: "The team", icon: UsersRound },
                   { label: "The work", icon: PenLine },
