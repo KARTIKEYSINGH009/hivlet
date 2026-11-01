@@ -108,6 +108,23 @@ drop policy if exists "members read workspaces" on workspaces;
 create policy "members read workspaces" on workspaces for select
   using (public.is_workspace_member(id));
 
+-- BUG FIX 2026-11-01, Workspaces "No workspaces yet" + create failure:
+-- an INSERT ... SELECT (RETURNING) in Postgres is filtered by the SELECT
+-- policy as well as the INSERT policy. Before the leader member row
+-- exists, is_workspace_member(id) is false, so the .select() after an
+-- insert returned no row, the app took its error path, and the member
+-- insert never ran, leaving an invisible orphan workspace row. This
+-- policy lets the creator read the row they just created, so the old
+-- two-step flow would also work. The app now uses the atomic RPC in
+-- migrations/004_create_workspace.sql as its primary path; this policy
+-- is belt and braces, not the only fix. Tradeoff, noted honestly: a
+-- creator can still read the workspace row itself after being removed
+-- as a member. All other tables in the workspace stay membership-gated,
+-- so no tasks, agents, reports, or approvals leak through this policy.
+drop policy if exists "creators read workspaces" on workspaces;
+create policy "creators read workspaces" on workspaces for select
+  using (created_by = auth.uid());
+
 drop policy if exists "users create workspaces" on workspaces;
 create policy "users create workspaces" on workspaces for insert
   with check (created_by = auth.uid());

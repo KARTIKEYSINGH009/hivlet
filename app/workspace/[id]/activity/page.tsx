@@ -1,4 +1,5 @@
 import { requireWorkspace } from "@/lib/workspace";
+import ActivityLive from "@/components/activity-live";
 import {
   PageHeader,
   EmptyState,
@@ -120,6 +121,7 @@ export default async function ActivityPage({
         title="Activity"
         description={`Everything that happened in ${workspace.name}, newest first. Execution history lives here until the dedicated execution log lands.`}
       />
+      <ActivityLive workspaceId={id} />
       <section className="mt-8 space-y-2">
         {feed.length === 0 && (
           <EmptyState
