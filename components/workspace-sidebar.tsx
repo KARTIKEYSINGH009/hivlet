@@ -32,6 +32,7 @@ export default function WorkspaceSidebar({
 
   const nav = [
     { href: `${base}/overview`, label: "Overview" },
+    { href: `${base}/team`, label: "Team" },
     { href: `${base}/tasks`, label: "Tasks" },
     { href: `${base}/handoffs`, label: "Handoffs" },
     { href: `${base}/agents`, label: "Agents" },
