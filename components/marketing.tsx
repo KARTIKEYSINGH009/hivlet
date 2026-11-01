@@ -23,7 +23,6 @@ import {
   FolderOpen,
   Layers3,
   LayoutList,
-  Pause,
   PenLine,
   Play,
   Plus,
@@ -340,7 +339,6 @@ function trapDialogFocus(event: KeyboardEvent<HTMLDialogElement>) {
 }
 
 export function MarketingPage() {
-  const [motionPaused, setMotionPaused] = useState(false);
   const [activeTab, setActiveTab] = useState<PreviewTab>("tasks");
   const [filter, setFilter] = useState<TaskState | "all">("all");
   const [decision, setDecision] = useState<Decision>("pending");
@@ -450,7 +448,7 @@ export function MarketingPage() {
   return (
     <div
       ref={rootRef}
-      className={`hp ${motionPaused ? "is-paused" : ""}`}
+      className="hp"
       id="top"
     >
       <a href="#homepage-content" className="hp-skip">
@@ -765,19 +763,6 @@ export function MarketingPage() {
                   INTERACTIVE PREVIEW
                 </span>
                 <div>
-                  <button
-                    type="button"
-                    className="hp-icon-button"
-                    aria-label={
-                      motionPaused
-                        ? "Resume ambient animations"
-                        : "Pause ambient animations"
-                    }
-                    aria-pressed={motionPaused}
-                    onClick={() => setMotionPaused(!motionPaused)}
-                  >
-                    {motionPaused ? <Play size={15} /> : <Pause size={15} />}
-                  </button>
                   <button
                     type="button"
                     className="hp-icon-button"
@@ -1430,14 +1415,6 @@ export function MarketingPage() {
         <div className="hp-footer-bottom">
           <span>© 2026 Hivlet. A little more together.</span>
           <span>UI preview · No live agents or external actions.</span>
-          <button
-            type="button"
-            aria-pressed={motionPaused}
-            onClick={() => setMotionPaused(!motionPaused)}
-          >
-            {motionPaused ? <Play size={12} /> : <Pause size={12} />}
-            {motionPaused ? "Resume motion" : "Pause motion"}
-          </button>
         </div>
       </footer>
 

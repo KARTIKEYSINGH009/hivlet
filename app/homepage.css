@@ -1966,16 +1966,6 @@
   color: var(--muted);
   font-size: 12px;
 }
-.hp-footer-bottom > button {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  min-height: 24px;
-  font-size: 12px;
-}
-.hp-footer-bottom > button:hover {
-  color: var(--gold-soft);
-}
 .hp-dialog {
   width: min(620px, calc(100% - 40px));
   max-width: 620px;
@@ -2123,17 +2113,6 @@
 .hp-motion-ready [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-}
-.hp.is-paused *,
-.hp.is-paused *::before,
-.hp.is-paused *::after {
-  animation-play-state: paused !important;
-}
-.hp.is-paused [data-reveal],
-.hp.is-paused .hp-intro {
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
 }
 @keyframes hp-rise {
   from {
@@ -2945,10 +2924,6 @@
     order: 3;
     width: 100%;
   }
-  .hp-footer-bottom > button {
-    min-height: 24px;
-    font-size: 12px;
-  }
 }
 @media (max-width: 599px) {
   .hp-signin {
@@ -3594,9 +3569,6 @@
     font-size: 12px;
     gap: 8px 10px;
   }
-  .hp-footer-bottom > button {
-    font-size: 12px;
-  }
   .hp-dialog {
     padding: 22px;
   }
@@ -3772,7 +3744,6 @@
     height: 44px;
   }
   .hp-task-filters > button,
-  .hp-footer-bottom > button,
   .hp-demo-add,
   .hp-final-demo,
   .hp-back-top {
@@ -3862,11 +3833,6 @@
 .hp-notification .hp-icon-button {
   margin-top: -6px;
   margin-right: -7px;
-}
-.hp.is-paused .hp-notification {
-  animation: none !important;
-  opacity: 1;
-  transform: none;
 }
 @media (max-width: 759px) {
   .hp-notification {
