@@ -39,6 +39,7 @@ export default function WorkspaceSidebar({
     { href: `${base}/usage`, label: "Usage" },
     { href: `${base}/reports`, label: "Reports" },
     { href: `${base}/approvals`, label: "Approvals" },
+    { href: `${base}/boss`, label: "Boss view" },
     { href: `${base}/activity`, label: "Activity" },
     { href: `${base}/onboarding`, label: "Get started" },
     { href: `${base}/settings`, label: "Settings" },

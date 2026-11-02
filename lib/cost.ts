@@ -9,9 +9,20 @@
 // warning, and the naive baseline below is an labelled estimate, not
 // a measured saving.
 //
-// Groq pick made 2026-11-01: Groq is now the first provider pick, but
-// its rate below is STILL a placeholder. Replace it with confirmed
-// Groq rates before any Groq cost is shown to a customer as a real price.
+// Groq rates verified 2026-11-02 from Groq's official Supported Models
+// page, https://console.groq.com/docs/models (fetched 2026-11-02):
+//   openai/gpt-oss-20b:  $0.075 input / $0.30 output per 1M tokens
+//   openai/gpt-oss-120b: $0.15 input / $0.60 output per 1M tokens
+//   qwen/qwen3.8-27b:    $0.80 input / $4.00 output per 1M tokens
+// Qwen3.8-27B is a PREVIEW model on that page: evaluation only, may be
+// discontinued at short notice, do not use it as a production default.
+// The official models table lists input/output only, so no cached-input
+// discount is applied here: cached tokens are priced at the input rate
+// until a cached rate is confirmed on the official page. That makes
+// cached Groq costs conservative, never understated by an invented
+// discount. Other providers below are STILL placeholders.
+// Groq pick made 2026-11-01, first provider. Re-check these rates
+// before quoting a customer, providers change them without notice.
 //
 // Units: USD per 1,000,000 tokens. Cached tokens are a subset of prompt
 // tokens: they are billed at the cached rate, the rest of the prompt at
@@ -28,7 +39,7 @@ export type PlaceholderRate = {
   inputPerMillionUsd: number;
   outputPerMillionUsd: number;
   cachedPerMillionUsd: number;
-  isPlaceholder: true;
+  isPlaceholder: boolean;
 };
 
 export const PLACEHOLDER_RATES: Record<CostProvider, PlaceholderRate> = {
@@ -58,11 +69,11 @@ export const PLACEHOLDER_RATES: Record<CostProvider, PlaceholderRate> = {
   },
   groq: {
     provider: "groq",
-    label: "Groq (placeholder, NOT an official Groq price)",
-    inputPerMillionUsd: 0.5,
-    outputPerMillionUsd: 1.0,
-    cachedPerMillionUsd: 0.25,
-    isPlaceholder: true,
+    label: "Groq, default model openai/gpt-oss-20b (verified 2026-11-02)",
+    inputPerMillionUsd: 0.075,
+    outputPerMillionUsd: 0.3,
+    cachedPerMillionUsd: 0.075,
+    isPlaceholder: false,
   },
   custom: {
     provider: "custom",
@@ -73,6 +84,24 @@ export const PLACEHOLDER_RATES: Record<CostProvider, PlaceholderRate> = {
     isPlaceholder: true,
   },
 };
+
+// Verified Groq model rates, USD per 1M tokens, from
+// https://console.groq.com/docs/models, fetched 2026-11-02.
+// Cached tokens are priced at the input rate here (see note above:
+// the official table lists input/output only).
+export const GROQ_MODEL_RATES: Record<string, { inputPerMillionUsd: number; outputPerMillionUsd: number; cachedPerMillionUsd: number; label: string }> = {
+  "openai/gpt-oss-20b": { inputPerMillionUsd: 0.075, outputPerMillionUsd: 0.3, cachedPerMillionUsd: 0.075, label: "Groq openai/gpt-oss-20b (verified 2026-11-02)" },
+  "openai/gpt-oss-120b": { inputPerMillionUsd: 0.15, outputPerMillionUsd: 0.6, cachedPerMillionUsd: 0.15, label: "Groq openai/gpt-oss-120b (verified 2026-11-02)" },
+  "qwen/qwen3.8-27b": { inputPerMillionUsd: 0.8, outputPerMillionUsd: 4.0, cachedPerMillionUsd: 0.8, label: "Groq qwen/qwen3.8-27b, PREVIEW, evaluation only (verified 2026-11-02)" },
+};
+
+export function rateForModel(provider: string | null | undefined, model: string | null | undefined): PlaceholderRate {
+  if (provider === "groq" && model && GROQ_MODEL_RATES[model]) {
+    const r = GROQ_MODEL_RATES[model];
+    return { provider: "groq", label: r.label, inputPerMillionUsd: r.inputPerMillionUsd, outputPerMillionUsd: r.outputPerMillionUsd, cachedPerMillionUsd: r.cachedPerMillionUsd, isPlaceholder: false };
+  }
+  return rateForProvider(provider);
+}
 
 export function rateForProvider(provider: string | null | undefined): PlaceholderRate {
   if (provider === "openai" || provider === "anthropic" || provider === "gemini" || provider === "groq") {
@@ -86,6 +115,7 @@ export function rateForProvider(provider: string | null | undefined): Placeholde
 // reported). A zero-token run costs 0, it is not null.
 export function costForRun(args: {
   provider: string | null | undefined;
+  model?: string | null;
   promptTokens: number | null;
   completionTokens: number | null;
   cachedTokens?: number | null;
@@ -93,7 +123,7 @@ export function costForRun(args: {
   const prompt = args.promptTokens ?? 0;
   const completion = args.completionTokens ?? 0;
   if (args.promptTokens === null && args.completionTokens === null) return null;
-  const rate = rateForProvider(args.provider);
+  const rate = rateForModel(args.provider, args.model);
   const cached = Math.max(
     0,
     Math.min(args.cachedTokens ?? 0, prompt)
@@ -135,17 +165,19 @@ export type CostEstimate = {
 
 export function estimateCost(args: {
   provider: string | null | undefined;
+  model?: string | null;
   promptTokens: number;
   completionTokens: number;
   cachedTokens?: number;
 }): CostEstimate {
   const estimated = costForRun({
     provider: args.provider,
+    model: args.model,
     promptTokens: args.promptTokens,
     completionTokens: args.completionTokens,
     cachedTokens: args.cachedTokens ?? 0,
   });
-  const rate = rateForProvider(args.provider);
+  const rate = rateForModel(args.provider, args.model);
   const naivePrompt = args.promptTokens * NAIVE_BASELINE.promptMultiplier;
   const naiveCostUsd =
     (naivePrompt * rate.inputPerMillionUsd * NAIVE_BASELINE.rateMultiplier +

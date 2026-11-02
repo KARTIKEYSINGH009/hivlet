@@ -192,29 +192,18 @@ function buildUserPrompt(
   return "Complete the assigned work and report the result.";
 }
 
-// ── Worker step: claim one execution and run it to completion ───────────────
-export async function processNextExecution(
+// ── Worker step: claim one execution and run it to completion ──
+// processClaimedExecution runs ONE already-claimed execution to
+// completion. It is shared by the global worker and by the
+// workspace-scoped manual worker, so both paths run identical logic.
+export async function processClaimedExecution(
   serviceClient: SupabaseClient,
-  workerId: string
+  workerId: string,
+  execution: ExecutionRow
 ): Promise<
   | { claimed: false }
   | { claimed: true; executionId: string; status: "succeeded" | "failed" }
 > {
-  const { data: claimedRaw, error: claimError } = await serviceClient.rpc(
-    "claim_next_execution",
-    { p_worker_id: workerId }
-  );
-  if (claimError) {
-    console.error("claim_next_execution failed:", claimError.message);
-    return { claimed: false };
-  }
-  const claimed = (Array.isArray(claimedRaw) ? claimedRaw[0] : claimedRaw) as
-    | ExecutionRow
-    | null
-    | undefined;
-  if (!claimed?.id) return { claimed: false };
-  const execution = claimed;
-
   const { data: agentData } = await serviceClient
     .from("agents")
     .select("id, name, provider, model, system_prompt, status")
@@ -430,6 +419,7 @@ export async function processNextExecution(
       ? null
       : costForRun({
           provider: result.provider,
+          model: result.model,
           promptTokens: result.promptTokens,
           completionTokens: result.completionTokens,
           cachedTokens: result.cachedTokens,
@@ -464,4 +454,101 @@ export async function processNextExecution(
       .eq("id", agent.id);
     return finish("failed", { error: message }, "execution_failed");
   }
+}
+
+export async function processNextExecution(
+  serviceClient: SupabaseClient,
+  workerId: string
+): Promise<
+  | { claimed: false }
+  | { claimed: true; executionId: string; status: "succeeded" | "failed" }
+> {
+  const { data: claimedRaw, error: claimError } = await serviceClient.rpc(
+    "claim_next_execution",
+    { p_worker_id: workerId }
+  );
+  if (claimError) {
+    console.error("claim_next_execution failed:", claimError.message);
+    return { claimed: false };
+  }
+  const claimed = (Array.isArray(claimedRaw) ? claimedRaw[0] : claimedRaw) as
+    | ExecutionRow
+    | null
+    | undefined;
+  if (!claimed?.id) return { claimed: false };
+  return processClaimedExecution(serviceClient, workerId, claimed);
+}
+
+// Workspace-scoped worker step, used by the leader-only Run button.
+// It claims ONLY queued executions belonging to this workspace, one
+// at a time, with an atomic per-row claim (update ... where id and
+// workspace_id and status='queued'), so a leader can never run another
+// workspace's queued execution, and two workers can never claim the
+// same row. No database function change is needed: the claim is done
+// in code with the service client, and stale running claims in this
+// workspace are recovered with the same 10-minute / 3-attempt rule
+// as claim_next_execution, scoped to this workspace only.
+// The global worker endpoint still uses claim_next_execution, which
+// is a trusted server-side worker by design, not a per-workspace
+// leader action, so it is left unchanged.
+export async function processNextExecutionForWorkspace(
+  serviceClient: SupabaseClient,
+  workerId: string,
+  workspaceId: string
+): Promise<
+  | { claimed: false }
+  | { claimed: true; executionId: string; status: "succeeded" | "failed" }
+> {
+  await serviceClient
+    .from("task_executions")
+    .update({
+      status: "failed",
+      error: "Execution abandoned after repeated attempts (stale worker claim).",
+      finished_at: new Date().toISOString(),
+    })
+    .eq("workspace_id", workspaceId)
+    .eq("status", "running")
+    .lt("claimed_at", new Date(Date.now() - 10 * 60 * 1000).toISOString())
+    .gte("attempts", 3);
+  await serviceClient
+    .from("task_executions")
+    .update({ status: "queued", claimed_at: null, claimed_by: null })
+    .eq("workspace_id", workspaceId)
+    .eq("status", "running")
+    .lt("claimed_at", new Date(Date.now() - 10 * 60 * 1000).toISOString())
+    .lt("attempts", 3);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const { data: queued } = await serviceClient
+      .from("task_executions")
+      .select("id")
+      .eq("workspace_id", workspaceId)
+      .eq("status", "queued")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .single();
+    if (!queued?.id) return { claimed: false };
+    const { data: claimedRow } = await serviceClient
+      .from("task_executions")
+      .update({
+        status: "running",
+        claimed_at: new Date().toISOString(),
+        claimed_by: workerId,
+        started_at: new Date().toISOString(),
+      })
+      .eq("id", queued.id)
+      .eq("workspace_id", workspaceId)
+      .eq("status", "queued")
+      .select("*")
+      .single();
+    if (!claimedRow?.id) continue; // another worker claimed it first, try the next one
+    // attempts is incremented by a separate scoped update so the
+    // claim above stays a single atomic row transition.
+    await serviceClient
+      .from("task_executions")
+      .update({ attempts: (claimedRow as ExecutionRow).attempts + 1 })
+      .eq("id", claimedRow.id)
+      .eq("workspace_id", workspaceId);
+    return processClaimedExecution(serviceClient, workerId, claimedRow as ExecutionRow);
+  }
+  return { claimed: false };
 }

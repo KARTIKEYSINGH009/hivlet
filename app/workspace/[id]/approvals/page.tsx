@@ -2,7 +2,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
-import { enqueueExecutionForApproval, processNextExecution } from "@/lib/execution";
+import { enqueueExecutionForApproval, processNextExecutionForWorkspace } from "@/lib/execution";
 import {
   PageHeader,
   EmptyState,
@@ -88,10 +88,10 @@ async function decideApproval(
 // NOT spend, publish, or send anything beyond processNextExecution.
 // Fail closed: without the server-only service key it runs nothing and
 // reports that the worker is not configured, instead of failing silently.
-// Note: claim_next_execution claims the oldest queued row from the
-// shared queue, same as the worker endpoint, so a run may process a
-// queued execution from another workspace. The counts below report the
-// shared queue, not just this workspace.
+// Workspace-scoped only: this button processes queued executions
+// belonging to THIS workspace, never another workspace's queued row.
+// The global worker endpoint is a trusted server-side worker and
+// still uses the shared claim, by design.
 async function runQueuedExecutions(workspaceId: string) {
   "use server";
   const { membership } = await requireWorkspace(workspaceId);
@@ -111,9 +111,10 @@ async function runQueuedExecutions(workspaceId: string) {
   let succeeded = 0;
   let failed = 0;
   for (let i = 0; i < 5; i++) {
-    const outcome = await processNextExecution(
+    const outcome = await processNextExecutionForWorkspace(
       serviceClient,
-      `manual-worker-${Date.now()}`
+      `manual-worker-${Date.now()}`,
+      workspaceId
     );
     if (!outcome.claimed) break;
     processed++;
@@ -197,8 +198,8 @@ export default async function ApprovalsPage({
       {runProcessed !== null && (
         <p className="mt-8 rounded-xl border border-white/10 bg-coal px-4 py-3 text-sm text-ivory">
           Worker run: processed {runProcessed}, succeeded {runSucceeded ?? 0},
-          failed {runFailed ?? 0} (oldest queued executions first, from the
-          shared queue).
+          failed {runFailed ?? 0} (oldest queued executions first, this
+          workspace only).
         </p>
       )}
       {runError === "worker_not_configured" && (

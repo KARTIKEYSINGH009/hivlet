@@ -1,7 +1,7 @@
 import { requireWorkspace } from "@/lib/workspace";
 import { PageHeader, MetricCard } from "@/components/workspace-ui";
 import { costForRun, formatUsd } from "@/lib/cost";
-import { PRICING_SHAPE, formatInrPlaceholder, PLACEHOLDER_INR_PER_USD } from "@/lib/pricing";
+import { PRICING_SHAPE, INR_PRICING_STATUS } from "@/lib/pricing";
 
 // Phase 6 pricing display, no price set, no charge, no tier created.
 // Shows this workspace's placeholder cost in USD and in rupees using
@@ -22,8 +22,8 @@ export default async function PricingPage({ params }: { params: Promise<{ id: st
         <p className="mt-2 text-sm text-muted">This is a recommendation for Kartikey to decide, not a price list. Do not quote it to a customer as a price.</p>
       </section>
       <section className="mt-8 grid gap-4 sm:grid-cols-2">
-        <MetricCard label="This workspace, estimated cost, USD" value={formatUsd(cost)} hint="Placeholder rates, real runs only, demo excluded." />
-        <MetricCard label="Same cost, rupees, placeholder FX" value={formatInrPlaceholder(cost)} hint={`Placeholder FX: Rs ${PLACEHOLDER_INR_PER_USD} per USD. Replace with a real, dated rate before quoting rupees.`} />
+        <MetricCard label="This workspace, estimated cost, USD" value={formatUsd(cost)} hint="Groq rates verified 2026-11-02, other providers still placeholder, real runs only, demo excluded." />
+        <MetricCard label="Same cost, rupees" value="—" hint={INR_PRICING_STATUS} />
       </section>
       <p className="mt-3 text-xs text-muted">Land and expand, in product: one team, one painful workflow, one template, first visible win on day one, then invite a second team and share reporting. Expansion is tracked on the ROI page, not by a sales promise here.</p>
     </div>

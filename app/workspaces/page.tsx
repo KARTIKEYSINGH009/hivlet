@@ -60,6 +60,21 @@ async function createWorkspace(formData: FormData) {
   redirect("/workspaces");
 }
 
+// Server Action: join a workspace by invite code.
+//
+// This only redirects to the existing /join/<code> route, which runs
+// join_workspace_by_code and redirects back to /workspaces on success
+// or /workspaces?error=invite on failure. No DB call happens here, so
+// no database internals can leak through this form, and the existing
+// createWorkspace action above is untouched.
+async function joinWithCode(formData: FormData) {
+  "use server";
+
+  const code = String(formData.get("code") ?? "").trim();
+  if (!code) redirect("/workspaces?error=invite");
+  redirect(`/join/${encodeURIComponent(code)}`);
+}
+
 export default async function WorkspacesPage({
   searchParams,
 }: WorkspacesPageProps) {
@@ -135,6 +150,34 @@ export default async function WorkspacesPage({
             className="rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gold-soft"
           >
             Create workspace
+          </button>
+        </form>
+      </section>
+
+      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-6">
+        <h2 className="font-semibold">Join with a code</h2>
+        <p className="mt-1 text-sm text-muted">
+          Got an invite code from a teammate? Enter it here to join their
+          workspace.
+        </p>
+        <form action={joinWithCode} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="flex-1">
+            <label htmlFor="code" className="text-sm font-medium">
+              Invite code
+            </label>
+            <input
+              id="code"
+              name="code"
+              required
+              placeholder="e.g. a1b2c3d4"
+              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+            />
+          </div>
+          <button
+            type="submit"
+            className="shrink-0 rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gold-soft"
+          >
+            Join
           </button>
         </form>
       </section>

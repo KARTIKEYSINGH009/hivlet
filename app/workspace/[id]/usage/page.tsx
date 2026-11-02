@@ -153,6 +153,7 @@ export default async function UsagePage({
     const provider = r.provider ?? agent?.provider ?? null;
     const computed = costForRun({
       provider,
+      model: r.model ?? agent?.model ?? null,
       promptTokens: r.prompt_tokens,
       completionTokens: r.completion_tokens,
       cachedTokens: r.cached_tokens,

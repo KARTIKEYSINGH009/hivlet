@@ -115,12 +115,20 @@ export default async function DashboardPage() {
         title="Dashboard"
         description="Your AI workforce across every workspace you belong to."
         actions={
-          <Link
-            href="/workspaces"
-            className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
-          >
-            Manage workspaces
-          </Link>
+          <>
+            <Link
+              href="/my-work"
+              className="rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-ivory hover:border-gold"
+            >
+              My work
+            </Link>
+            <Link
+              href="/workspaces"
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+            >
+              Manage workspaces
+            </Link>
+          </>
         }
       />
 
