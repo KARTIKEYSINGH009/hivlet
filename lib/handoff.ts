@@ -81,12 +81,19 @@ export function buildHandoffPacket(args: {
 // Enforce every cap. Truncation order: drop facts/questions first,
 // then shorten the summary, so the summary (the most useful part)
 // survives longest. The result always fits HANDOFF_CHAR_BUDGET.
+// FIXED 2026-11-22: this used to assume a complete packet. But the
+// migration 011 default for tasks.handoff_packet is '{}', so every
+// task read back an empty object, firstSentences(undefined) threw
+// "Cannot read properties of undefined (reading 'split')", and the
+// whole Approvals page crashed (digest 3427751077) before any Groq
+// call. Coerce missing fields to their empty defaults so a partial
+// packet can never crash a run.
 export function compactHandoffPacket(packet: HandoffPacket): HandoffPacket {
   const compact: HandoffPacket = {
-    summary: firstSentences(packet.summary, MAX_SUMMARY_SENTENCES),
-    artifacts: packet.artifacts.slice(0, MAX_ARTIFACTS),
-    keyFacts: packet.keyFacts.slice(0, MAX_KEY_FACTS),
-    openQuestions: packet.openQuestions.slice(0, MAX_OPEN_QUESTIONS),
+    summary: firstSentences(packet.summary ?? "", MAX_SUMMARY_SENTENCES),
+    artifacts: (packet.artifacts ?? []).slice(0, MAX_ARTIFACTS),
+    keyFacts: (packet.keyFacts ?? []).slice(0, MAX_KEY_FACTS),
+    openQuestions: (packet.openQuestions ?? []).slice(0, MAX_OPEN_QUESTIONS),
   };
   let rendered = renderHandoffPacket(compact);
   if (rendered.length <= HANDOFF_CHAR_BUDGET) return compact;
@@ -105,17 +112,35 @@ export function compactHandoffPacket(packet: HandoffPacket): HandoffPacket {
 }
 
 export function renderHandoffPacket(packet: HandoffPacket): string {
-  const lines = [`Summary: ${packet.summary}`];
-  if (packet.artifacts.length) {
-    lines.push(`Artifacts: ${packet.artifacts.join(", ")}`);
+  const lines = [`Summary: ${packet.summary ?? ""}`];
+  if ((packet.artifacts ?? []).length) {
+    lines.push(`Artifacts: ${(packet.artifacts ?? []).join(", ")}`);
   }
-  if (packet.keyFacts.length) {
-    lines.push(`Key facts:\n${packet.keyFacts.map((f) => `- ${f}`).join("\n")}`);
+  if ((packet.keyFacts ?? []).length) {
+    lines.push(`Key facts:\n${(packet.keyFacts ?? []).map((f) => `- ${f}`).join("\n")}`);
   }
-  if (packet.openQuestions.length) {
-    lines.push(`Open questions:\n${packet.openQuestions.map((q) => `- ${q}`).join("\n")}`);
+  if ((packet.openQuestions ?? []).length) {
+    lines.push(`Open questions:\n${(packet.openQuestions ?? []).map((q) => `- ${q}`).join("\n")}`);
   }
   return lines.join("\n");
+}
+
+// A stored packet is only usable when it has the shape
+// compactHandoffPacket produces. The migration 011 default '{}' and
+// any hand-written row fail this check and are treated as "no packet",
+// never passed to compactHandoffPacket unvalidated.
+function normalizePacket(raw: unknown): HandoffPacket | null {
+  if (!raw || typeof raw !== "object") return null;
+  const p = raw as Partial<HandoffPacket>;
+  if (typeof p.summary !== "string") return null;
+  const arr = (v: unknown): string[] =>
+    Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+  return {
+    summary: p.summary,
+    artifacts: arr(p.artifacts),
+    keyFacts: arr(p.keyFacts),
+    openQuestions: arr(p.openQuestions),
+  };
 }
 
 // ── Storage (migration 011 columns, best-effort) ────────────────────────────
@@ -161,7 +186,7 @@ export async function readTaskHandoff(
   const raw = row?.handoff_packet;
   const packet =
     raw && typeof raw === "object"
-      ? (raw as HandoffPacket)
+      ? normalizePacket(raw)
       : typeof raw === "string"
         ? safeParsePacket(raw)
         : null;
@@ -174,9 +199,7 @@ export async function readTaskHandoff(
 
 function safeParsePacket(raw: string): HandoffPacket | null {
   try {
-    const parsed = JSON.parse(raw) as HandoffPacket;
-    if (typeof parsed?.summary === "string") return parsed;
-    return null;
+    return normalizePacket(JSON.parse(raw) as unknown);
   } catch {
     return null;
   }
