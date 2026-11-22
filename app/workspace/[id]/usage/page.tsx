@@ -46,6 +46,10 @@ type ExecutionRow = {
   completion_tokens: number | null;
   total_tokens: number | null;
   cached_tokens: number | null;
+  // Dedup cache hits (migration 011): a hit run records 0 new tokens
+  // and cached_tokens null, so the token-based rate below can never
+  // see it. is_cached is how the Usage page counts those hits.
+  is_cached: boolean | null;
   provider: string | null;
   model: string | null;
   estimated_cost_usd: number | null;
@@ -98,35 +102,54 @@ export default async function UsagePage({
     const full = await supabase
       .from("task_executions")
       .select(
-        "agent_id, task_id, status, is_demo, prompt_tokens, completion_tokens, total_tokens, cached_tokens, provider, model, estimated_cost_usd"
+        "agent_id, task_id, status, is_demo, prompt_tokens, completion_tokens, total_tokens, cached_tokens, is_cached, provider, model, estimated_cost_usd"
       )
       .eq("workspace_id", id);
     if (full.error) {
-      // Older database without migration 005: fall back to old columns.
-      const old = await supabase
+      // Database with migration 005 but without 011 has no is_cached
+      // column: retry without it instead of dropping to pre-005 columns.
+      const mid = await supabase
         .from("task_executions")
         .select(
-          "agent_id, task_id, status, is_demo, prompt_tokens, completion_tokens, total_tokens"
+          "agent_id, task_id, status, is_demo, prompt_tokens, completion_tokens, total_tokens, cached_tokens, provider, model, estimated_cost_usd"
         )
         .eq("workspace_id", id);
-      if (old.error) {
-        tableMissing = true;
-      } else {
-        executions = ((old.data ?? []) as Record<string, unknown>[]).map(
+      if (!mid.error) {
+        hasCostColumns = true;
+        executions = ((mid.data ?? []) as Record<string, unknown>[]).map(
           (r) => ({
-            agent_id: r.agent_id as string,
-            task_id: (r.task_id as string | null) ?? null,
-            status: r.status as string,
-            is_demo: r.is_demo as boolean,
-            prompt_tokens: (r.prompt_tokens as number | null) ?? null,
-            completion_tokens: (r.completion_tokens as number | null) ?? null,
-            total_tokens: (r.total_tokens as number | null) ?? null,
-            cached_tokens: null,
-            provider: null,
-            model: null,
-            estimated_cost_usd: null,
+            ...(r as unknown as ExecutionRow),
+            is_cached: null,
           })
         );
+      } else {
+        // Older database without migration 005: fall back to old columns.
+        const old = await supabase
+          .from("task_executions")
+          .select(
+            "agent_id, task_id, status, is_demo, prompt_tokens, completion_tokens, total_tokens"
+          )
+          .eq("workspace_id", id);
+        if (old.error) {
+          tableMissing = true;
+        } else {
+          executions = ((old.data ?? []) as Record<string, unknown>[]).map(
+            (r) => ({
+              agent_id: r.agent_id as string,
+              task_id: (r.task_id as string | null) ?? null,
+              status: r.status as string,
+              is_demo: r.is_demo as boolean,
+              prompt_tokens: (r.prompt_tokens as number | null) ?? null,
+              completion_tokens: (r.completion_tokens as number | null) ?? null,
+              total_tokens: (r.total_tokens as number | null) ?? null,
+              cached_tokens: null,
+              is_cached: null,
+              provider: null,
+              model: null,
+              estimated_cost_usd: null,
+            })
+          );
+        }
       }
     } else {
       hasCostColumns = true;
@@ -181,6 +204,10 @@ export default async function UsagePage({
     promptTokens: measuredPrompt,
     measured: hasCostColumns && measuredRuns.length > 0,
   });
+  // Dedup hits (migration 011, is_cached): served from Hivlet's own
+  // cache with 0 new tokens. They carry no token counts, so they are
+  // counted by runs here, never blended into the token-based rate.
+  const dedupHits = real.filter((r) => r.is_cached === true).length;
 
   const perAgent = agentList.map((a) => {
     const rows = real.filter((x) => x.agent_id === a.id);
@@ -327,9 +354,20 @@ export default async function UsagePage({
               </p>
             ) : hitRate === null ? (
               <p className="mt-2 text-sm text-muted">
-                Not measured yet. No real run in this workspace has reported
-                cached tokens so far. This is not 0% cached, it is no cache
-                report yet.
+                {dedupHits > 0 ? (
+                  <>
+                    {dedupHits} run{dedupHits === 1 ? "" : "s"} served from
+                    Hivlet&apos;s dedup cache with 0 new tokens. No run has
+                    reported provider cached tokens yet, so there is no
+                    token-based rate to show.
+                  </>
+                ) : (
+                  <>
+                    Not measured yet. No real run in this workspace has
+                    reported cached tokens so far. This is not 0% cached, it
+                    is no cache report yet.
+                  </>
+                )}
               </p>
             ) : (
               <p className="mt-2 text-sm text-muted">
@@ -339,6 +377,14 @@ export default async function UsagePage({
                 {measuredRuns.length === 1 ? "" : "s"} that reported cache
                 use). This rate is not blended into any cost or saving
                 number above.
+                {dedupHits > 0 && (
+                  <>
+                    {" "}
+                    Separately, {dedupHits} run
+                    {dedupHits === 1 ? "" : "s"} served from Hivlet&apos;s
+                    dedup cache with 0 new tokens.
+                  </>
+                )}
               </p>
             )}
           </section>
