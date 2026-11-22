@@ -3,6 +3,15 @@ import { revalidatePath } from "next/cache";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
 import { isValidWebhookUrl } from "@/lib/verification";
 import { getWorkspaceWebhookUrl } from "@/lib/approval-webhook";
+// Billing (migration 012, DRAFT): best-effort read; a workspace with
+// no billing row shows as Free with 100 runs, exactly as today.
+import {
+  FREE_TIER,
+  PLAN_LIMITS,
+  getWorkspaceBilling,
+  runsRemaining,
+} from "@/lib/billing";
+import BillingUpgradeButton from "@/components/billing-upgrade-button";
 import CopyInviteLink from "@/components/copy-invite-link";
 import DeleteWorkspaceForm from "@/components/delete-workspace-form";
 import {
@@ -107,6 +116,12 @@ export default async function WorkspaceSettingsPage({
   // Best-effort read: null when the pending column does not exist yet
   // or no URL is configured.
   const webhookUrl = leader ? await getWorkspaceWebhookUrl(supabase, id) : null;
+
+  // Billing, best-effort: null until migration 012 runs live or until
+  // a subscription creates a row. Null shows as Free / 100 runs.
+  const billing = leader ? await getWorkspaceBilling(supabase, id) : null;
+  const billingView = billing ?? { ...FREE_TIER, workspace_id: id };
+  const remaining = runsRemaining(billing);
 
   const { data: members } = await supabase
     .from("workspace_members")
@@ -225,6 +240,94 @@ export default async function WorkspaceSettingsPage({
         <p className="mt-6 text-sm text-muted">
           Only workspace leaders can edit settings. You are a member.
         </p>
+      )}
+
+      {leader && (
+        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Billing</h2>
+          <p className="mt-1 text-sm text-muted">
+            DRAFT: billing is not live yet, no payment is taken, and
+            these prices are a proposal. A verified run counts only when
+            a real run completes; failed runs and cache hits do not
+            count.
+          </p>
+          <div className="mt-3 space-y-1 text-sm text-muted">
+            <p>
+              Plan:{" "}
+              <span className="font-medium capitalize text-ivory">
+                {billingView.tier}
+              </span>
+              {billingView.status && billingView.status !== billingView.tier && (
+                <span> ({billingView.status})</span>
+              )}
+            </p>
+            <p>
+              Verified runs this cycle:{" "}
+              <span className="font-medium text-ivory">
+                {billingView.runs_used_this_cycle} / {billingView.monthly_run_limit}
+              </span>
+              {remaining !== null && (
+                <span> ({remaining} remaining)</span>
+              )}
+              {billingView.extra_runs_balance > 0 && (
+                <span>
+                  {" "}
+                  + {billingView.extra_runs_balance} top-up runs
+                </span>
+              )}
+            </p>
+            <p>
+              Member limit:{" "}
+              <span className="font-medium text-ivory">
+                {memberList.length} / {billingView.max_members}
+              </span>
+            </p>
+            {billingView.current_period_end && (
+              <p>
+                Current period ends:{" "}
+                <span className="font-medium text-ivory">
+                  {new Date(billingView.current_period_end).toLocaleDateString()}
+                </span>
+              </p>
+            )}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            {billingView.tier === "free" && (
+              <>
+                <BillingUpgradeButton
+                  workspaceId={id}
+                  tier="pro"
+                  label="Upgrade to Pro — $19 / ₹999 per month (draft)"
+                />
+                <BillingUpgradeButton
+                  workspaceId={id}
+                  tier="team"
+                  label="Upgrade to Team — $49 / ₹2,999 per month (draft)"
+                />
+              </>
+            )}
+            {billingView.tier === "pro" && (
+              <BillingUpgradeButton
+                workspaceId={id}
+                tier="team"
+                label="Upgrade to Team — $49 / ₹2,999 per month (draft)"
+              />
+            )}
+            <a
+              href="/pricing"
+              className="text-sm font-medium text-gold-soft hover:underline"
+            >
+              See all plans
+            </a>
+          </div>
+          <p className="mt-3 text-xs text-muted">
+            Limits: Free {PLAN_LIMITS.free.monthlyRuns} runs, Pro{" "}
+            {PLAN_LIMITS.pro.monthlyRuns.toLocaleString()} runs, Team{" "}
+            {PLAN_LIMITS.team.monthlyRuns.toLocaleString()} runs per
+            month. Workspaces without a billing record keep running as
+            today with no cap.
+          </p>
+        </section>
       )}
 
       {leader && (

@@ -1374,7 +1374,10 @@ export function MarketingPage() {
           </div>
           <div className="hp-final-bottom">
             <span>Made for small teams with big things to do.</span>
-            <span>Early access · Pricing is not set yet.</span>
+            <span>
+              Early access ·{" "}
+              <a href="/pricing">Pricing is a draft, billing is not live yet.</a>
+            </span>
           </div>
         </section>
       </main>
@@ -1401,6 +1404,8 @@ export function MarketingPage() {
             <span className="hp-footer-heading">Resources</span>
             <a href="/docs">Docs</a>
             <a href="/changelog">Changelog</a>
+            <a href="/pricing">Pricing</a>
+            <a href="/contact">Contact</a>
             <a href="/legal/terms">Terms</a>
             <a href="/legal/privacy">Privacy</a>
           </nav>

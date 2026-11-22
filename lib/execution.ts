@@ -42,6 +42,11 @@ import {
 import { taskExpectsJson } from "@/lib/validation";
 import { verifyAgentOutput } from "@/lib/verification";
 import { checkDailyBudgetAndPause, executeWithRouter } from "@/lib/llm-worker";
+// Billing quota (migration 012, lib/billing.ts): a verified run is
+// counted only after a real run completes. Demo runs and dedup cache
+// hits never consume quota. A workspace with no billing row is
+// treated as quota available, so nothing breaks until 012 runs live.
+import { checkRunQuota, consumeVerifiedRun } from "@/lib/billing";
 
 export type ExecutionRow = {
   id: string;
@@ -430,6 +435,27 @@ export async function processClaimedExecution(
     }
   } catch { /* daily budget unreadable: do not block on it */ }
 
+  // Billing quota pre-check (migration 012), before any provider call.
+  // Demo runs skip it: they never consume quota and are never blocked
+  // by it. A workspace with no billing row passes (quota available).
+  // When the quota is exhausted the run fails before any provider call
+  // and the task carries the 402-style reason, visible in the UI.
+  if (!execution.is_demo) {
+    try {
+      const quota = await checkRunQuota(serviceClient, execution.workspace_id);
+      if (!quota.allowed) {
+        const reason = quota.reason ?? "Run quota exceeded.";
+        if (task && (task.status === "todo" || task.status === "in_progress")) {
+          await serviceClient
+            .from("tasks")
+            .update({ status: "failed", failure_reason: reason })
+            .eq("id", task.id);
+        }
+        return finish("failed", { error: reason }, "execution_failed");
+      }
+    } catch { /* quota unreadable: do not block on it */ }
+  }
+
   await serviceClient
     .from("agents")
     .update({ status: "working" })
@@ -489,7 +515,9 @@ export async function processClaimedExecution(
     });
     if (cached.hit) {
       // Cache hit: the task still moves to in_review (never straight
-      // to done) and a human still accepts the work.
+      // to done) and a human still accepts the work. A cache hit costs
+      // $0 and 0 new tokens, so it does NOT consume a verified run
+      // from the billing quota (see lib/billing.ts).
       if (task && (task.status === "todo" || task.status === "in_progress")) {
         await serviceClient
           .from("tasks")
@@ -629,6 +657,33 @@ export async function processClaimedExecution(
           completionTokens: result.completionTokens,
           cachedTokens: result.cachedTokens,
         });
+    // Billing quota consume (migration 012): only after a REAL run
+    // completes. Demo runs never consume. If the RPC returns false,
+    // the quota ran out between the pre-check and now (a race with a
+    // concurrent run): the work already completed, so the run still
+    // succeeds and the overage is recorded in the audit log instead
+    // of failing the finished run.
+    if (!execution.is_demo) {
+      const consumed = await consumeVerifiedRun(
+        serviceClient,
+        execution.workspace_id
+      );
+      if (!consumed) {
+        await logAudit(serviceClient, {
+          workspaceId: execution.workspace_id,
+          actorType: "worker",
+          actorId: workerId,
+          action: "run_quota_exceeded_after_completion",
+          targetType: "task_execution",
+          targetId: execution.id,
+          summary: {
+            task_id: execution.task_id,
+            agent_id: execution.agent_id,
+            note: "Run completed but quota was exhausted by a concurrent run; output kept, no extra run consumed.",
+          },
+        });
+      }
+    }
     return finish(
       "succeeded",
       {

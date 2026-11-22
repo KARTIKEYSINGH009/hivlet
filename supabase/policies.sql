@@ -80,6 +80,12 @@ grant execute on function public.task_workspace_id(uuid) to authenticated;
 -- Join a workspace from an invite code. A visitor is not a member yet, so a
 -- plain SELECT on workspaces would be blocked by RLS — this function runs
 -- as the table owner and does the lookup + insert in one step.
+--
+-- Member cap (billing, migration 012): when a workspace_billing row
+-- exists, joining is refused once the workspace is at max_members for
+-- its tier. No billing row means no cap (current behaviour), so
+-- existing workspaces keep working until 012 runs live. Re-running
+-- this file is required live for the cap to take effect.
 create or replace function public.join_workspace_by_code(p_code text)
 returns uuid
 language plpgsql
@@ -88,10 +94,24 @@ set search_path = public
 as $$
 declare
   ws_id uuid;
+  v_max_members integer;
+  v_member_count integer;
 begin
   select id into ws_id from workspaces where invite_code = p_code;
   if ws_id is null then
     raise exception 'invalid invite code';
+  end if;
+  -- Already a member: joining again is a no-op, never a cap error.
+  if exists (select 1 from workspace_members where workspace_id = ws_id and user_id = auth.uid()) then
+    return ws_id;
+  end if;
+  -- Cap check, only when a billing row exists.
+  select max_members into v_max_members from workspace_billing where workspace_id = ws_id;
+  if v_max_members is not null then
+    select count(*) into v_member_count from workspace_members where workspace_id = ws_id;
+    if v_member_count >= v_max_members then
+      raise exception 'workspace member limit reached';
+    end if;
   end if;
   insert into workspace_members (workspace_id, user_id, role, joined_via)
   values (ws_id, auth.uid(), 'member', 'link')

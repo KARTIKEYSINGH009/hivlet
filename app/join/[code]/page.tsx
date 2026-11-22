@@ -24,6 +24,13 @@ export default async function JoinPage({
     p_code: code,
   });
 
-  if (error) redirect("/workspaces?error=invite");
+  if (error) {
+    // Member cap (billing): a distinct error so the workspaces page
+    // can say the workspace is full instead of "invalid invite".
+    if (error.message.includes("member limit")) {
+      redirect("/workspaces?error=member-limit");
+    }
+    redirect("/workspaces?error=invite");
+  }
   redirect("/workspaces");
 }
