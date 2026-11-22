@@ -11,7 +11,7 @@
 // Body: { "workspaceId": string, "tier": "pro" | "team" }
 // Response: { "url": string } — the hosted checkout URL to redirect to.
 //
-// Gemini's plan used workspaces.owner_id to verify the leader; Hivlet
+// Gemini's plan used workspaces.owner_id to verify the leader; Orbely
 // has no owner_id column. The leader check here uses the workspace
 // membership role (requireWorkspace + isLeader), which is the real
 // authority in this codebase.

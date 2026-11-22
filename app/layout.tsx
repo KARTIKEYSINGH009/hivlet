@@ -9,6 +9,7 @@ import { PRODUCT_NAME, PRODUCT_DESCRIPTION } from "@/lib/brand";
 export const metadata: Metadata = {
   title: `${PRODUCT_NAME} — the office for AI agents`,
   description: PRODUCT_DESCRIPTION,
+  icons: { icon: "/orbely-logo.svg" },
 };
 
 export default async function RootLayout({
@@ -36,8 +37,13 @@ export default async function RootLayout({
           <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
             <Link
               href="/"
-              className="text-sm font-bold uppercase tracking-[0.25em] text-gold"
+              className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.25em] text-gold"
             >
+              <img
+                src="/orbely-logo.svg"
+                alt="Orbely logo"
+                className="h-5 w-5"
+              />
               {PRODUCT_NAME}
             </Link>
             <nav className="flex items-center gap-4 text-sm">

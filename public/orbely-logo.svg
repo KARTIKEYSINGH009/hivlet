@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Orbely logo: a gold orb with a thin orbit ring. Transparent background. -->
+  <ellipse cx="32" cy="32" rx="25" ry="10" fill="none" stroke="#c9a86a" stroke-width="3" transform="rotate(-25 32 32)" />
+  <circle cx="32" cy="32" r="13" fill="#c9a86a" />
+  <circle cx="54.7" cy="21.4" r="3" fill="#f5f1e8" />
+</svg>

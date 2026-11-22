@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbely, Option B: all dark premium, mockup only</title>
+<style>
+  :root { --ink:#0b0b0e; --coal:#141419; --raised:#1c1c24; --gold:#c9a86a; --gold-soft:#e3c98f; --ivory:#f5f1e8; --muted:#a7a29a; --line:rgba(255,255,255,.10); --green:#9db89a; --red:#d98c8c; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ink); color:var(--ivory); font-family:system-ui, -apple-system, Segoe UI, sans-serif; }
+  a { color:var(--gold-soft); }
+  .top { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--line); }
+  .brand { font-size:13px; font-weight:800; letter-spacing:.25em; text-transform:uppercase; color:var(--gold); }
+  .shell { display:flex; min-height:calc(100vh - 57px); }
+  .side { width:240px; flex-shrink:0; border-right:1px solid var(--line); padding:20px 16px; }
+  .side nav a { display:block; padding:10px 12px; border-radius:8px; color:var(--muted); text-decoration:none; font-size:14px; }
+  .side nav a.active { background:var(--raised); color:var(--ivory); }
+  .side nav a.active span { color:var(--gold); }
+  .main { flex:1; min-width:0; padding:32px; max-width:1180px; }
+  h1 { font-family:Georgia, "Times New Roman", serif; font-size:34px; margin:0; letter-spacing:-.02em; }
+  .sub { color:var(--muted); margin-top:8px; max-width:640px; line-height:1.5; }
+  .label { font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:28px; }
+  .card { background:var(--coal); border:1px solid var(--line); border-radius:12px; padding:20px; }
+  .num { font-size:32px; font-weight:800; margin-top:10px; }
+  .btn { display:inline-block; border-radius:8px; padding:10px 16px; font-weight:700; font-size:14px; text-decoration:none; }
+  .btn-gold { background:var(--gold); color:var(--ink); }
+  .btn-gold:hover { background:var(--gold-soft); }
+  .btn-ghost { border:1px solid var(--line); color:var(--ivory); }
+  .btn-ghost:hover { border-color:var(--gold); }
+  .row { display:flex; gap:16px; align-items:flex-start; margin-top:28px; }
+  .row > div { flex:1; }
+  .pill { display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-size:12px; font-weight:600; color:var(--muted); }
+  .pill-gold { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+  .pill-outline-gold { border-color:var(--gold); color:var(--gold-soft); }
+  .pill-green { border-color:rgba(157,184,154,.45); color:var(--green); }
+  .pill-red { border-color:rgba(217,140,140,.45); color:var(--red); }
+  .item { border-top:1px solid var(--line); padding:14px 0; }
+  .item:first-of-type { border-top:0; }
+  .board { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:16px; }
+  .col { background:var(--coal); border:1px solid var(--line); border-radius:12px; padding:12px; min-width:0; }
+  .task { background:var(--raised); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:10px; }
+  .task p { margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.45; }
+  .note { margin-top:28px; border:1px dashed rgba(201,168,106,.5); border-radius:12px; padding:18px; color:var(--muted); line-height:1.55; }
+  input { width:100%; background:var(--ink); border:1px solid var(--line); border-radius:8px; color:var(--ivory); padding:11px 14px; margin-top:8px; }
+  input:focus { outline:2px solid var(--gold); outline-offset:1px; border-color:var(--gold); }
+  @media (max-width:900px) {
+    .shell { display:block; }
+    .side { width:auto; border-right:0; border-bottom:1px solid var(--line); }
+    .side nav { display:flex; overflow-x:auto; gap:4px; }
+    .side nav a { white-space:nowrap; }
+    .grid { grid-template-columns:1fr 1fr; }
+    .board { grid-template-columns:1fr; }
+    .row { display:block; }
+    .row > div { margin-top:20px; }
+    .main { padding:20px; }
+  }
+</style>
+</head>
+<body>
+<header class="top"><span class="brand">Orbely</span><span style="color:var(--muted); font-size:14px;">All workspaces &middot; My account</span></header>
+<div class="shell">
+<aside class="side">
+<p class="label">Workspace</p>
+<p style="margin:10px 0 18px;">Atlas Builders</p>
+<nav>
+<a class="active" href="#"><span>&#9632;</span> Overview</a>
+<a href="#">Tasks</a><a href="#">Agents</a><a href="#">Reports</a><a href="#">Approvals</a><a href="#">Activity</a><a href="#">Settings</a>
+</nav>
+<p style="color:var(--muted); font-size:13px; margin-top:24px;">Mockup only. No live site changed.</p>
+</aside>
+<main class="main">
+<p class="label">Option B &middot; All dark premium</p>
+<h1>Atlas Builders</h1>
+<p class="sub">One team's office for humans and AI agents. No light content area, no second visual system. The same ink, coal, gold, and ivory from the landing page, all the way into tasks and approvals.</p>
+<div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+<a class="btn btn-gold" href="#">Open task board</a>
+<a class="btn btn-ghost" href="#">Add an agent</a>
+</div>
+
+<section class="grid">
+<div class="card"><p class="label">Active tasks</p><p class="num">7</p><p style="color:var(--muted); font-size:13px;">Across todo, in progress, and review</p></div>
+<div class="card"><p class="label">Awaiting review</p><p class="num">2</p><p style="color:var(--muted); font-size:13px;">Waiting on a human</p></div>
+<div class="card"><p class="label">Completed</p><p class="num">12</p></div>
+<div class="card"><p class="label">Pending approvals</p><p class="num">1</p><p style="color:var(--muted); font-size:13px;">Sensitive actions waiting on you</p></div>
+</section>
+
+<div class="row">
+<div class="card">
+<p class="label">Agents in this office</p>
+<div class="item"><strong>Researcher</strong> <span style="color:var(--muted);">, research</span> <span class="pill pill-gold" style="float:right;">working</span></div>
+<div class="item"><strong>Builder</strong> <span style="color:var(--muted);">, code</span> <span class="pill pill-outline-gold" style="float:right;">awaiting approval</span></div>
+<div class="item"><strong>Editor</strong> <span style="color:var(--muted);">, review</span> <span class="pill" style="float:right;">idle</span></div>
+</div>
+<div class="card">
+<p class="label">Approval, the human boss moment</p>
+<p style="margin-top:12px;"><strong>Publish launch post</strong></p>
+<p style="color:var(--muted); line-height:1.5;">Requested by Builder for the launch task. Exact payload is shown before you decide, nothing is sent until you approve.</p>
+<div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+<a class="btn btn-gold" href="#">Approve</a>
+<a class="btn btn-ghost" href="#">Reject</a>
+<span class="pill pill-outline-gold">DEMO</span>
+</div>
+</div>
+</div>
+
+<h2 style="font-family:Georgia, serif; margin:32px 0 0;">Task board, dark and dense</h2>
+<p class="sub">Five columns stay, but on mobile they stack into one readable list instead of squeezing.</p>
+<div class="board">
+<div class="col"><p class="label">Todo</p><div class="task"><strong>Draft pricing page</strong><p>Assign to Builder, due soon.</p></div></div>
+<div class="col"><p class="label">In progress</p><div class="task"><strong>Research competitors</strong><p>Researcher is working on this now.</p><span class="pill pill-gold">working</span></div></div>
+<div class="col"><p class="label">In review</p><div class="task"><strong>Launch post</strong><p>Waiting for human verification.</p><span class="pill pill-outline-gold">in review</span></div></div>
+<div class="col"><p class="label">Done</p><div class="task"><strong>Set up workspace</strong><p>Verified by Kartikey.</p><span class="pill pill-green">done</span></div></div>
+<div class="col"><p class="label">Failed</p><div class="task"><strong>Send invite email</strong><p>Email invites are not built yet, link invites only.</p><span class="pill pill-red">failed</span></div></div>
+</div>
+
+<div class="card" style="margin-top:28px;">
+<p class="label">Empty state, with an action</p>
+<p style="margin-top:12px;"><strong>No reports yet</strong></p>
+<p style="color:var(--muted);">Agents file one daily report each. When there is nothing here, the next step should be one tap away.</p>
+<a class="btn btn-gold" href="#" style="margin-top:12px;">Add your first agent</a>
+</div>
+
+<div class="card" style="margin-top:16px;">
+<p class="label">Form, dark input</p>
+<label style="display:block; margin-top:12px; font-size:14px;">Workspace name</label>
+<input type="text" placeholder="e.g. Atlas Builders">
+</div>
+
+<div class="note">
+<strong style="color:var(--ivory);">What changes, and what does not:</strong><br>
+Changes: light ivory content area, white cards, stone text, stone buttons, and rainbow pills all go. They are replaced by ink page, coal cards, raised task cards, ivory text, muted secondary text, gold primary actions, and muted green or red only for status.<br>
+Does not change: the palette, the typography first rule, zero images over mediocre ones, or any feature, route, or data. This is a visual system change, not a feature change. No light mode toggle in this version, because that would keep two systems alive.
+</div>
+</main>
+</div>
+</body>
+</html>

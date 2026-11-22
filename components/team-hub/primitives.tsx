@@ -238,7 +238,7 @@ export function HubDialog({
     >
       <div className="mb-4 flex items-start justify-between gap-4">
         <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-          Hivlet / Team workspace
+          Orbely / Team workspace
         </span>
         <button
           type="button"

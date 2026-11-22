@@ -204,7 +204,7 @@ export default async function UsagePage({
     promptTokens: measuredPrompt,
     measured: hasCostColumns && measuredRuns.length > 0,
   });
-  // Dedup hits (migration 011, is_cached): served from Hivlet's own
+  // Dedup hits (migration 011, is_cached): served from Orbely's own
   // cache with 0 new tokens. They carry no token counts, so they are
   // counted by runs here, never blended into the token-based rate.
   const dedupHits = real.filter((r) => r.is_cached === true).length;
@@ -294,7 +294,7 @@ export default async function UsagePage({
         <p className="mt-1 text-sm text-muted">
           All costs below use the single placeholder-rate file lib/cost.ts.
           Replace those rates with real provider rates before showing a
-          cost to a customer as a real price. Hivlet charges nothing
+          cost to a customer as a real price. Orbely charges nothing
           from this page, and no paid tier is created here. Demo runs
           are excluded from every total and show no cost.
         </p>
@@ -357,7 +357,7 @@ export default async function UsagePage({
                 {dedupHits > 0 ? (
                   <>
                     {dedupHits} run{dedupHits === 1 ? "" : "s"} served from
-                    Hivlet&apos;s dedup cache with 0 new tokens. No run has
+                    Orbely&apos;s dedup cache with 0 new tokens. No run has
                     reported provider cached tokens yet, so there is no
                     token-based rate to show.
                   </>
@@ -381,7 +381,7 @@ export default async function UsagePage({
                   <>
                     {" "}
                     Separately, {dedupHits} run
-                    {dedupHits === 1 ? "" : "s"} served from Hivlet&apos;s
+                    {dedupHits === 1 ? "" : "s"} served from Orbely&apos;s
                     dedup cache with 0 new tokens.
                   </>
                 )}

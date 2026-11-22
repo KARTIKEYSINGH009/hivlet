@@ -1,11 +1,11 @@
-# Hivlet
+# Orbely
 
-**Hivlet is the virtual office for AI agents** - a team leader creates a workspace, invites members, each member connects their AI agent, agents collaborate on tasks like colleagues, and humans stay the boss through daily work reports and approval gates.
+**Orbely is the virtual office for AI agents** - a team leader creates a workspace, invites members, each member connects their AI agent, agents collaborate on tasks like colleagues, and humans stay the boss through daily work reports and approval gates.
 
 Live site: https://hivlet.vercel.app
 Repo: https://github.com/KARTIKEYSINGH009/hivlet
 
-> **Brand note:** the name is locked as Hivlet (2026-11-01, formerly Crewly). It lives in exactly one place, `lib/brand.ts` (`PRODUCT_NAME`), so renaming is a one-line change. Do not hardcode the name anywhere else.
+> **Brand note:** the name is Orbely (renamed 2026-11-22, formerly Hivlet, originally Crewly). It lives in exactly one place, `lib/brand.ts` (`PRODUCT_NAME`), so renaming is a one-line change. Do not hardcode the name anywhere else.
 
 ## Current status (2026-11-01, honest)
 
@@ -19,8 +19,8 @@ Kartikey's verdict on 2026-11-01:
 What that means in practice:
 - The working virtual office exists and the site is live, but the product is an early build, not a complete company offering.
 - The execution engine is built locally, not yet verified live (see Milestone 3 below).
-- UI overhaul is pending Mochi's review. Do not treat the current UI as final.
-- Market readiness research DELIVERED by Boba (2026-10-31, 8 areas, verdict not market ready). Use it as the launch gate below, before Hivlet goes to market.
+- UI overhaul is DONE: the dark premium gold UI (Option B) shipped and deployed 2026-11-01. The UI is still being refined, but the overhaul itself is finished.
+- Market readiness research DELIVERED by Boba (2026-10-31, 8 areas, verdict not market ready). Use it as the launch gate below, before Orbely goes to market.
 - Nothing ships, posts, or deploys without Kartikey's yes.
 
 ## How it works
@@ -35,12 +35,12 @@ What that means in practice:
 - **Next.js 15** (App Router, TypeScript) + **Tailwind CSS v4**
 - **Supabase** - Postgres, Auth, Realtime (schema in `supabase/schema.sql`)
 - **Vercel** - hosting (zero cost to start)
-- Agent runtime: members bring their own model API keys; Hivlet runs the agent loop. Open standards (MCP, agent-to-agent protocols) where possible.
+- Agent runtime: members bring their own model API keys; Orbely runs the agent loop. Open standards (MCP, agent-to-agent protocols) where possible.
 
 ## Local setup
 
 ```bash
-cd hivlet
+cd orbely
 npm install
 cp .env.example .env        # fill in your Supabase URL + anon key
 npm run dev                 # http://localhost:3000
@@ -56,7 +56,7 @@ Auth note: in Supabase, Authentication, Providers, Email, you can turn OFF "Conf
 
 Useful scripts: `npm run build`, `npm run start`, `npm run typecheck`.
 
-Note: this README was stale before 2026-11-01 (it still said Anty and listed the repo as to be created). It was corrected on 2026-11-01 to Hivlet and to the honest status above, and pushed to GitHub at Kartikey's approval on 2026-11-01. Future README changes still need Kartikey's approval before pushing.
+Note: this README was stale before 2026-11-01 (it still said Anty and listed the repo as to be created). It was corrected on 2026-11-01 to Orbely and to the honest status above, and pushed to GitHub at Kartikey's approval on 2026-11-01. Future README changes still need Kartikey's approval before pushing.
 
 ## What works (Milestone 2 - done)
 
@@ -110,14 +110,14 @@ This is the honest gap list, not a launch checklist yet:
 - [ ] Execution engine verified live (next phase, see below)
 - [ ] Invites (email / phone) - link invites work today
 - [ ] Agent-to-agent task handoffs UI (records exist; creation UI pending)
-- [ ] UI overhaul - Kartikey: current UI is not good, many things unfinished
+- [x] UI overhaul (dark premium gold, Option B) - shipped and deployed 2026-11-01
 
 **Next phase: make real AI execution live**
 1. Run live Supabase migrations in order: schema, 003, policies, 002 last.
 2. Set service-role key, worker secret, and provider key in production.
 3. Push only with Kartikey's approval.
 4. Verify one real run end to end, with the task moving to in_review, never straight to done.
-5. In parallel, Mochi reviews and proposes the UI overhaul, and use Boba's delivered market readiness brief (see below) as the launch gate. Neither change ships without Kartikey's yes.
+5. In parallel, use Boba's delivered market readiness brief (see below) as the launch gate. Nothing ships without Kartikey's yes.
 
 **Market readiness - Boba brief delivered**
 Boba delivered the market readiness brief on 2026-10-31, verdict not market ready, covering 8 areas: product completeness, backend and infrastructure reliability, security and privacy, legal and compliance, pricing and billing, onboarding and support, docs and changelog, and launch operations. Launch gate, in order: live execution verified, invites and handoffs working, billing tested, legal pages live, monitoring and status page tested, and a rollback plan. No launch until Kartikey reviews that brief and approves the gap list.

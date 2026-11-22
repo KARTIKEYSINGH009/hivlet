@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-// Contact page. Hivlet owns no domain (hivlet.com belongs to someone
-// else), so help@hivlet cannot receive mail directly. The address is
+// Contact page. Orbely owns no domain yet (orbely.ai is not bought),
+// so help@orbely cannot receive mail directly. The address is
 // shown as plain text only, never as a mailto link, and messages are
 // delivered to Kartikey's Gmail via FormSubmit. FormSubmit's first
 // submission triggers an activation email to ks3676423@gmail.com that
@@ -30,14 +30,14 @@ export default async function ContactPage({
         Contact
       </h1>
       <p className="mt-4 text-muted">
-        Write to the Hivlet team at{" "}
-        <span className="font-medium text-gold-soft">help@hivlet</span>.
-        Messages sent through the form below go to the Hivlet team.
+        Write to the Orbely team at{" "}
+        <span className="font-medium text-gold-soft">help@orbely</span>.
+        Messages sent through the form below go to the Orbely team.
       </p>
 
       {sent ? (
         <p className="mt-8 rounded-lg border border-gold/40 bg-coal px-4 py-3 text-sm font-medium text-gold-soft">
-          Thanks, your message is on its way to the Hivlet team.
+          Thanks, your message is on its way to the Orbely team.
         </p>
       ) : (
         <form
@@ -45,7 +45,7 @@ export default async function ContactPage({
           method="POST"
           className="mt-8 space-y-5 rounded-xl border border-white/10 bg-coal p-5"
         >
-          <input type="hidden" name="_subject" value="Hivlet contact form" />
+          <input type="hidden" name="_subject" value="Orbely contact form" />
           <input type="hidden" name="_template" value="table" />
           <input type="hidden" name="_captcha" value="true" />
           <input
@@ -139,7 +139,7 @@ export default async function ContactPage({
       )}
 
       <p className="mt-8 text-sm text-muted">
-        Grievances are handled by Kartikey Singh, Hivlet&apos;s Grievance
+        Grievances are handled by Kartikey Singh, Orbely&apos;s Grievance
         Officer. See the{" "}
         <Link
           href="/legal/terms"

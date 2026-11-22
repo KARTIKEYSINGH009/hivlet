@@ -141,7 +141,7 @@ const tasks: {
 
 const payload = {
   action: "publish",
-  destination: "Hivlet updates",
+  destination: "Orbely updates",
   audience: "public",
   content: "Your agents. Better together. A shared office for the work ahead.",
 };
@@ -180,7 +180,7 @@ const faqs = [
   {
     question: "Is this another chat window?",
     answer:
-      "No. Hivlet organizes work around tasks, agents, handoffs, reports, and decisions. The goal is a clear next step—not a longer conversation history.",
+      "No. Orbely organizes work around tasks, agents, handoffs, reports, and decisions. The goal is a clear next step—not a longer conversation history.",
   },
   {
     question: "Where do people fit in?",
@@ -195,7 +195,7 @@ const faqs = [
   {
     question: "What does it cost?",
     answer:
-      "Hivlet is in early access and pricing has not been set. You can explore the interactive preview before deciding how it fits your team.",
+      "Orbely is in early access and pricing has not been set. You can explore the interactive preview before deciding how it fits your team.",
   },
   {
     question: "What happens when an agent needs permission?",
@@ -215,17 +215,23 @@ function Wordmark({ footer = false }: { footer?: boolean }) {
       prefetch={false}
       href="/"
       className={`hp-brand ${footer ? "hp-brand-footer" : ""}`}
-      aria-label="Hivlet homepage"
+      aria-label="Orbely homepage"
     >
-      <svg viewBox="0 0 28 30" fill="none" aria-hidden="true">
-        <path
-          d="M3 5v20M25 5v20M3 15h22M8 5h12M8 25h12M8 5v5M20 20v5"
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <ellipse
+          cx="32"
+          cy="32"
+          rx="25"
+          ry="10"
           stroke="currentColor"
-          strokeWidth="1.8"
+          strokeWidth="3"
+          transform="rotate(-25 32 32)"
         />
+        <circle cx="32" cy="32" r="13" fill="currentColor" />
+        <circle cx="54.7" cy="21.4" r="3" fill="#f5f1e8" />
       </svg>
       <span>
-        Hivlet<span className="hp-brand-dot">.</span>
+        Orbely<span className="hp-brand-dot">.</span>
       </span>
     </Link>
   );
@@ -967,7 +973,7 @@ export function MarketingPage() {
                         <div>
                           <span>Destination</span>
                           <strong>
-                            Hivlet updates <span>· Public</span>
+                            Orbely updates <span>· Public</span>
                           </strong>
                         </div>
                       </div>
@@ -1090,7 +1096,7 @@ export function MarketingPage() {
               <div
                 className="hp-process-tabs"
                 role="tablist"
-                aria-label="How Hivlet works"
+                aria-label="How Orbely works"
               >
                 {workflow.map((step, index) => (
                   <button
@@ -1324,7 +1330,7 @@ export function MarketingPage() {
               <em>who builds agents.</em>
             </h2>
             <p>
-              Hivlet is a virtual office for AI agents, built by Kartikey
+              Orbely is a virtual office for AI agents, built by Kartikey
               Singh, an AI developer who builds AI agents, voice agents,
               chatbots, and automation. The idea is simple: if AI agents are
               going to do real work, they need a real office, with desks,
@@ -1415,7 +1421,7 @@ export function MarketingPage() {
           </a>
         </div>
         <div className="hp-footer-bottom">
-          <span>© 2026 Hivlet. A little more together.</span>
+          <span>© 2026 Orbely. A little more together.</span>
           <span>UI preview · No live agents or external actions.</span>
         </div>
       </footer>

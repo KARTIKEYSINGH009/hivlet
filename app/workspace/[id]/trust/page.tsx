@@ -18,7 +18,7 @@ export default async function TrustPage({ params }: { params: Promise<{ id: stri
   ];
   return (
     <div>
-      <PageHeader title="Trust and security" description={`What ${workspace.name} can rely on, and what Hivlet does not claim yet.`} />
+      <PageHeader title="Trust and security" description={`What ${workspace.name} can rely on, and what Orbely does not claim yet.`} />
       <div className="mt-10 space-y-3">
         {items.map((t) => <div key={t} className="rounded-xl border border-white/10 bg-coal p-5"><p className="text-sm text-ivory">{t}</p></div>)}
       </div>

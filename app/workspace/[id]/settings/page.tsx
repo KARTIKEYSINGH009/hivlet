@@ -334,7 +334,7 @@ export default async function WorkspaceSettingsPage({
         <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
           <h2 className="font-semibold text-ivory">Approval webhook</h2>
           <p className="mt-1 text-sm text-muted">
-            When a leader approves an approval, Hivlet POSTs a signed JSON
+            When a leader approves an approval, Orbely POSTs a signed JSON
             event (<span className="font-mono text-xs text-ivory">approval.approved</span>)
             to this URL, with an HMAC-SHA256 signature in the{" "}
             <span className="font-mono text-xs text-ivory">X-Hivlet-Signature</span>{" "}
@@ -358,7 +358,7 @@ export default async function WorkspaceSettingsPage({
             <input
               name="approval_webhook_url"
               type="url"
-              placeholder="https://example.com/hivlet-approvals"
+              placeholder="https://example.com/orbely-approvals"
               defaultValue={webhookUrl ?? ""}
               className={inputCls}
             />

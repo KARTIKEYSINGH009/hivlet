@@ -11,7 +11,7 @@ const TIERS = [
   {
     tier: "free" as const,
     name: "Free",
-    tagline: "Try Hivlet with one workspace.",
+    tagline: "Try Orbely with one workspace.",
     usd: PLAN_PRICES.free.usdPerMonth,
     inr: PLAN_PRICES.free.inrPerMonth,
     features: [
@@ -61,7 +61,7 @@ export default function PricingPage() {
         Pricing
       </h1>
       <p className="mt-4 text-muted">
-        Hivlet charges per workspace, not per seat: one leader can run
+        Orbely charges per workspace, not per seat: one leader can run
         several agents while members review approvals, without paying
         per human. A verified run is counted only when an agent run
         completes; failed runs never count, and runs served from the
@@ -114,7 +114,7 @@ export default function PricingPage() {
       </section>
 
       <p className="mt-8 text-sm text-muted">
-        Hivlet is in early access and free today. When billing goes
+        Orbely is in early access and free today. When billing goes
         live, the price, billing period, and tax treatment will be
         stated before any charge is taken, and the{" "}
         <Link

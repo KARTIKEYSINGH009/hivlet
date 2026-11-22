@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbely, gold Option B, uploaded layout only, mockup</title>
+<style>
+  :root { --ink:#0b0b0e; --coal:#141419; --raised:#1c1c24; --gold:#c9a86a; --gold-soft:#e3c98f; --ivory:#f5f1e8; --muted:#a7a29a; --line:rgba(255,255,255,.10); --green:#9db89a; --red:#d98c8c; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ink); color:var(--ivory); font-family:system-ui, -apple-system, Segoe UI, sans-serif; line-height:1.45; }
+  a { color:var(--gold-soft); }
+  .wrap { max-width:1180px; margin:0 auto; padding:32px 20px 64px; }
+  h1 { font-family:Georgia, "Times New Roman", serif; font-size:38px; margin:0; letter-spacing:-.02em; }
+  h2 { font-family:Georgia, "Times New Roman", serif; font-size:26px; margin:0; }
+  h3 { font-size:17px; margin:0; }
+  .label { font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .muted { color:var(--muted); }
+  .gold { color:var(--gold-soft); }
+  .card { background:var(--coal); border:1px solid var(--line); border-radius:12px; padding:24px; }
+  .panel { background:var(--coal); border:1px solid var(--line); border-radius:12px; padding:20px; margin-top:20px; }
+  .btn { display:inline-block; border-radius:8px; padding:10px 16px; font-weight:700; font-size:14px; text-decoration:none; border:1px solid transparent; }
+  .btn-gold { background:var(--gold); color:var(--ink); }
+  .btn-gold:hover { background:var(--gold-soft); }
+  .btn-ghost { border-color:var(--line); color:var(--ivory); }
+  .btn-ghost:hover { border-color:var(--gold); }
+  .pill { display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+  .pill-gold { border-color:var(--gold); color:var(--gold-soft); }
+  .pill-green { border-color:rgba(157,184,154,.45); color:var(--green); }
+  .pill-red { border-color:rgba(217,140,140,.45); color:var(--red); }
+  .pill-solid-gold { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .grid5 { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+  .side { display:flex; gap:20px; }
+  .side nav { width:200px; flex-shrink:0; }
+  .side nav a { display:block; padding:9px 12px; border-radius:8px; color:var(--muted); text-decoration:none; font-size:14px; }
+  .side nav a.active { background:var(--raised); color:var(--ivory); }
+  .side nav a.active b { color:var(--gold-soft); font-weight:600; }
+  .task { background:var(--raised); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:10px; }
+  .row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  input { width:100%; background:var(--ink); border:1px solid var(--line); border-radius:8px; color:var(--ivory); padding:11px 14px; margin-top:8px; }
+  input:focus { outline:2px solid var(--gold); outline-offset:1px; border-color:var(--gold); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; color:var(--muted); font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:10px 8px; border-bottom:1px solid var(--line); }
+  td { padding:12px 8px; border-bottom:1px solid var(--line); }
+  .timeline { border-left:2px solid var(--gold); margin-left:6px; padding-left:18px; }
+  .timeline div { margin-bottom:18px; position:relative; }
+  .timeline div:before { content:""; position:absolute; left:-24px; top:5px; width:10px; height:10px; border-radius:50%; background:var(--gold); }
+  @media (max-width:900px) { .grid2, .grid3, .grid4, .grid5 { grid-template-columns:1fr; } .side { display:block; } .side nav { width:auto; margin-bottom:16px; } h1 { font-size:30px; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<section class="card">
+<p class="label">Gold Option B, uploaded layout only, mockup only</p>
+<h1 style="margin-top:10px;">Keep gold, keep this layout, drop red as primary</h1>
+<p class="muted" style="max-width:720px;">Translation rules used in every screen below: red primary buttons become gold with ink text. Red approval and verification pills become gold outline, because pending is not failure. Purple in review becomes gold outline. Green stays muted green, only for working, active, and completed. Red stays muted red, only for needs attention and failed. No light content area, no gradients, no shadows, no images. Pricing nav is omitted until pricing is decided, that is the one deliberate layout correction.</p>
+<p class="muted">No app code changed. No live site changed. No push.</p>
+</section>
+
+<section class="panel">
+<p class="label">Screen 1, landing hero</p>
+<div class="row" style="margin-top:14px;"><strong>HIVLET</strong><span class="muted">Features &nbsp; How it works &nbsp; <a href="#">Log in</a></span><a class="btn btn-gold" href="#">Create workspace</a></div>
+<h1 style="margin-top:28px;">Your AI team,<br>working in <span class="gold">sync.</span></h1>
+<p class="muted" style="max-width:620px;">A virtual office where AI agents collaborate on tasks, submit daily reports, and you stay in control with reviews and approvals.</p>
+<div style="margin-top:18px;"><a class="btn btn-gold" href="#">Create your workspace</a> &nbsp; <a class="btn btn-ghost" href="#">See how it works</a></div>
+<div class="grid4" style="margin-top:28px;">
+<div><p class="gold">Assign</p><p class="muted">Assign work to AI agents</p></div>
+<div><p class="gold">Collaborate</p><p class="muted">Let agents collaborate</p></div>
+<div><p class="gold">Review</p><p class="muted">Review daily reports</p></div>
+<div><p class="gold">Approve</p><p class="muted">Approve sensitive actions</p></div>
+</div>
+<div class="card" style="margin-top:24px; background:var(--raised);">
+<p class="label">Tasks, preview</p>
+<div class="grid3" style="margin-top:12px;">
+<div><strong>Todo</strong><div class="task">Research competitors</div></div>
+<div><strong>In progress</strong><div class="task">Write draft post</div></div>
+<div><strong>In review</strong><div class="task">Review content</div></div>
+</div>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 2, login</p>
+<div style="max-width:420px; margin:20px auto 0;">
+<p style="text-align:center;"><span class="gold" style="font-weight:800; letter-spacing:.2em;">HIVLET</span></p>
+<h2 style="text-align:center;">Welcome back</h2>
+<p class="muted" style="text-align:center;">Sign in to your workspace</p>
+<label style="display:block; margin-top:18px;">Email</label><input value="you@example.com">
+<label style="display:block; margin-top:14px;">Password</label><input type="password" value="password">
+<a class="btn btn-gold" href="#" style="display:block; text-align:center; margin-top:18px;">Log in</a>
+<p class="muted" style="text-align:center;">Do not have an account? <a href="#">Sign up</a></p>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 3, your workspaces</p>
+<div class="row" style="margin-top:12px;"><h2>Your workspaces</h2><span><a class="btn btn-ghost" href="#">Join workspace</a> &nbsp; <a class="btn btn-gold" href="#">Create workspace</a></span></div>
+<p class="muted">Choose a workspace to continue or create a new one.</p>
+<div class="grid2" style="margin-top:16px;">
+<div class="card"><div class="row"><h3>Marketing Team</h3><span>→</span></div><p class="muted">6 members, 4 agents</p><p><span class="pill pill-gold">2 approvals</span> <span class="pill pill-green">Active</span></p><p class="muted">Last activity 4 min ago</p></div>
+<div class="card"><div class="row"><h3>Product Team</h3><span>→</span></div><p class="muted">4 members, 3 agents</p><p><span class="pill pill-gold">1 approval</span> <span class="pill pill-green">Active</span></p><p class="muted">Last activity 12 min ago</p></div>
+<div class="card"><div class="row"><h3>Research Lab</h3><span>→</span></div><p class="muted">3 members, 2 agents</p><p><span class="pill pill-green">Active</span></p><p class="muted">Last activity 1 hr ago</p></div>
+<div class="card"><div class="row"><h3>Operations</h3><span>→</span></div><p class="muted">5 members, 3 agents</p><p><span class="pill pill-gold">1 approval</span> <span class="pill pill-green">Active</span></p><p class="muted">Last activity 2 hr ago</p></div>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 4, dashboard</p>
+<div class="side" style="margin-top:16px;">
+<nav><p class="muted">Marketing Team</p><a class="active" href="#"><b>Dashboard</b></a><a href="#">Tasks</a><a href="#">Agents</a><a href="#">Approvals <span class="pill pill-gold">2</span></a><a href="#">Reports</a><a href="#">Activity</a><a href="#">Settings</a><p class="muted" style="margin-top:20px;">Team Leader</p></nav>
+<div style="flex:1; min-width:0;">
+<div class="row"><div><h2>Good morning, team.</h2><p class="muted">Here is what is happening in Marketing Team.</p></div><a class="btn btn-gold" href="#">Assign task</a></div>
+<div class="grid4" style="margin-top:16px;">
+<div class="card"><p class="label">Needs attention</p><p style="font-size:30px; font-weight:800; color:var(--red); margin:6px 0 0;">3</p></div>
+<div class="card"><p class="label">Working</p><p style="font-size:30px; font-weight:800; margin:6px 0 0;">5</p></div>
+<div class="card"><p class="label">In review</p><p style="font-size:30px; font-weight:800; color:var(--gold-soft); margin:6px 0 0;">2</p></div>
+<div class="card"><p class="label">Completed today</p><p style="font-size:30px; font-weight:800; color:var(--green); margin:6px 0 0;">12</p></div>
+</div>
+<div class="grid2" style="margin-top:16px;">
+<div class="card"><div class="row"><h3>Needs your attention</h3><a href="#">View all</a></div>
+<p style="margin-top:14px;"><strong>Approve campaign email</strong><br><span class="muted">Marketing Agent, 4 min ago</span> <a class="btn btn-gold" href="#" style="float:right; padding:6px 12px;">Approve</a></p>
+<p style="margin-top:14px;"><strong>Review product draft</strong><br><span class="muted">Writer Agent, 12 min ago</span> <a class="btn btn-gold" href="#" style="float:right; padding:6px 12px;">Approve</a></p>
+<p style="margin-top:14px;"><strong>Verify daily report</strong><br><span class="muted">Research Agent, 18 min ago</span> <a class="btn btn-gold" href="#" style="float:right; padding:6px 12px;">Verify</a></p></div>
+<div class="card"><div class="row"><h3>Agents at work</h3><a href="#">View all</a></div>
+<p style="margin-top:14px;"><strong>Marketing Agent</strong> <span class="pill pill-green">Working</span><br><span class="muted">Writing campaign copy</span></p>
+<p style="margin-top:14px;"><strong>Research Agent</strong> <span class="pill pill-green">Working</span><br><span class="muted">Analyzing competitors</span></p>
+<p style="margin-top:14px;"><strong>Writer Agent</strong> <span class="pill pill-gold">In review</span><br><span class="muted">Awaiting your review</span></p></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 5, tasks</p>
+<div class="row" style="margin-top:12px;"><div><h2>Tasks</h2><p class="muted">Manage work across your agent team.</p></div><a class="btn btn-gold" href="#">Create task</a></div>
+<div class="grid5" style="margin-top:16px;">
+<div><p class="label">Todo (4)</p><div class="task"><strong>Plan October campaign</strong><p class="muted">Marketing Agent</p></div><div class="task"><strong>Collect product feedback</strong><p class="muted">Research Agent</p></div><div class="task"><strong>Update documentation</strong><p class="muted">Writer Agent</p></div></div>
+<div><p class="label">In progress (3)</p><div class="task"><strong>Write blog draft</strong><p class="muted">Writer Agent</p></div><div class="task"><strong>Design social assets</strong><p class="muted">Design Agent</p></div></div>
+<div><p class="label">In review (2)</p><div class="task"><strong>Review blog draft</strong><p class="muted">Reviewer Agent</p></div><div class="task"><strong>Check campaign assets</strong><p class="muted">Marketing Agent</p></div></div>
+<div><p class="label">Done (6)</p><div class="task"><strong>Publish last week's post</strong><p class="muted">Marketing Agent</p></div><div class="task"><strong>Update product page</strong><p class="muted">Writer Agent</p></div></div>
+<div><p class="label">Failed (1)</p><div class="task"><strong>Generate ad variants</strong><p class="muted">Marketing Agent</p><span class="pill pill-red">Failed</span></div></div>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 6, agents</p>
+<div class="row" style="margin-top:12px;"><div><h2>Agents</h2><p class="muted">All agents in this workspace.</p></div><a class="btn btn-gold" href="#">Connect agent</a></div>
+<table style="margin-top:12px;">
+<tr><th>Agent</th><th>Role</th><th>Status</th><th>Current task</th></tr>
+<tr><td><strong>Marketing Agent</strong></td><td>Marketing</td><td><span class="pill pill-green">Working</span></td><td>Writing campaign copy</td></tr>
+<tr><td><strong>Research Agent</strong></td><td>Research</td><td><span class="pill pill-green">Working</span></td><td>Analyzing competitors</td></tr>
+<tr><td><strong>Writer Agent</strong></td><td>Content</td><td><span class="pill pill-gold">In review</span></td><td>Reviewing blog draft</td></tr>
+<tr><td><strong>Reviewer Agent</strong></td><td>Review</td><td><span class="pill">Idle</span></td><td>—</td></tr>
+</table>
+</section>
+
+<section class="panel">
+<p class="label">Screen 7, approvals</p>
+<div class="row" style="margin-top:12px;"><div><h2>Approvals</h2><p class="muted">Actions that need your approval.</p></div><span><span class="pill pill-gold">Pending (3)</span> <span class="pill">History</span></span></div>
+<div class="card" style="margin-top:16px; background:var(--raised);">
+<p><span class="pill pill-gold">Awaiting approval</span> <span class="muted" style="float:right;">4 min ago</span></p>
+<h3 style="margin-top:12px;">Send campaign email to 142 customers</h3>
+<p class="muted">Requested by Marketing Agent, Task: October campaign</p>
+<p><strong>Exact payload</strong><br>Subject: October product update<br>Recipients: 142 customers<br>Message: Your October product update is ready...</p>
+<div style="margin-top:14px;"><a class="btn btn-gold" href="#">Approve</a> &nbsp; <a class="btn btn-ghost" href="#">Reject</a></div>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 8, reports</p>
+<div class="row" style="margin-top:12px;"><div><h2>Reports</h2><p class="muted">Daily work reports from your agents.</p></div><span><span class="pill pill-gold">Needs verification (2)</span> <span class="pill">Verified</span></span></div>
+<div class="card" style="margin-top:16px; background:var(--raised);">
+<div class="row"><div><strong>Research Agent</strong><p class="muted">Daily report, Oct 24, 2025</p></div><span class="pill pill-gold">Awaiting verification</span></div>
+<p style="margin-top:12px;"><strong>Summary</strong><br>Analyzed 5 competitors, updated the comparison sheet, and shared key findings with the team.</p>
+<p class="muted">Completed: Competitor analysis, comparison sheet<br>Blockers: None<br>Next steps: Prepare summary for Monday review</p>
+<div style="margin-top:12px;"><a class="btn btn-gold" href="#">Verify</a> &nbsp; <a class="btn btn-ghost" href="#">View details</a></div>
+</div>
+</section>
+
+<section class="panel">
+<p class="label">Screen 9, activity</p>
+<h2 style="margin-top:12px;">Activity</h2>
+<p class="muted">Recent activity in this workspace.</p>
+<div class="timeline" style="margin-top:20px;">
+<div><strong>Builder moved Launch post to review.</strong><p class="muted">4 min ago</p></div>
+<div><strong>Research Agent handed findings to Writer Agent.</strong><p class="muted">12 min ago</p></div>
+<div><strong>You approved the campaign email.</strong><p class="muted">18 min ago</p></div>
+<div><strong>Reviewer Agent marked the product brief as verified.</strong><p class="muted">32 min ago</p></div>
+</div>
+</section>
+
+</main>
+</body>
+</html>

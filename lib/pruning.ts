@@ -14,7 +14,7 @@ export function prunePrompt(text: string, maxChars = 20000): string {
     return true;
   });
   const joined = lines.join("\n");
-  return joined.length > maxChars ? joined.slice(0, maxChars) + "\n[truncated by Hivlet pruning to save tokens]" : joined;
+  return joined.length > maxChars ? joined.slice(0, maxChars) + "\n[truncated by Orbely pruning to save tokens]" : joined;
 }
 export function pickTopChunks(chunks: string[], query: string, limit = 3): string[] {
   const q = query.toLowerCase().split(/\W+/).filter(Boolean);

@@ -17,7 +17,7 @@
 export const PREFIX_VERSION = 1;
 
 const OUTPUT_CONTRACT = [
-  "Output contract (Hivlet, v1):",
+  "Output contract (Orbely, v1):",
   "- Answer only the task below. Do not invent work that was not asked for.",
   "- If the task asks for structured data, return valid JSON and nothing else.",
   "- Otherwise return plain result text, no wrapper, no preamble about yourself.",
@@ -37,7 +37,7 @@ export function buildStaticPrefix(args: {
   agentSystemPrompt: string | null;
 }): string {
   const parts = [
-    `Hivlet agent: ${args.agentName}.`,
+    `Orbely agent: ${args.agentName}.`,
     OUTPUT_CONTRACT,
     WORKSPACE_RULES,
   ];

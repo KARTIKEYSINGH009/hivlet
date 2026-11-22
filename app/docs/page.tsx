@@ -16,7 +16,7 @@ const sections = [
   {
     id: "workspaces",
     title: "Workspaces and members",
-    body: "A workspace is one team's office. The person who creates it is its leader. Leaders can edit the workspace, add agents, and remove members. Members can view the workspace and work their tasks. Invite people today with the share link in Workspace settings. Email and phone invites are not configured yet, and no email or SMS is sent from Hivlet today.",
+    body: "A workspace is one team's office. The person who creates it is its leader. Leaders can edit the workspace, add agents, and remove members. Members can view the workspace and work their tasks. Invite people today with the share link in Workspace settings. Email and phone invites are not configured yet, and no email or SMS is sent from Orbely today.",
     links: [],
   },
   {
@@ -34,7 +34,7 @@ const sections = [
   {
     id: "reports",
     title: "Reports and verification",
-    body: "Agents file daily reports, one per agent per day. A human verifies a report with one tap, which records the verifier and the time. Verification is the point of Hivlet: work is not treated as done just because an agent produced output. A task that finishes a run moves to in review, never straight to done, until a human accepts it.",
+    body: "Agents file daily reports, one per agent per day. A human verifies a report with one tap, which records the verifier and the time. Verification is the point of Orbely: work is not treated as done just because an agent produced output. A task that finishes a run moves to in review, never straight to done, until a human accepts it.",
     links: [],
   },
   {
@@ -46,7 +46,7 @@ const sections = [
   {
     id: "usage",
     title: "Usage and limits",
-    body: "The Usage page shows token counts from real execution rows, per agent and per workspace. Tokens only: no price, no cost in rupees or dollars, and no charge is computed, because pricing is not decided yet. Demo executions carry no token counts on purpose, so they are never counted as real usage. There is no paid tier, no billing, and no spending cap in the product yet, so do not rely on Hivlet to enforce a budget today.",
+    body: "The Usage page shows token counts from real execution rows, per agent and per workspace. Tokens only: no price, no cost in rupees or dollars, and no charge is computed, because pricing is not decided yet. Demo executions carry no token counts on purpose, so they are never counted as real usage. There is no paid tier, no billing, and no spending cap in the product yet, so do not rely on Orbely to enforce a budget today.",
     links: [],
   },
   {
@@ -58,7 +58,7 @@ const sections = [
   {
     id: "deletion",
     title: "Data deletion",
-    body: "A workspace leader can delete a workspace from Workspace settings, which removes its agents, tasks, reports, and approvals permanently. A member can leave a workspace from the same page. For a request to delete personal data that is not covered by those controls, contact details will be added before launch. Until then, do not put personal data in Hivlet that you cannot afford to lose, because backups and a tested restore path are not built yet.",
+    body: "A workspace leader can delete a workspace from Workspace settings, which removes its agents, tasks, reports, and approvals permanently. A member can leave a workspace from the same page. For a request to delete personal data that is not covered by those controls, contact details will be added before launch. Until then, do not put personal data in Orbely that you cannot afford to lose, because backups and a tested restore path are not built yet.",
     links: [],
   },
 ];
@@ -68,7 +68,7 @@ export default function DocsPage() {
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <h1 className="font-display text-3xl font-bold text-ivory">Docs</h1>
       <p className="mt-3 text-muted">
-        How Hivlet works, in plain words. If a feature is not built yet,
+        How Orbely works, in plain words. If a feature is not built yet,
         this page says so, instead of describing it as if it works.
       </p>
       <p className="mt-3 text-sm text-muted">

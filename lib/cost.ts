@@ -1,7 +1,7 @@
 // Phase 1 cost math, local only. ONE configurable place for provider rates.
 //
 // PLACEHOLDER RATES ONLY. These numbers are NOT official provider prices,
-// NOT a quote to customers, and NOT a billing charge. Hivlet charges
+// NOT a quote to customers, and NOT a billing charge. Orbely charges
 // nothing here. The Groq adapter decision is still open and no provider
 // pick has been made, so real rates must replace these placeholders in
 // this file before any cost is shown to a customer as a real price.

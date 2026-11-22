@@ -49,8 +49,9 @@ export default function WorkspaceSidebar({
     <aside className="flex w-full shrink-0 flex-col gap-3 border-b border-white/10 bg-coal px-4 py-3 text-ivory sm:w-56 sm:gap-6 sm:py-5 sm:border-b-0 sm:border-r">
       <Link
         href="/dashboard"
-        className="px-2 text-sm font-bold uppercase tracking-[0.25em] text-gold"
+        className="flex items-center gap-2 px-2 text-sm font-bold uppercase tracking-[0.25em] text-gold"
       >
+        <img src="/orbely-logo.svg" alt="Orbely logo" className="h-5 w-5" />
         {PRODUCT_NAME}
       </Link>
 
