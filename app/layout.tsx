@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import "./homepage.css";
+import "./login.css";
 import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/sign-out-button";
 import { PRODUCT_NAME, PRODUCT_DESCRIPTION } from "@/lib/brand";
