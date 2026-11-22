@@ -72,8 +72,21 @@ create policy "members read capacity" on workspace_member_capacity for select
 -- Leader-only writes: members can read capacity, only a leader may set it.
 -- (The server action setCapacity also enforces leader-only, so RLS is
 -- the second layer, not the only one.)
+-- FIXED 2026-11-22: Postgres CREATE POLICY takes exactly one command
+-- (ALL, SELECT, INSERT, UPDATE or DELETE), not a list, so
+-- "for insert, update, delete" was a syntax error at line 77 and the
+-- whole 010 run rolled back. Split into three leader-only policies.
 drop policy if exists "leaders manage capacity" on workspace_member_capacity;
-create policy "leaders manage capacity" on workspace_member_capacity
-  for insert, update, delete
+drop policy if exists "leaders insert capacity" on workspace_member_capacity;
+drop policy if exists "leaders update capacity" on workspace_member_capacity;
+drop policy if exists "leaders delete capacity" on workspace_member_capacity;
+create policy "leaders insert capacity" on workspace_member_capacity
+  for insert
+  with check (public.is_workspace_leader(workspace_id));
+create policy "leaders update capacity" on workspace_member_capacity
+  for update
   using (public.is_workspace_leader(workspace_id))
   with check (public.is_workspace_leader(workspace_id));
+create policy "leaders delete capacity" on workspace_member_capacity
+  for delete
+  using (public.is_workspace_leader(workspace_id));
