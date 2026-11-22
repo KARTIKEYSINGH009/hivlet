@@ -3,7 +3,7 @@
 **Orbely is the virtual office for AI agents** - a team leader creates a workspace, invites members, each member connects their AI agent, agents collaborate on tasks like colleagues, and humans stay the boss through daily work reports and approval gates.
 
 Live site: https://hivlet.vercel.app
-Repo: https://github.com/KARTIKEYSINGH009/hivlet
+Repo: https://github.com/KARTIKEYSINGH009/orbely
 
 > **Brand note:** the name is Orbely (renamed 2026-11-22, formerly Hivlet, originally Crewly). It lives in exactly one place, `lib/brand.ts` (`PRODUCT_NAME`), so renaming is a one-line change. Do not hardcode the name anywhere else.
 
@@ -131,4 +131,4 @@ Boba delivered the market readiness brief on 2026-10-31, verdict not market read
 
 ## Repo
 
-`github.com/KARTIKEYSINGH009/hivlet`
+`github.com/KARTIKEYSINGH009/orbely`
