@@ -1,31 +1,52 @@
 @import "tailwindcss";
 
-/* Orbely premium palette: deep ink/charcoal + champagne-gold + ivory. */
+/* Orbely light palette: the homepage language (paper, ink, brass, hairlines).
+   App pages share these tokens; the homepage keeps its own scoped copies in
+   app/homepage.css under .orbely-home. */
 @theme {
-  --color-ink: #0b0b0e;
-  --color-coal: #141419;
-  --color-raised: #1c1c24;
+  --color-ink: #0a0b0e;
+  --color-ink-2: #23262c;
+  --color-paper: #faf9f5;
+  --color-paper-2: #f0eee7;
+  --color-surface: #ffffff;
+  --color-line: #e2e0d6;
+    --color-line-2: #ebe9e1;
+  --color-line-3: #d3d0c4;
+  --color-sand: #d9c48c;
   --color-gold: #c9a86a;
   --color-gold-soft: #e3c98f;
-  --color-ivory: #f5f1e8;
-  --color-muted: #a7a29a;
-  --font-display: Georgia, "Times New Roman", serif;
+  --color-brass: #8a6a24;
+  --color-brass-strong: #6f5518;
+  --color-brass-tint: #f7f1e1;
+  --color-brass-line: #e9ddc0;
+  --color-ok: #1a7a57;
+  --color-ok-tint: #eaf4ef;
+  --color-warn: #8f6412;
+  --color-warn-tint: #fbf3e2;
+  --color-danger: #ac4136;
+  --color-danger-tint: #fbedea;
+  --color-muted: #575d64;
+  --color-muted-2: #6b7078;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
 }
 
 /* Phase 1 token: exact focus treatment everywhere, not a gold border alone.
    Applies to links, buttons, inputs, tabs, menus, icon buttons, task
    controls, and navigation. :focus-visible keeps mouse clicks clean. */
 :focus-visible {
-  outline: 2px solid #c9a86a;
+  outline: 2px solid #8a6a24;
   outline-offset: 2px;
 }
 
-/* Section titles use Georgia by default; a Tailwind size class on the
-   element still wins where a page needs a different size. */
+/* Section titles use Inter semibold, like the homepage headings. */
 h2 {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   font-size: 22px;
   line-height: 30px;
+  font-weight: 600;
+  letter-spacing: -0.022em;
 }
 
 /* Homepage, How it works: cards rise in sequence, 1 then 2 then 3.
@@ -163,12 +184,12 @@ h2 {
   }
 }
 
-/* Dark autofill: browsers otherwise paint a light autofill background
-   over the dark form. */
+/* Light autofill: browsers otherwise paint a yellow autofill background
+   over the light form. */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #f5f1e8;
-  caret-color: #f5f1e8;
+  -webkit-text-fill-color: #12141a;
+  caret-color: #12141a;
   transition: background-color 9999s ease-in-out 0s;
 }

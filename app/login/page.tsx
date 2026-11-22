@@ -11,7 +11,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="mx-auto max-w-md px-6 py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brass">
         {PRODUCT_NAME}
       </p>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">
@@ -22,18 +22,18 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </p>
 
       {sp.error && (
-        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="mt-6 rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-4 py-3 text-sm text-[#AC4136]">
           Sign-in failed. Please try again.
         </p>
       )}
 
-      <div className="mt-8 rounded-xl border border-white/10 bg-coal p-6">
+      <div className="mt-8 rounded-xl border border-line bg-surface p-6">
         <AuthForm mode="login" redirectTo={sp.next} />
       </div>
 
       <p className="mt-6 text-center text-sm text-muted">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="font-medium text-gold hover:text-gold-soft">
+        <Link href="/signup" className="font-medium text-brass hover:text-brass-strong">
           Sign up
         </Link>
       </p>

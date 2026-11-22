@@ -118,13 +118,13 @@ export default async function DashboardPage() {
           <>
             <Link
               href="/my-work"
-              className="rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-ivory hover:border-gold"
+              className="rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:border-sand"
             >
               My work
             </Link>
             <Link
               href="/workspaces"
-              className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+              className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
             >
               Manage workspaces
             </Link>
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
 
           <section className="mt-10 grid gap-6 lg:grid-cols-2">
             <div>
-              <h2 className="font-semibold text-ivory">Recent reports</h2>
+              <h2 className="font-semibold text-ink">Recent reports</h2>
               <div className="mt-3 space-y-3">
                 {recentReports.length === 0 && (
                   <EmptyState title="No reports yet" hint="Agents file a daily report per workspace; verified ones show up here too." />
@@ -171,10 +171,10 @@ export default async function DashboardPage() {
                 {recentReports.map((r) => (
                   <article
                     key={r.id}
-                    className="rounded-xl border border-white/10 bg-coal p-4"
+                    className="rounded-xl border border-line bg-surface p-4"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium text-ivory">
+                      <p className="text-sm font-medium text-ink">
                         {r.agents?.name ?? "Agent"} — {r.period_date}
                       </p>
                       <span className="text-xs font-medium text-muted">
@@ -190,7 +190,7 @@ export default async function DashboardPage() {
             </div>
 
             <div>
-              <h2 className="font-semibold text-ivory">
+              <h2 className="font-semibold text-ink">
                 Failed executions needing attention
               </h2>
               <div className="mt-3 space-y-3">
@@ -200,10 +200,10 @@ export default async function DashboardPage() {
                 {failedTasks.map((t) => (
                   <article
                     key={t.id}
-                    className="rounded-xl border border-white/10 bg-coal p-4"
+                    className="rounded-xl border border-line bg-surface p-4"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium text-ivory">
+                      <p className="text-sm font-medium text-ink">
                         {t.title}
                       </p>
                       <TaskStatusPill status="failed" />
@@ -214,7 +214,7 @@ export default async function DashboardPage() {
                     </p>
                     <Link
                       href={`/workspace/${t.workspace_id}/tasks`}
-                      className="mt-2 inline-block text-sm font-medium text-ivory underline"
+                      className="mt-2 inline-block text-sm font-medium text-ink underline"
                     >
                       Open task board →
                     </Link>
@@ -225,7 +225,7 @@ export default async function DashboardPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">Recent activity</h2>
+            <h2 className="font-semibold text-ink">Recent activity</h2>
             <div className="mt-3 space-y-2">
               {events.length === 0 && (
                 <EmptyState title="No activity yet" hint="Task creation, status changes, reviews and retries will appear here." />
@@ -233,9 +233,9 @@ export default async function DashboardPage() {
               {events.map((e) => (
                 <p
                   key={e.id}
-                  className="rounded-lg border border-white/10 bg-coal px-4 py-3 text-sm text-muted"
+                  className="rounded-lg border border-line bg-surface px-4 py-3 text-sm text-muted"
                 >
-                  <span className="font-medium text-ivory">
+                  <span className="font-medium text-ink">
                     {e.event_type.replace(/_/g, " ")}
                   </span>{" "}
                   <span className="text-muted">
@@ -247,7 +247,7 @@ export default async function DashboardPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">Your agents</h2>
+            <h2 className="font-semibold text-ink">Your agents</h2>
             <div className="mt-3 flex flex-wrap gap-2">
               {agents.length === 0 && (
                 <EmptyState title="No agents connected yet" hint="Add an agent from any workspace's Agents page." />
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
                 <Link
                   key={a.id}
                   href={`/workspace/${a.workspace_id}/agents/${a.id}`}
-                  className="rounded-full border border-white/10 bg-coal px-3 py-1.5 text-sm text-ivory hover:border-gold"
+                  className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-ink hover:border-sand"
                 >
                   {a.name} <AgentStatusPill status={a.status} />
                 </Link>

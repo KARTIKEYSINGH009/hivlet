@@ -27,8 +27,8 @@ export default async function CrossHandoffsPage({ params }: { params: Promise<{ 
           const crossHuman = from && to && from.member_id !== to.member_id;
           const crossProvider = from && to && from.provider !== to.provider;
           return (
-            <div key={h.id} className="rounded-xl border border-white/10 bg-coal p-5">
-              <p className="font-medium text-ivory">{taskById.get(h.task_id) ?? "Task"}</p>
+            <div key={h.id} className="rounded-xl border border-line bg-surface p-5">
+              <p className="font-medium text-ink">{taskById.get(h.task_id) ?? "Task"}</p>
               <p className="mt-1 text-sm text-muted">From: {from ? `${from.name} (${from.provider}${from.model ? ` / ${from.model}` : ""}, member ${short(from.member_id)})` : "Unknown agent"}</p>
               <p className="text-sm text-muted">To: {to ? `${to.name} (${to.provider}${to.model ? ` / ${to.model}` : ""}, member ${short(to.member_id)})` : "Unknown agent"}</p>
               <p className="mt-1 text-sm text-muted">Status: {h.status}{crossHuman ? " · Cross-human" : ""}{crossProvider ? " · Cross-provider" : ""}</p>
@@ -38,10 +38,10 @@ export default async function CrossHandoffsPage({ params }: { params: Promise<{ 
         })}
       </div>
       <section className="mt-10">
-        <h2 className="font-semibold text-ivory">Agent ownership</h2>
+        <h2 className="font-semibold text-ink">Agent ownership</h2>
         <div className="mt-3 space-y-3">
           {((agents ?? []) as { id: string; name: string; provider: string; member_id: string }[]).map((a) => (
-            <div key={a.id} className="rounded-xl border border-white/10 bg-coal p-5"><p className="font-medium text-ivory">{a.name}</p><p className="text-sm text-muted">Owner member: {short(a.member_id)} · Provider: {a.provider} · Keys are referenced server side only, never shown to other members.</p></div>
+            <div key={a.id} className="rounded-xl border border-line bg-surface p-5"><p className="font-medium text-ink">{a.name}</p><p className="text-sm text-muted">Owner member: {short(a.member_id)} · Provider: {a.provider} · Keys are referenced server side only, never shown to other members.</p></div>
           ))}
         </div>
       </section>

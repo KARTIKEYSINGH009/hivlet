@@ -129,7 +129,7 @@ export function TaskRows({
     );
   return (
     <div role="table" aria-label="Team tasks" className="overflow-x-auto">
-      <div className="grid min-w-[640px] grid-cols-[2fr_1fr_1fr_1fr] gap-3 border-b border-white/10 px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted">
+      <div className="grid min-w-[640px] grid-cols-[2fr_1fr_1fr_1fr] gap-3 border-b border-line px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-muted">
         <span>Task</span>
         <span>Owner</span>
         <span>Due</span>
@@ -147,7 +147,7 @@ export function TaskRows({
             <div
               key={task.id}
               role="row"
-              className="grid min-w-[640px] grid-cols-[2fr_1fr_1fr_1fr] items-center gap-3 border-b border-white/10 px-3 py-3"
+              className="grid min-w-[640px] grid-cols-[2fr_1fr_1fr_1fr] items-center gap-3 border-b border-line px-3 py-3"
             >
               <div role="cell" className="flex items-start gap-2">
                 <button
@@ -155,7 +155,7 @@ export function TaskRows({
                   aria-label={`Toggle ${task.title}`}
                   aria-pressed={task.status === "done"}
                   onClick={() => onToggle(task)}
-                  className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-muted hover:border-gold"
+                  className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-line-3 text-muted hover:border-sand"
                 >
                   {task.status === "done" ? (
                     <Check size={14} />
@@ -168,7 +168,7 @@ export function TaskRows({
                     type="button"
                     onClick={() => onEdit(task)}
                     aria-label={`Edit task: ${task.title}`}
-                    className="text-left text-sm font-medium text-ivory hover:text-gold-soft"
+                    className="text-left text-sm font-medium text-ink hover:text-brass-strong"
                   >
                     {task.title}
                   </button>
@@ -181,7 +181,7 @@ export function TaskRows({
                       </span>
                     )}
                     {task.status === "failed" && (
-                      <span className="text-[#d98c8c]">Blocked</span>
+                      <span className="text-[#AC4136]">Blocked</span>
                     )}
                   </div>
                 </div>
@@ -192,7 +192,7 @@ export function TaskRows({
                     type="button"
                     onClick={() => onMember(member.id)}
                     aria-label={`View ${memberLabel(member)} workload`}
-                    className="inline-flex items-center gap-2 text-sm text-ivory"
+                    className="inline-flex items-center gap-2 text-sm text-ink"
                   >
                     <PersonAvatar
                       initials={memberInitials(member)}
@@ -206,7 +206,7 @@ export function TaskRows({
                     type="button"
                     onClick={() => onEdit(task)}
                     aria-label={`Assign ${task.title}`}
-                    className="inline-flex items-center gap-1 text-sm text-muted hover:text-gold-soft"
+                    className="inline-flex items-center gap-1 text-sm text-muted hover:text-brass-strong"
                   >
                     <UserRound size={15} />
                     <span>Assign</span>
@@ -216,7 +216,7 @@ export function TaskRows({
               <div
                 role="cell"
                 title={due ? formatDay(due, { day: "numeric", month: "long", year: "numeric" }) : "No due date"}
-                className={`flex items-center gap-1 text-sm ${late ? "text-[#d98c8c]" : "text-muted"}`}
+                className={`flex items-center gap-1 text-sm ${late ? "text-[#AC4136]" : "text-muted"}`}
               >
                 {late && <Clock3 size={12} />}
                 <span>{dueLabel(due, today)}</span>
@@ -272,10 +272,10 @@ export function ProjectCard({
       type="button"
       onClick={onOpen}
       aria-label={`Open project: ${project.name}`}
-      className="rounded-xl border border-white/10 bg-coal p-5 text-left hover:border-gold"
+      className="rounded-xl border border-line bg-surface p-5 text-left hover:border-sand"
     >
       <div className="flex items-start justify-between gap-2">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-raised text-gold-soft">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-paper-2 text-brass-strong">
           <FolderKanban size={19} strokeWidth={1.5} />
         </span>
         <HubStatus
@@ -293,7 +293,7 @@ export function ProjectCard({
         />
         <ArrowUpRight size={16} className="text-muted" />
       </div>
-      <h3 className="mt-3 font-semibold text-ivory">{project.name}</h3>
+      <h3 className="mt-3 font-semibold text-ink">{project.name}</h3>
       <p className="mt-1 text-sm text-muted">
         {project.description ||
           "A shared goal. Add the first task to make the next step clear."}
@@ -303,7 +303,7 @@ export function ProjectCard({
           {progress.done} of {progress.total}{" "}
           {progress.total === 1 ? "task" : "tasks"} done
         </span>
-        <strong className="text-ivory">{progress.percent}%</strong>
+        <strong className="text-ink">{progress.percent}%</strong>
       </div>
       <div className="mt-2">
         <Meter
@@ -355,13 +355,13 @@ export function WorkloadPanel({
   onTeam: () => void;
 }) {
   return (
-    <section className="rounded-xl border border-white/10 bg-coal p-5">
+    <section className="rounded-xl border border-line bg-surface p-5">
       <PanelHeading title="Team workload" subtitle="Room for focused work.">
         <button
           type="button"
           aria-label="Open team and capacity"
           onClick={onTeam}
-          className="rounded-lg border border-white/15 px-2 py-1.5 text-muted hover:border-gold"
+          className="rounded-lg border border-line px-2 py-1.5 text-muted hover:border-sand"
         >
           <SlidersHorizontal size={16} />
         </button>
@@ -382,7 +382,7 @@ export function WorkloadPanel({
               type="button"
               onClick={() => onMember(member.id)}
               aria-label={`${memberLabel(member)}: ${used} open tasks, capacity ${max}.`}
-              className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-white/5"
+              className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-ink/5"
             >
               <PersonAvatar
                 initials={memberInitials(member)}
@@ -390,7 +390,7 @@ export function WorkloadPanel({
                 small
               />
               <span className="min-w-0 flex-1">
-                <strong className="block truncate text-sm text-ivory">
+                <strong className="block truncate text-sm text-ink">
                   {memberLabel(member)}
                   {member.id === currentMemberId && <small> (you)</small>}
                 </strong>
@@ -398,7 +398,7 @@ export function WorkloadPanel({
                   <Meter value={used} max={max} />
                 </span>
               </span>
-              <span className={`text-sm ${used > max ? "text-[#d98c8c]" : "text-muted"}`}>
+              <span className={`text-sm ${used > max ? "text-[#AC4136]" : "text-muted"}`}>
                 {used}
                 <small> / {max}</small>
               </span>
@@ -449,7 +449,7 @@ export function WorkAhead({
   ).length;
   const undated = active.filter((t) => !taskDueDate(t)).length;
   return (
-    <section className="rounded-xl border border-white/10 bg-coal p-5">
+    <section className="rounded-xl border border-line bg-surface p-5">
       <PanelHeading title="Work ahead">
         <div className="flex gap-1" aria-label="Upcoming due-date range">
           {[7, 14, 30].map((days) => (
@@ -461,8 +461,8 @@ export function WorkAhead({
               onClick={() => setRange(days)}
               className={`rounded-lg border px-3 py-1.5 text-sm ${
                 range === days
-                  ? "border-gold bg-gold text-ink"
-                  : "border-white/15 text-muted"
+                  ? "border-ink bg-ink text-white"
+                  : "border-line text-muted"
               }`}
             >
               {days}d
@@ -471,7 +471,7 @@ export function WorkAhead({
         </div>
       </PanelHeading>
       <p className="mt-4 text-sm text-muted">
-        <strong className="text-2xl text-ivory">{total}</strong>{" "}
+        <strong className="text-2xl text-ink">{total}</strong>{" "}
         {total === 1 ? "task" : "tasks"} due · Next {range} days
       </p>
       <div className="mt-4 flex items-end gap-2" aria-label={`${total} open tasks due in the next ${range} days`}>
@@ -483,10 +483,10 @@ export function WorkAhead({
             onClick={() => onDay(group.start)}
             className="flex flex-1 flex-col items-center gap-1"
           >
-            <span className="text-sm text-ivory">{group.count || "–"}</span>
-            <span className="flex h-16 w-full items-end rounded bg-white/5">
+            <span className="text-sm text-ink">{group.count || "–"}</span>
+            <span className="flex h-16 w-full items-end rounded bg-ink/5">
               <i
-                className={`block w-full rounded ${group.count ? "bg-gold" : "bg-white/10"}`}
+                className={`block w-full rounded ${group.count ? "bg-brass" : "bg-ink/10"}`}
                 style={{ height: `${group.count ? Math.max(8, (group.count / max) * 100) : 3}%` }}
               />
             </span>
@@ -502,7 +502,7 @@ export function WorkAhead({
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
         {overdue ? (
-          <button type="button" onClick={onOverdue} className="inline-flex items-center gap-1 text-gold-soft">
+          <button type="button" onClick={onOverdue} className="inline-flex items-center gap-1 text-brass-strong">
             <Clock3 size={13} />
             {overdue} overdue {overdue === 1 ? "task" : "tasks"}
             <ArrowRight size={14} />
@@ -530,9 +530,9 @@ export function DecisionsPanel({
   workspaceId: string;
 }) {
   return (
-    <section className="rounded-xl border border-white/10 bg-coal p-5">
+    <section className="rounded-xl border border-line bg-surface p-5">
       <PanelHeading title="Your team needs a decision" subtitle="A human check before the next step.">
-        <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-ivory">
+        <span className="rounded-full bg-ink/10 px-2 py-0.5 text-xs text-ink">
           {approvals.length}
         </span>
       </PanelHeading>
@@ -543,13 +543,13 @@ export function DecisionsPanel({
               prefetch={false}
               href={`/workspace/${workspaceId}/approvals`}
               key={approval.id}
-              className="flex items-center gap-3 rounded-lg border border-white/10 px-3 py-3 hover:border-gold"
+              className="flex items-center gap-3 rounded-lg border border-line px-3 py-3 hover:border-sand"
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-raised text-gold-soft">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-paper-2 text-brass-strong">
                 <ShieldCheck size={18} strokeWidth={1.5} />
               </span>
               <span className="min-w-0 flex-1">
-                <strong className="block truncate text-sm text-ivory">
+                <strong className="block truncate text-sm text-ink">
                   {approval.action_type.replace(/_/g, " ")}
                   {approval.reason ? ` — ${approval.reason}` : ""}
                 </strong>
@@ -571,7 +571,7 @@ export function DecisionsPanel({
         <div className="mt-4 flex items-start gap-3 text-sm text-muted">
           <ShieldCheck size={20} />
           <div>
-            <strong className="text-ivory">No decisions waiting.</strong>
+            <strong className="text-ink">No decisions waiting.</strong>
             <p>We will keep the next human check here.</p>
           </div>
         </div>
@@ -603,9 +603,9 @@ export function ActivityList({
         return (
           <p
             key={event.id}
-            className="flex flex-wrap items-center gap-2 rounded-lg border border-white/10 bg-coal px-3 py-2 text-sm text-muted"
+            className="flex flex-wrap items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2 text-sm text-muted"
           >
-            <span className="font-medium text-ivory">
+            <span className="font-medium text-ink">
               {event.event_type.replace(/_/g, " ")}
             </span>
             {task && <span>· {task.title}</span>}
@@ -638,7 +638,7 @@ export function TeamDirectory({
     <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="font-semibold text-ivory">Good work is a team effort.</h2>
+          <h2 className="font-semibold text-ink">Good work is a team effort.</h2>
           <p className="mt-1 text-sm text-muted">
             Clear ownership. Realistic capacity. A person behind every next step.
           </p>
@@ -662,7 +662,7 @@ export function TeamDirectory({
               type="button"
               onClick={() => onMember(member.id)}
               aria-label={`Open ${memberLabel(member)} tasks and capacity`}
-              className="rounded-xl border border-white/10 bg-coal p-5 text-left hover:border-gold"
+              className="rounded-xl border border-line bg-surface p-5 text-left hover:border-sand"
             >
               <div className="flex items-start justify-between gap-2">
                 <PersonAvatar
@@ -672,7 +672,7 @@ export function TeamDirectory({
                 <span className="text-xs text-muted">{memberLabel(member).split(" · ")[0]}</span>
                 <ArrowUpRight size={17} className="text-muted" />
               </div>
-              <h3 className="mt-3 font-semibold text-ivory">
+              <h3 className="mt-3 font-semibold text-ink">
                 {memberLabel(member)}
                 {member.id === currentMemberId && <small> (you)</small>}
               </h3>
@@ -684,7 +684,7 @@ export function TeamDirectory({
                 <span>
                   {open.length} open {open.length === 1 ? "task" : "tasks"}
                 </span>
-                <strong className="text-ivory">
+                <strong className="text-ink">
                   {capacity ? Math.round((open.length / capacity) * 100) : 0}%
                   capacity
                 </strong>
@@ -700,7 +700,7 @@ export function TeamDirectory({
           );
         })}
       </div>
-      <div className="mt-4 flex items-start gap-2 rounded-xl border border-white/10 bg-coal px-4 py-3 text-sm text-muted">
+      <div className="mt-4 flex items-start gap-2 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-muted">
         <Users size={17} className="mt-0.5 shrink-0" />
         <p>
           Capacity is a planning guide based on open task count, not hours,
@@ -787,10 +787,10 @@ export function CalendarView({
   };
   return (
     <>
-      <section className="rounded-xl border border-white/10 bg-coal p-5">
+      <section className="rounded-xl border border-line bg-surface p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="font-semibold text-ivory">
+            <h2 className="font-semibold text-ink">
               {formatDay(month, { month: "long", year: "numeric" })}
             </h2>
             <p className="mt-1 text-sm text-muted">Deadlines, with the people behind them.</p>
@@ -807,7 +807,7 @@ export function CalendarView({
             <button
               type="button"
               onClick={() => choose(today)}
-              className="rounded-lg border border-white/15 px-3 py-1.5 text-sm text-muted hover:border-gold"
+              className="rounded-lg border border-line px-3 py-1.5 text-sm text-muted hover:border-sand"
             >
               Today
             </button>
@@ -819,7 +819,7 @@ export function CalendarView({
                 setMonth(next);
                 setSelected(next);
               }}
-              className="rounded-lg border border-white/15 px-2 py-1.5 text-muted hover:border-gold"
+              className="rounded-lg border border-line px-2 py-1.5 text-muted hover:border-sand"
             >
               <ChevronLeft size={18} />
             </button>
@@ -831,7 +831,7 @@ export function CalendarView({
                 setMonth(next);
                 setSelected(next);
               }}
-              className="rounded-lg border border-white/15 px-2 py-1.5 text-muted hover:border-gold"
+              className="rounded-lg border border-line px-2 py-1.5 text-muted hover:border-sand"
             >
               <ChevronRight size={18} />
             </button>
@@ -861,11 +861,11 @@ export function CalendarView({
                       date.slice(0, 7) !== month.slice(0, 7)
                         ? "border-transparent text-muted/60"
                         : date === selected
-                          ? "border-gold bg-raised"
-                          : "border-white/10 hover:border-gold"
-                    } ${date === today ? "ring-1 ring-gold/40" : ""}`}
+                          ? "border-sand bg-paper-2"
+                          : "border-line hover:border-sand"
+                    } ${date === today ? "ring-1 ring-brass/40" : ""}`}
                   >
-                    <span className="text-sm font-medium text-ivory">
+                    <span className="text-sm font-medium text-ink">
                       {Number(date.slice(-2))}
                     </span>
                     <span className="mt-1 block space-y-0.5 truncate text-xs text-muted">
@@ -888,7 +888,7 @@ export function CalendarView({
             ` ${undated} ${undated === 1 ? "task has" : "tasks have"} no due date and ${undated === 1 ? "is" : "are"} not shown.`}
         </p>
       </section>
-      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5">
         <PanelHeading
           title={
             selected === today
@@ -958,13 +958,13 @@ export function SearchView({
   const total = taskResults.length + projectResults.length + memberResults.length;
   return (
     <>
-      <h2 id="th-dialog-title" className="text-lg font-semibold text-ivory">
+      <h2 id="th-dialog-title" className="text-lg font-semibold text-ink">
         Find your next step.
       </h2>
       <p id="th-dialog-description" className="mt-1 text-sm text-muted">
         Search tasks, projects, and teammates in this workspace.
       </p>
-      <label className="mt-4 flex items-center gap-2 rounded-lg border border-white/15 bg-raised px-3 py-2.5">
+      <label className="mt-4 flex items-center gap-2 rounded-lg border border-line bg-paper-2 px-3 py-2.5">
         <Search size={19} className="text-muted" />
         <span className="sr-only">Search workspace</span>
         <input
@@ -973,7 +973,7 @@ export function SearchView({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="A task, a project, a person…"
-          className="w-full bg-transparent text-sm text-ivory outline-none"
+          className="w-full bg-transparent text-sm text-ink outline-none"
         />
       </label>
       <div className="mt-4 space-y-4" aria-live="polite">
@@ -990,13 +990,13 @@ export function SearchView({
                       key={task.id}
                       type="button"
                       onClick={() => onEdit(task)}
-                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-white/5"
+                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-ink/5"
                     >
                       <span className="text-muted">
                         <LayoutList size={17} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <strong className="block truncate text-sm text-ivory">{task.title}</strong>
+                        <strong className="block truncate text-sm text-ink">{task.title}</strong>
                         <small className="text-xs text-muted">
                           {projectById(projects, task.project_id)?.name ?? "No project"} · due{" "}
                           {dueLabel(taskDueDate(task), today).toLowerCase()}
@@ -1017,13 +1017,13 @@ export function SearchView({
                       key={project.id}
                       type="button"
                       onClick={() => onProject(project)}
-                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-white/5"
+                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-ink/5"
                     >
                       <span className="text-muted">
                         <FolderKanban size={17} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <strong className="block truncate text-sm text-ivory">{project.name}</strong>
+                        <strong className="block truncate text-sm text-ink">{project.name}</strong>
                         <small className="text-xs text-muted">Project</small>
                       </span>
                       <ArrowUpRight size={15} className="text-muted" />
@@ -1041,7 +1041,7 @@ export function SearchView({
                       key={member.id}
                       type="button"
                       onClick={() => onMember(member.id)}
-                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-white/5"
+                      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-ink/5"
                     >
                       <PersonAvatar
                         initials={memberInitials(member)}
@@ -1049,7 +1049,7 @@ export function SearchView({
                         small
                       />
                       <span className="min-w-0 flex-1">
-                        <strong className="block truncate text-sm text-ivory">{memberLabel(member)}</strong>
+                        <strong className="block truncate text-sm text-ink">{memberLabel(member)}</strong>
                         <small className="text-xs text-muted">{member.role}</small>
                       </span>
                       <ArrowRight size={15} className="text-muted" />
@@ -1086,7 +1086,7 @@ export function InboxView({
 }) {
   return (
     <>
-      <h2 id="th-dialog-title" className="text-lg font-semibold text-ivory">
+      <h2 id="th-dialog-title" className="text-lg font-semibold text-ink">
         A little less catching up.
       </h2>
       <p id="th-dialog-description" className="mt-1 text-sm text-muted">
@@ -1106,11 +1106,11 @@ export function InboxView({
                   prefetch={false}
                   key={approval.id}
                   href={`/workspace/${workspaceId}/approvals`}
-                  className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-white/5"
+                  className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-ink/5"
                 >
-                  <ShieldCheck size={17} className="text-gold-soft" />
+                  <ShieldCheck size={17} className="text-brass-strong" />
                   <span className="min-w-0 flex-1">
-                    <strong className="block truncate text-sm text-ivory">
+                    <strong className="block truncate text-sm text-ink">
                       {approval.action_type.replace(/_/g, " ")}
                     </strong>
                     <small className="text-xs text-muted">

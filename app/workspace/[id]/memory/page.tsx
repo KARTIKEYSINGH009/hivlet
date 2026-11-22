@@ -18,14 +18,14 @@ export default async function MemoryPage({ params }: { params: Promise<{ id: str
     <div>
       <PageHeader title="Shared memory" description={`Verified work in ${workspace.name} that other tasks can reuse, instead of paying for a fresh run. Suggestions only, never automatic.`} />
       <section className="mt-10">
-        <h2 className="font-semibold text-ivory">Reuse suggestions for todo tasks</h2>
+        <h2 className="font-semibold text-ink">Reuse suggestions for todo tasks</h2>
         <div className="mt-3 space-y-3">
           {todos.length === 0 && <EmptyState title="No todo tasks" hint="Create a todo task, then similar verified work will be suggested here." />}
           {todos.map((t) => {
             const cands = findReuseCandidates(t.title, verified);
             return (
-              <div key={t.id} className="rounded-xl border border-white/10 bg-coal p-5">
-                <p className="font-medium text-ivory">{t.title}</p>
+              <div key={t.id} className="rounded-xl border border-line bg-surface p-5">
+                <p className="font-medium text-ink">{t.title}</p>
                 {cands.length === 0 ? <p className="mt-2 text-sm text-muted">No similar verified work found. Run this fresh.</p> : cands.map((c) => <p key={c.id} className="mt-2 text-sm text-muted">Reuse candidate: {c.title} ({(c.score * 100).toFixed(0)}% title overlap). Check the verified result before reusing it.</p>)}
               </div>
             );
@@ -33,12 +33,12 @@ export default async function MemoryPage({ params }: { params: Promise<{ id: str
         </div>
       </section>
       <section className="mt-10">
-        <h2 className="font-semibold text-ivory">Verified outputs</h2>
+        <h2 className="font-semibold text-ink">Verified outputs</h2>
         <div className="mt-3 space-y-3">
           {verified.length === 0 && <EmptyState title="No verified outputs yet" hint="Complete and accept a task, then its result will appear here as reusable memory." />}
           {verified.map((t) => (
-            <div key={t.id} className="rounded-xl border border-white/10 bg-coal p-5">
-              <p className="font-medium text-ivory">{t.title}</p>
+            <div key={t.id} className="rounded-xl border border-line bg-surface p-5">
+              <p className="font-medium text-ink">{t.title}</p>
               <p className="mt-2 text-sm text-muted">{t.result}</p>
             </div>
           ))}

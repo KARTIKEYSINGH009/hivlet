@@ -310,7 +310,7 @@ export default async function ApprovalsPage({
     humanEdited.approvals.has(approvalId);
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-brass";
 
   return (
     <div>
@@ -320,14 +320,14 @@ export default async function ApprovalsPage({
       />
 
       {runProcessed !== null && (
-        <p className="mt-8 rounded-xl border border-white/10 bg-coal px-4 py-3 text-sm text-ivory">
+        <p className="mt-8 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink">
           Worker run: processed {runProcessed}, succeeded {runSucceeded ?? 0},
           failed {runFailed ?? 0} (oldest queued executions first, this
           workspace only).
         </p>
       )}
       {runError === "worker_not_configured" && (
-        <p className="mt-8 rounded-xl border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="mt-8 rounded-xl border border-[#AC4136]/40 bg-surface px-4 py-3 text-sm text-[#AC4136]">
           Worker not configured: the server-only service key is unset, so no
           queued execution was run. Set SUPABASE_SERVICE_ROLE_KEY in Vercel,
           then try again.
@@ -345,25 +345,25 @@ export default async function ApprovalsPage({
         }
       />
       {webhookNotice === "redelivered" && (
-        <p className="mt-8 rounded-xl border border-[#9db89a]/40 bg-[#1a2a1d] px-4 py-3 text-sm text-[#9db89a]">
+        <p className="mt-8 rounded-xl border border-[#1A7A57]/40 bg-[#EAF4EF] px-4 py-3 text-sm text-[#1A7A57]">
           Webhook re-delivered: the endpoint answered 2xx.
         </p>
       )}
       {webhookNotice === "failed" && (
-        <p className="mt-8 rounded-xl border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="mt-8 rounded-xl border border-[#AC4136]/40 bg-surface px-4 py-3 text-sm text-[#AC4136]">
           Webhook delivery failed again. Check the configured URL in Settings
           and that HIVLET_WEBHOOK_SECRET is set on the server, then retry.
         </p>
       )}
       {webhookNotice === "not_approved" && (
-        <p className="mt-8 rounded-xl border border-white/10 bg-coal px-4 py-3 text-sm text-muted">
+        <p className="mt-8 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-muted">
           Webhooks only fire for approved approvals, so nothing was sent.
         </p>
       )}
 
       {leader && (
-        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Run queued executions now</h2>
+        <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Run queued executions now</h2>
           <p className="mt-1 text-xs text-muted">
             This workspace has {queuedCount ?? 0} queued execution
             {(queuedCount ?? 0) === 1 ? "" : "s"}. Approving only enqueues a
@@ -374,7 +374,7 @@ export default async function ApprovalsPage({
           <form action={runQueuedExecutions.bind(null, id)} className="mt-4">
             <button
               type="submit"
-              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+              className="w-fit rounded-lg bg-ink px-5 py-2 text-sm font-medium text-white hover:bg-ink-2"
             >
               Run queued executions now
             </button>
@@ -382,8 +382,8 @@ export default async function ApprovalsPage({
         </section>
       )}
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">Request an approval</h2>
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">Request an approval</h2>
         <p className="mt-1 text-xs text-muted">
           Approving enqueues an execution carrying only the approved
           payload, which the worker then runs. The app never performs the
@@ -427,7 +427,7 @@ export default async function ApprovalsPage({
           />
           <button
             type="submit"
-            className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
+            className="w-fit rounded-lg bg-ink px-5 py-2 text-sm font-medium text-white hover:bg-ink-2 sm:col-span-2"
           >
             Request approval
           </button>
@@ -435,7 +435,7 @@ export default async function ApprovalsPage({
       </section>
 
       <section className="mt-10">
-        <h2 className="font-semibold text-ivory">
+        <h2 className="font-semibold text-ink">
           Pending ({pending.length})
         </h2>
         <div className="mt-3 space-y-4">
@@ -445,11 +445,11 @@ export default async function ApprovalsPage({
           {pending.map((a) => (
             <article
               key={a.id}
-              className="rounded-xl border border-white/10 bg-coal p-5"
+              className="rounded-xl border border-line bg-surface p-5"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium text-ivory">
+                  <p className="font-medium text-ink">
                     {a.agents?.name ?? "Agent"} wants to: {a.action_type.replace("_", " ")}
                   </p>
                   <p className="mt-0.5 text-sm text-muted">
@@ -463,15 +463,15 @@ export default async function ApprovalsPage({
                 <p className="mt-2 text-sm text-muted">Reason: {a.reason}</p>
               )}
               {isHumanEdited(a.id) && (
-                <p className="mt-2 w-fit rounded-full border border-gold/60 bg-transparent px-2.5 py-0.5 text-xs font-medium text-gold-soft">
+                <p className="mt-2 w-fit rounded-full border border-brass-line bg-transparent px-2.5 py-0.5 text-xs font-medium text-brass-strong">
                   Human edited — payload changed by a leader, not the agent
                 </p>
               )}
-              <pre className="mt-3 overflow-x-auto rounded-lg bg-ink p-3 text-xs text-ivory">
+              <pre className="mt-3 overflow-x-auto rounded-lg border border-line bg-paper-2 p-3 text-xs text-ink">
                 {JSON.stringify(a.action_detail, null, 2)}
               </pre>
               {leader && (
-                <details className="mt-3 rounded-lg border border-white/10 px-3 py-2">
+                <details className="mt-3 rounded-lg border border-line px-3 py-2">
                   <summary className="cursor-pointer text-xs font-medium text-muted">
                     Edit payload before approving
                   </summary>
@@ -490,11 +490,11 @@ export default async function ApprovalsPage({
                       name="payload"
                       rows={6}
                       defaultValue={JSON.stringify(a.action_detail, null, 2)}
-                      className="w-full rounded-lg border border-white/15 bg-ink px-3 py-2 font-mono text-xs text-ivory focus:border-gold"
+                      className="w-full rounded-lg border border-line bg-surface px-3 py-2 font-mono text-xs text-ink focus:border-brass"
                     />
                     <button
                       type="submit"
-                      className="rounded-lg border border-gold/60 bg-transparent px-4 py-2 text-sm font-medium text-gold-soft hover:border-gold"
+                      className="rounded-lg border border-brass-line bg-transparent px-4 py-2 text-sm font-medium text-brass-strong hover:border-sand"
                     >
                       Save edited payload
                     </button>
@@ -509,7 +509,7 @@ export default async function ApprovalsPage({
                     <input type="hidden" name="approval_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+                      className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
                     >
                       Approve{isHumanEdited(a.id) ? " as edited" : " exact payload"}
                     </button>
@@ -520,7 +520,7 @@ export default async function ApprovalsPage({
                     <input type="hidden" name="approval_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg border border-[#d98c8c]/40 bg-coal px-4 py-2 text-sm font-medium text-[#d98c8c] hover:border-[#d98c8c]"
+                      className="rounded-lg border border-[#AC4136]/40 bg-surface px-4 py-2 text-sm font-medium text-[#AC4136] hover:border-[#AC4136]"
                     >
                       Reject
                     </button>
@@ -538,20 +538,20 @@ export default async function ApprovalsPage({
 
       {decided.length > 0 && (
         <section className="mt-10">
-          <h2 className="font-semibold text-ivory">Decision history</h2>
+          <h2 className="font-semibold text-ink">Decision history</h2>
           <div className="mt-3 space-y-3">
             {decided.map((a) => {
               const webhook = webhookStatuses.get(a.id);
               return (
                 <div
                   key={a.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3"
                 >
                   <p className="text-sm text-muted">
                     {a.agents?.name ?? "Agent"} — {a.action_type.replace("_", " ")}
                     {a.tasks ? ` (${a.tasks.title})` : ""}
                     {isHumanEdited(a.id) && (
-                      <span className="ml-2 rounded-full border border-gold/60 px-2 py-0.5 text-xs font-medium text-gold-soft">
+                      <span className="ml-2 rounded-full border border-brass-line px-2 py-0.5 text-xs font-medium text-brass-strong">
                         Human edited
                       </span>
                     )}
@@ -564,10 +564,10 @@ export default async function ApprovalsPage({
                       <span
                         className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
                           webhook.status === "delivered"
-                            ? "border-[#9db89a]/40 bg-[#1a2a1d] text-[#9db89a]"
+                            ? "border-[#1A7A57]/40 bg-[#EAF4EF] text-[#1A7A57]"
                             : webhook.status === "delivery_failed"
-                              ? "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]"
-                              : "border-white/15 bg-coal text-muted"
+                              ? "border-[#AC4136]/40 bg-[#FBEDEA] text-[#AC4136]"
+                              : "border-line bg-surface text-muted"
                         }`}
                       >
                         Webhook:{" "}
@@ -585,7 +585,7 @@ export default async function ApprovalsPage({
                           <input type="hidden" name="approval_id" value={a.id} />
                           <button
                             type="submit"
-                            className="rounded-lg border border-gold/60 bg-transparent px-3 py-1.5 text-xs font-medium text-gold-soft hover:border-gold"
+                            className="rounded-lg border border-brass-line bg-transparent px-3 py-1.5 text-xs font-medium text-brass-strong hover:border-sand"
                           >
                             Retry webhook
                           </button>

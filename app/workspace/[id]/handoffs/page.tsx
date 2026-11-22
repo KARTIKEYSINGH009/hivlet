@@ -189,11 +189,11 @@ export default async function HandoffsPage({
   }[];
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-brass";
   const btnCls =
-    "rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft";
+    "rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white hover:bg-ink-2";
   const ghostBtnCls =
-    "rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold";
+    "rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:border-sand";
 
   return (
     <div>
@@ -209,8 +209,8 @@ export default async function HandoffsPage({
         }
       />
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">Create a handoff</h2>
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">Create a handoff</h2>
         {taskList.length === 0 || agentList.length < 2 ? (
           <p className="mt-3 text-sm text-muted">
             You need at least one task and two agents in this workspace
@@ -267,7 +267,7 @@ export default async function HandoffsPage({
             />
             <button
               type="submit"
-              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
+              className="w-fit rounded-lg bg-ink px-5 py-2 text-sm font-medium text-white hover:bg-ink-2 sm:col-span-2"
             >
               Create handoff
             </button>
@@ -289,11 +289,11 @@ export default async function HandoffsPage({
         {handoffList.map((h) => (
           <article
             key={h.id}
-            className="rounded-xl border border-white/10 bg-coal p-5"
+            className="rounded-xl border border-line bg-surface p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-medium text-ivory">
+                <p className="font-medium text-ink">
                   {taskTitle.get(h.task_id) ?? "Task"}
                 </p>
                 <p className="mt-1 text-sm text-muted">
@@ -304,7 +304,7 @@ export default async function HandoffsPage({
                   <p className="mt-1 text-sm text-muted">{h.note}</p>
                 )}
               </div>
-              <span className="rounded-full border border-white/15 px-2.5 py-0.5 text-xs font-medium text-muted">
+              <span className="rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-muted">
                 {h.status}
               </span>
             </div>

@@ -27,12 +27,12 @@ export default async function UserSettingsPage() {
         actions={<SignOutButton />}
       />
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">Profile</h2>
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">Profile</h2>
         <dl className="mt-3 space-y-2 text-sm">
           <div className="flex justify-between gap-4">
             <dt className="text-muted">Email</dt>
-            <dd className="font-medium text-ivory">{user.email}</dd>
+            <dd className="font-medium text-ink">{user.email}</dd>
           </div>
           <div className="flex justify-between gap-4">
             <dt className="text-muted">User ID</dt>
@@ -55,8 +55,8 @@ export default async function UserSettingsPage() {
         </p>
       </section>
 
-      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">Your workspaces</h2>
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">Your workspaces</h2>
         <div className="mt-3 space-y-2">
           {workspaces.length === 0 && (
             <EmptyState title="No workspaces yet" hint="Create one from the Workspaces page." />
@@ -65,9 +65,9 @@ export default async function UserSettingsPage() {
             <Link
               key={m.workspace!.id}
               href={`/workspace/${m.workspace!.id}/overview`}
-              className="flex items-center justify-between rounded-lg border border-white/10 px-4 py-3 hover:border-white/15"
+              className="flex items-center justify-between rounded-lg border border-line px-4 py-3 hover:border-line"
             >
-              <span className="text-sm font-medium text-ivory">
+              <span className="text-sm font-medium text-ink">
                 {m.workspace!.name}
               </span>
               <span className="text-xs uppercase text-muted">{m.role}</span>

@@ -57,12 +57,12 @@ export default function AuthForm({ mode, redirectTo }: AuthFormProps) {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-white/15 bg-coal px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold";
+    "w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass";
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label htmlFor="email" className="text-sm font-medium text-ivory">
+        <label htmlFor="email" className="text-sm font-medium text-ink">
           Email
         </label>
         <input
@@ -76,7 +76,7 @@ export default function AuthForm({ mode, redirectTo }: AuthFormProps) {
         />
       </div>
       <div>
-        <label htmlFor="password" className="text-sm font-medium text-ivory">
+        <label htmlFor="password" className="text-sm font-medium text-ink">
           Password
         </label>
         <input
@@ -92,12 +92,12 @@ export default function AuthForm({ mode, redirectTo }: AuthFormProps) {
       </div>
 
       {error && (
-        <p className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-4 py-3 text-sm text-[#AC4136]">
           {error}
         </p>
       )}
       {notice && (
-        <p className="rounded-lg border border-gold/30 bg-gold/10 px-4 py-3 text-sm text-gold-soft">
+        <p className="rounded-lg border border-brass-line bg-brass-tint px-4 py-3 text-sm text-brass-strong">
           {notice}
         </p>
       )}
@@ -105,7 +105,7 @@ export default function AuthForm({ mode, redirectTo }: AuthFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gold-soft disabled:opacity-50"
+        className="w-full rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-2 disabled:opacity-50"
       >
         {loading
           ? "Working…"

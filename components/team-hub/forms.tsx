@@ -67,7 +67,7 @@ export function TaskEditor({
       onSubmit={(e) => submit(task ? onUpdate : onCreate, e, onClose)}
       className="grid gap-3 sm:grid-cols-2"
     >
-      <h2 id="th-dialog-title" className="text-lg font-semibold text-ivory sm:col-span-2">
+      <h2 id="th-dialog-title" className="text-lg font-semibold text-ink sm:col-span-2">
         {task ? `Edit task: ${task.title}` : "Create a task"}
       </h2>
       {task && <input type="hidden" name="task_id" value={task.id} />}
@@ -161,7 +161,7 @@ export function ProjectEditor({
       onSubmit={(e) => submit(project ? onUpdate : onCreate, e, onClose)}
       className="grid gap-3 sm:grid-cols-2"
     >
-      <h2 id="th-dialog-title" className="text-lg font-semibold text-ivory sm:col-span-2">
+      <h2 id="th-dialog-title" className="text-lg font-semibold text-ink sm:col-span-2">
         {project ? `Edit project: ${project.name}` : "Create a project"}
       </h2>
       {project && <input type="hidden" name="project_id" value={project.id} />}
@@ -207,7 +207,7 @@ export function MemberDetails({
 }) {
   return (
     <div>
-      <h2 id="th-dialog-title" className="text-lg font-semibold text-ivory">
+      <h2 id="th-dialog-title" className="text-lg font-semibold text-ink">
         {memberLabel(member)}
       </h2>
       <p id="th-dialog-description" className="mt-1 text-sm text-muted">
@@ -220,7 +220,7 @@ export function MemberDetails({
           <p className="text-sm text-muted">No open tasks assigned to this member.</p>
         )}
         {openTasks.map((t) => (
-          <p key={t.id} className="rounded-lg border border-white/10 bg-raised px-3 py-2 text-sm text-ivory">
+          <p key={t.id} className="rounded-lg border border-line bg-paper-2 px-3 py-2 text-sm text-ink">
             {t.title} <span className="text-muted">· {t.status.replace(/_/g, " ")}</span>
           </p>
         ))}

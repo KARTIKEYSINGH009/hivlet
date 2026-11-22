@@ -163,18 +163,18 @@ async function changeStatus(
 function ReviewGateNote({ gate }: { gate: VerificationResult }) {
   if (gate.ok) {
     return (
-      <p className="mt-2 font-medium text-[#9db89a]">
+      <p className="mt-2 font-medium text-[#1A7A57]">
         Pre-flight: passed — output is non-empty and within the length cap.
       </p>
     );
   }
   return (
     <div className="mt-2">
-      <p className="font-medium text-[#d98c8c]">
+      <p className="font-medium text-[#AC4136]">
         Pre-flight: {gate.issues.length} issue{gate.issues.length === 1 ? "" : "s"} —
         review before accepting:
       </p>
-      <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[#d98c8c]">
+      <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[#AC4136]">
         {gate.issues.map((issue, i) => (
           <li key={i}>{issue.message}</li>
         ))}
@@ -367,11 +367,11 @@ export default async function TasksPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-3 text-base text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-3 text-base text-ink focus:border-brass";
   const btnCls =
-    "rounded-lg bg-gold px-4 py-3 text-sm font-medium text-ink hover:bg-gold-soft";
+    "rounded-lg bg-ink px-4 py-3 text-sm font-medium text-white hover:bg-ink-2";
   const ghostBtnCls =
-    "rounded-lg border border-white/15 bg-coal px-4 py-3 text-sm font-medium text-muted hover:border-gold";
+    "rounded-lg border border-line bg-surface px-4 py-3 text-sm font-medium text-muted hover:border-sand";
 
   return (
     <div>
@@ -387,14 +387,14 @@ export default async function TasksPage({
         }
       />
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">Create a task</h2>
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">Create a task</h2>
         <form
           action={createTask.bind(null, id)}
           className="mt-4 grid gap-3 sm:grid-cols-2"
         >
           <div>
-            <label htmlFor="task-title" className="text-sm font-medium text-ivory">
+            <label htmlFor="task-title" className="text-sm font-medium text-ink">
               Task title
             </label>
             <input
@@ -406,7 +406,7 @@ export default async function TasksPage({
             />
           </div>
           <div>
-            <label htmlFor="task-agent" className="text-sm font-medium text-ivory">
+            <label htmlFor="task-agent" className="text-sm font-medium text-ink">
               Assigned agent
             </label>
             <select id="task-agent" name="assigned_agent_id" className={inputCls} defaultValue="">
@@ -421,7 +421,7 @@ export default async function TasksPage({
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label htmlFor="task-description" className="text-sm font-medium text-ivory">
+            <label htmlFor="task-description" className="text-sm font-medium text-ink">
               Description
             </label>
             <input
@@ -432,7 +432,7 @@ export default async function TasksPage({
             />
           </div>
           <div>
-            <label htmlFor="task-priority" className="text-sm font-medium text-ivory">
+            <label htmlFor="task-priority" className="text-sm font-medium text-ink">
               Priority
             </label>
             <select id="task-priority" name="priority" className={inputCls} defaultValue="medium">
@@ -443,7 +443,7 @@ export default async function TasksPage({
             </select>
           </div>
           <div>
-            <label htmlFor="task-due" className="text-sm font-medium text-ivory">
+            <label htmlFor="task-due" className="text-sm font-medium text-ink">
               Due date
             </label>
             <input id="task-due" name="due_at" type="date" className={inputCls} />
@@ -467,14 +467,14 @@ export default async function TasksPage({
           aria-label="Task status"
           className="mt-8 flex gap-2 overflow-x-auto pb-1 lg:hidden"
         >
-          <a href="#tasks-all" className="shrink-0 rounded-full border border-white/15 px-3 py-2 text-sm text-muted">
+          <a href="#tasks-all" className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-muted">
             All tasks
           </a>
           {COLUMNS.map((col) => (
             <a
               key={col.key}
               href={`#col-${col.key}`}
-              className="shrink-0 rounded-full border border-white/15 px-3 py-2 text-sm text-muted"
+              className="shrink-0 rounded-full border border-line px-3 py-2 text-sm text-muted"
             >
               {col.label}
             </a>
@@ -494,9 +494,9 @@ export default async function TasksPage({
                     : "w-full lg:w-[280px] lg:shrink-0"
                 }
               >
-                <h2 className="flex items-center justify-between font-display text-lg text-ivory">
+                <h2 className="flex items-center justify-between text-lg text-ink">
                   {col.label}
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">
+                  <span className="rounded-full bg-ink/10 px-2 py-0.5 text-xs">
                     {colTasks.length}
                   </span>
                 </h2>
@@ -515,10 +515,10 @@ export default async function TasksPage({
                     return (
                       <article
                         key={t.id}
-                        className="rounded-xl border border-white/10 bg-coal p-4"
+                        className="rounded-xl border border-line bg-surface p-4"
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="text-sm font-semibold text-ivory">
+                          <h3 className="text-sm font-semibold text-ink">
                             {t.title}
                           </h3>
                           <TaskStatusPill status={t.status} />
@@ -541,18 +541,18 @@ export default async function TasksPage({
                             : "Unassigned"}
                         </p>
                         {t.status === "failed" && t.failure_reason && (
-                          <p className="mt-2 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-3 py-2 text-xs text-[#d98c8c]">
+                          <p className="mt-2 rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-3 py-2 text-xs text-[#AC4136]">
                             Failed: {t.failure_reason}
                           </p>
                         )}
                         {t.status === "done" && t.result && (
-                          <p className="mt-2 rounded-lg border border-[#9db89a]/30 bg-[#1a2a1d] px-3 py-2 text-xs text-[#9db89a]">
+                          <p className="mt-2 rounded-lg border border-[#1A7A57]/30 bg-[#EAF4EF] px-3 py-2 text-xs text-[#1A7A57]">
                             Result: {t.result}
                           </p>
                         )}
                         {t.status === "in_review" && t.result && (
-                          <div className="mt-2 rounded-lg border border-gold/40 px-3 py-2 text-xs">
-                            <p className="font-medium text-ivory">
+                          <div className="mt-2 rounded-lg border border-brass-line px-3 py-2 text-xs">
+                            <p className="font-medium text-ink">
                               Result awaiting review:
                             </p>
                             <p className="mt-1 whitespace-pre-wrap text-muted">
@@ -591,7 +591,7 @@ export default async function TasksPage({
                                   <input
                                     name="correction_note"
                                     placeholder="What should change? Only this note + the previous output go back to the agent."
-                                    className="w-full rounded-lg border border-white/15 px-2 py-1.5 text-xs"
+                                    className="w-full rounded-lg border border-line px-2 py-1.5 text-xs"
                                   />
                                 )}
                                 <button type="submit" className={btnCls}>
@@ -665,7 +665,7 @@ export default async function TasksPage({
                               <input
                                 name="result"
                                 placeholder="Acceptance note (optional)"
-                                className="w-full rounded-lg border border-white/15 px-2 py-1.5 text-xs"
+                                className="w-full rounded-lg border border-line px-2 py-1.5 text-xs"
                               />
                               <button type="submit" className={btnCls}>
                                 Accept
@@ -686,7 +686,7 @@ export default async function TasksPage({
                               <input
                                 name="failure_reason"
                                 placeholder="Why did it fail?"
-                                className="w-full rounded-lg border border-white/15 px-2 py-1.5 text-xs"
+                                className="w-full rounded-lg border border-line px-2 py-1.5 text-xs"
                               />
                               <button type="submit" className={ghostBtnCls}>
                                 Mark failed
@@ -695,7 +695,7 @@ export default async function TasksPage({
                           )}
                         </div>
 
-                        <details className="mt-3 border-t border-white/10 pt-3">
+                        <details className="mt-3 border-t border-line pt-3">
                           <summary className="cursor-pointer text-xs font-medium text-muted">
                             Edit &amp; execution history
                           </summary>
@@ -767,7 +767,7 @@ export default async function TasksPage({
                             {taskExecutions.map((x) => (
                               <div
                                 key={x.id}
-                                className="rounded-lg border border-white/10 px-3 py-2"
+                                className="rounded-lg border border-line px-3 py-2"
                               >
                                 <p className="flex flex-wrap items-center gap-2 text-xs text-muted">
                                   <ExecutionStatusPill status={x.status} />
@@ -786,7 +786,7 @@ export default async function TasksPage({
                                   </p>
                                 )}
                                 {x.error && (
-                                  <p className="mt-1 text-xs text-[#d98c8c]">
+                                  <p className="mt-1 text-xs text-[#AC4136]">
                                     {x.error}
                                   </p>
                                 )}

@@ -104,7 +104,7 @@ export default async function WorkspacesPage({
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brass">
         Your offices
       </p>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">Workspaces</h1>
@@ -114,12 +114,12 @@ export default async function WorkspacesPage({
       </p>
 
       {errorText && (
-        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="mt-6 rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-4 py-3 text-sm text-[#AC4136]">
           {errorText}
         </p>
       )}
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-6">
+      <section className="mt-8 rounded-xl border border-line bg-surface p-6">
         <h2 className="font-semibold">Create a workspace</h2>
         <form action={createWorkspace} className="mt-4 space-y-4">
           <div>
@@ -131,7 +131,7 @@ export default async function WorkspacesPage({
               name="name"
               required
               placeholder="e.g. Atlas Builders"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass"
             />
           </div>
           <div>
@@ -142,19 +142,19 @@ export default async function WorkspacesPage({
               id="description"
               name="description"
               placeholder="What does this team build?"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass"
             />
           </div>
           <button
             type="submit"
-            className="rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gold-soft"
+            className="rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-2"
           >
             Create workspace
           </button>
         </form>
       </section>
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-6">
+      <section className="mt-8 rounded-xl border border-line bg-surface p-6">
         <h2 className="font-semibold">Join with a code</h2>
         <p className="mt-1 text-sm text-muted">
           Got an invite code from a teammate? Enter it here to join their
@@ -170,12 +170,12 @@ export default async function WorkspacesPage({
               name="code"
               required
               placeholder="e.g. a1b2c3d4"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass"
             />
           </div>
           <button
             type="submit"
-            className="shrink-0 rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gold-soft"
+            className="shrink-0 rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-2"
           >
             Join
           </button>
@@ -200,28 +200,28 @@ export default async function WorkspacesPage({
             return (
               <article
                 key={ws.id}
-                className="rounded-xl border border-white/10 bg-coal p-5"
+                className="rounded-xl border border-line bg-surface p-5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-semibold">{ws.name}</h3>
-                  <span className="shrink-0 rounded-full border border-gold/40 px-2.5 py-0.5 text-xs font-medium text-gold">
+                  <span className="shrink-0 rounded-full border border-brass-line px-2.5 py-0.5 text-xs font-medium text-brass">
                     {m.role === "leader" ? "Leader" : "Member"}
                   </span>
                 </div>
                 {ws.description && (
                   <p className="mt-1 text-sm text-muted">{ws.description}</p>
                 )}
-                <div className="mt-4 border-t border-white/10 pt-4">
+                <div className="mt-4 border-t border-line pt-4">
                   <p className="text-xs font-medium uppercase tracking-wider text-muted">
                     Invite code:{" "}
-                    <span className="text-gold">{ws.invite_code}</span>
+                    <span className="text-brass">{ws.invite_code}</span>
                   </p>
                   <div className="mt-2">
                     <CopyInviteLink code={ws.invite_code} />
                   </div>
                   <a
                     href={`/workspace/${ws.id}/overview`}
-                    className="mt-3 inline-block text-sm font-medium text-gold hover:text-gold-soft"
+                    className="mt-3 inline-block text-sm font-medium text-brass hover:text-brass-strong"
                   >
                     Open office →
                   </a>

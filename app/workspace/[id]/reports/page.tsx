@@ -188,7 +188,7 @@ export default async function ReportsPage({
   const leader = isLeader(membership);
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-brass";
 
   return (
     <div>
@@ -211,8 +211,8 @@ export default async function ReportsPage({
       />
 
       {myAgentList.length > 0 && (
-        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">File a daily report</h2>
+        <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">File a daily report</h2>
           <form
             action={submitReport.bind(null, id)}
             className="mt-4 grid gap-3 sm:grid-cols-2"
@@ -251,7 +251,7 @@ export default async function ReportsPage({
             />
             <button
               type="submit"
-              className="w-fit rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
+              className="w-fit rounded-lg bg-ink px-5 py-2 text-sm font-medium text-white hover:bg-ink-2 sm:col-span-2"
             >
               Submit report
             </button>
@@ -269,14 +269,14 @@ export default async function ReportsPage({
         {reportList.map((r) => (
           <article
             key={r.id}
-            className="rounded-xl border border-white/10 bg-coal p-5"
+            className="rounded-xl border border-line bg-surface p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h3 className="font-semibold text-ivory">
+                <h3 className="font-semibold text-ink">
                   {r.agents?.name ?? "Agent"} — {r.period_date}
                   {humanEdited.reports.has(r.id) && (
-                    <span className="ml-2 rounded-full border border-gold/60 px-2 py-0.5 text-xs font-medium text-gold-soft">
+                    <span className="ml-2 rounded-full border border-brass-line px-2 py-0.5 text-xs font-medium text-brass-strong">
                       Human edited
                     </span>
                   )}
@@ -284,7 +284,7 @@ export default async function ReportsPage({
                 <p className="mt-1 text-sm text-muted">{r.summary}</p>
               </div>
               {r.verified ? (
-                <span className="rounded-full border border-[#9db89a]/40 bg-[#1a2a1d] px-2.5 py-0.5 text-xs font-medium text-[#9db89a]">
+                <span className="rounded-full border border-[#1A7A57]/40 bg-[#EAF4EF] px-2.5 py-0.5 text-xs font-medium text-[#1A7A57]">
                   Verified
                 </span>
               ) : (
@@ -292,7 +292,7 @@ export default async function ReportsPage({
                   <input type="hidden" name="report_id" value={r.id} />
                   <button
                     type="submit"
-                    className="rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft"
+                    className="rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white hover:bg-ink-2"
                   >
                     Verify
                   </button>
@@ -300,7 +300,7 @@ export default async function ReportsPage({
               )}
             </div>
             {!r.verified && leader && (
-              <details className="mt-3 rounded-lg border border-white/10 px-3 py-2">
+              <details className="mt-3 rounded-lg border border-line px-3 py-2">
                 <summary className="cursor-pointer text-xs font-medium text-muted">
                   Edit report before verifying
                 </summary>
@@ -341,7 +341,7 @@ export default async function ReportsPage({
                   />
                   <button
                     type="submit"
-                    className="w-fit rounded-lg border border-gold/60 bg-transparent px-4 py-2 text-sm font-medium text-gold-soft hover:border-gold sm:col-span-2"
+                    className="w-fit rounded-lg border border-brass-line bg-transparent px-4 py-2 text-sm font-medium text-brass-strong hover:border-sand sm:col-span-2"
                   >
                     Save edited report
                   </button>
@@ -362,12 +362,12 @@ export default async function ReportsPage({
             )}
             {r.next_steps && (
               <p className="mt-2 text-sm text-muted">
-                <span className="font-medium text-ivory">Next steps: </span>
+                <span className="font-medium text-ink">Next steps: </span>
                 {r.next_steps}
               </p>
             )}
             {r.blockers && (
-              <p className="mt-2 rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-3 py-2 text-sm text-[#d98c8c]">
+              <p className="mt-2 rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-3 py-2 text-sm text-[#AC4136]">
                 Blockers: {r.blockers}
               </p>
             )}

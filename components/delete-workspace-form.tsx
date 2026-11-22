@@ -29,7 +29,7 @@ export default function DeleteWorkspaceForm({
           setTyped("");
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
-        className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm font-medium text-[#d98c8c] hover:border-[#d98c8c]"
+        className="rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-4 py-3 text-sm font-medium text-[#AC4136] hover:border-[#AC4136]"
       >
         Delete workspace
       </button>
@@ -43,7 +43,7 @@ export default function DeleteWorkspaceForm({
       }}
       className="space-y-3"
     >
-      <p className="text-sm text-ivory">
+      <p className="text-sm text-ink">
         Delete <strong>{workspaceName}</strong> permanently?
       </p>
       <p className="text-sm text-muted">
@@ -53,7 +53,7 @@ export default function DeleteWorkspaceForm({
       <div>
         <label
           htmlFor="delete-confirm-name"
-          className="text-sm font-medium text-ivory"
+          className="text-sm font-medium text-ink"
         >
           Type {workspaceName} to confirm
         </label>
@@ -64,14 +64,14 @@ export default function DeleteWorkspaceForm({
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
           autoComplete="off"
-          className="mt-1.5 w-full rounded-lg border border-white/15 bg-coal px-4 py-3 text-base text-ivory placeholder:text-muted focus:border-gold"
+          className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-ink placeholder:text-muted focus:border-brass"
         />
       </div>
       <div className="flex flex-wrap gap-2">
         <button
           type="submit"
           disabled={typed !== workspaceName || pending}
-          className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm font-medium text-[#d98c8c] hover:border-[#d98c8c] disabled:opacity-50"
+          className="rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-4 py-3 text-sm font-medium text-[#AC4136] hover:border-[#AC4136] disabled:opacity-50"
         >
           {pending ? "Deleting…" : "Delete permanently"}
         </button>
@@ -83,7 +83,7 @@ export default function DeleteWorkspaceForm({
             setTyped("");
             setTimeout(() => firstButtonRef.current?.focus(), 0);
           }}
-          className="rounded-lg border border-white/15 bg-coal px-4 py-3 text-sm font-medium text-ivory hover:border-gold"
+          className="rounded-lg border border-line bg-surface px-4 py-3 text-sm font-medium text-ink hover:border-sand"
         >
           Cancel
         </button>

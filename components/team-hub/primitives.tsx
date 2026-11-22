@@ -38,8 +38,8 @@ export function HubButton({
       onClick={onClick}
       className={
         secondary
-          ? `rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-muted hover:border-gold ${className}`
-          : `rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft ${className}`
+          ? `rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-muted hover:border-sand ${className}`
+          : `rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2 ${className}`
       }
     >
       <span className="inline-flex items-center gap-2">
@@ -55,7 +55,7 @@ export function HubLink({ href, children }: { href: string; children: ReactNode 
     <Link
       prefetch={false}
       href={href}
-      className="inline-flex items-center gap-1 text-sm text-gold-soft hover:text-gold"
+      className="inline-flex items-center gap-1 text-sm text-brass-strong hover:text-brass"
     >
       {children}
       <ArrowUpRight size={14} />
@@ -76,7 +76,7 @@ export function PersonAvatar({
     <span
       title={label}
       aria-label={label}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-gold/40 bg-raised font-medium text-gold-soft ${
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-brass-line bg-paper-2 font-medium text-brass-strong ${
         small ? "h-7 w-7 text-xs" : "h-10 w-10 text-sm"
       }`}
     >
@@ -102,7 +102,7 @@ export function PanelHeading({
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h2 className="font-semibold text-ivory">{title}</h2>
+        <h2 className="font-semibold text-ink">{title}</h2>
         {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
       </div>
       {children && <div className="flex items-center gap-2">{children}</div>}
@@ -122,13 +122,13 @@ export function HubEmpty({
   children?: ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-coal px-5 py-8 text-center">
+    <div className="rounded-xl border border-line bg-surface px-5 py-8 text-center">
       {Icon && (
-        <span className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-raised text-muted">
+        <span className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full border border-line bg-paper-2 text-muted">
           <Icon size={24} strokeWidth={1.3} />
         </span>
       )}
-      <h3 className="font-semibold text-ivory">{title}</h3>
+      <h3 className="font-semibold text-ink">{title}</h3>
       <p className="mx-auto mt-1 max-w-md text-sm text-muted">{text}</p>
       {children && <div className="mt-4 flex justify-center gap-2">{children}</div>}
     </div>
@@ -150,7 +150,7 @@ export function Field({
 }) {
   return (
     <div className={wide ? "sm:col-span-2" : ""}>
-      <label htmlFor={id} className="text-sm font-medium text-ivory">
+      <label htmlFor={id} className="text-sm font-medium text-ink">
         {label}
       </label>
       <div className="mt-1">{children}</div>
@@ -164,7 +164,7 @@ export function Field({
 }
 
 export const inputCls =
-  "w-full rounded-lg border border-white/15 bg-coal px-3 py-2.5 text-sm text-ivory focus:border-gold";
+  "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink focus:border-brass";
 
 // Native dialog with focus trap and opener restoration, adapted from the
 // prototype's HubDialog. openKey is null when closed; any non-null key
@@ -226,7 +226,7 @@ export function HubDialog({
   return (
     <dialog
       ref={ref}
-      className="w-[min(620px,calc(100%-40px))] max-w-[620px] rounded-xl border border-white/15 bg-coal p-6 text-ivory"
+      className="w-[min(620px,calc(100%-40px))] max-w-[620px] rounded-xl border border-line bg-surface p-6 text-ink"
       aria-labelledby="th-dialog-title"
       aria-describedby="th-dialog-description"
       onKeyDown={trap}
@@ -244,7 +244,7 @@ export function HubDialog({
           type="button"
           aria-label="Close team dialog"
           onClick={onClose}
-          className="rounded-lg border border-white/15 px-2 py-1 text-muted hover:border-gold"
+          className="rounded-lg border border-line px-2 py-1 text-muted hover:border-sand"
         >
           <X size={18} />
         </button>
@@ -266,7 +266,7 @@ export function Meter({
   const pct = Math.max(0, Math.min(100, max ? (value / max) * 100 : 0));
   return (
     <span
-      className="block h-1.5 w-full overflow-hidden rounded-full bg-white/10"
+      className="block h-1.5 w-full overflow-hidden rounded-full bg-ink/10"
       role="meter"
       aria-label="Progress"
       aria-valuemin={0}
@@ -274,7 +274,7 @@ export function Meter({
       aria-valuenow={Math.min(value, max)}
     >
       <i
-        className={`block h-full rounded-full ${success ? "bg-[#9db89a]" : "bg-gold"}`}
+        className={`block h-full rounded-full ${success ? "bg-[#1A7A57]" : "bg-brass"}`}
         style={{ width: `${pct}%` } as CSSProperties}
       />
     </span>

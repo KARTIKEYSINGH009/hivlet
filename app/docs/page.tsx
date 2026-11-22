@@ -66,27 +66,27 @@ const sections = [
 export default function DocsPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="font-display text-3xl font-bold text-ivory">Docs</h1>
+      <h1 className="text-3xl font-bold text-ink">Docs</h1>
       <p className="mt-3 text-muted">
         How Orbely works, in plain words. If a feature is not built yet,
         this page says so, instead of describing it as if it works.
       </p>
       <p className="mt-3 text-sm text-muted">
-        <Link href="/changelog" className="font-medium text-gold-soft hover:underline">
+        <Link href="/changelog" className="font-medium text-brass-strong hover:underline">
           Changelog
         </Link>
         {" · "}
-        <Link href="/legal/terms" className="font-medium text-gold-soft hover:underline">
+        <Link href="/legal/terms" className="font-medium text-brass-strong hover:underline">
           Legal drafts
         </Link>
       </p>
       {sections.map((s) => (
         <section key={s.id} className="mt-10">
-          <h2 className="font-display text-xl font-bold text-ivory">{s.title}</h2>
+          <h2 className="text-xl font-bold text-ink">{s.title}</h2>
           <p className="mt-2 text-muted">{s.body}</p>
           {s.links.map((l) => (
             <p key={l.href} className="mt-2">
-              <Link href={l.href} className="text-sm font-medium text-gold-soft hover:underline">
+              <Link href={l.href} className="text-sm font-medium text-brass-strong hover:underline">
                 {l.label}
               </Link>
             </p>

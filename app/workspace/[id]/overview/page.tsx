@@ -67,7 +67,7 @@ export default async function WorkspaceOverviewPage({
         actions={
           <Link
             href={`/workspace/${id}/tasks`}
-            className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+            className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
           >
             Open task board
           </Link>
@@ -88,7 +88,7 @@ export default async function WorkspaceOverviewPage({
       </section>
 
       <section className="mt-10">
-        <h2 className="font-semibold text-ivory">Agents in this office</h2>
+        <h2 className="font-semibold text-ink">Agents in this office</h2>
         <div className="mt-3 space-y-3">
           {agentList.length === 0 && (
             <EmptyState
@@ -100,10 +100,10 @@ export default async function WorkspaceOverviewPage({
             <Link
               key={a.id}
               href={`/workspace/${id}/agents/${a.id}`}
-              className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3 hover:border-gold"
+              className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 hover:border-sand"
             >
               <span>
-                <span className="font-medium text-ivory">{a.name}</span>
+                <span className="font-medium text-ink">{a.name}</span>
                 {a.role && (
                   <span className="ml-2 text-sm text-muted">{a.role}</span>
                 )}
@@ -115,7 +115,7 @@ export default async function WorkspaceOverviewPage({
       </section>
 
       <section className="mt-10">
-        <h2 className="font-semibold text-ivory">Activity feed</h2>
+        <h2 className="font-semibold text-ink">Activity feed</h2>
         <div className="mt-3 space-y-2">
           {events.length === 0 && (
             <EmptyState title="No activity yet" hint="Task and review activity will show up here as the team works." />
@@ -123,9 +123,9 @@ export default async function WorkspaceOverviewPage({
           {events.map((e) => (
             <p
               key={e.id}
-              className="rounded-lg border border-white/10 bg-coal px-4 py-3 text-sm text-muted"
+              className="rounded-lg border border-line bg-surface px-4 py-3 text-sm text-muted"
             >
-              <span className="font-medium text-ivory">
+              <span className="font-medium text-ink">
                 {e.event_type.replace(/_/g, " ")}
               </span>{" "}
               <span className="text-muted">· {fmtDateTime(e.created_at)}</span>

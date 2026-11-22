@@ -29,16 +29,16 @@ export default async function CaseStudiesPage({ params }: { params: Promise<{ id
         <div className="mt-8"><EmptyState title="Case studies are not available yet" hint="Run migration 008_phase4_case_studies.sql, then return here." /></div>
       ) : (
         <>
-          <form action={submitCaseStudy.bind(null, id)} className="mt-10 rounded-xl border border-white/10 bg-coal p-5 space-y-3">
-            <h2 className="font-semibold text-ivory">Capture a case study note</h2>
-            <label className="block text-sm text-muted">Before<textarea name="before_text" required className="mt-1 w-full rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm text-ivory" /></label>
-            <label className="block text-sm text-muted">After<textarea name="after_text" required className="mt-1 w-full rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm text-ivory" /></label>
-            <label className="block text-sm text-muted">What was caught in review?<textarea name="caught_in_review" className="mt-1 w-full rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm text-ivory" /></label>
-            <button type="submit" className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-ink">Save unpublished note</button>
+          <form action={submitCaseStudy.bind(null, id)} className="mt-10 rounded-xl border border-line bg-surface p-5 space-y-3">
+            <h2 className="font-semibold text-ink">Capture a case study note</h2>
+            <label className="block text-sm text-muted">Before<textarea name="before_text" required className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" /></label>
+            <label className="block text-sm text-muted">After<textarea name="after_text" required className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" /></label>
+            <label className="block text-sm text-muted">What was caught in review?<textarea name="caught_in_review" className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" /></label>
+            <button type="submit" className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-ink">Save unpublished note</button>
           </form>
           <div className="mt-10 space-y-3">
             {list.length === 0 && <EmptyState title="No case study notes yet" hint="Submit the first note above after a verified workflow." />}
-            {list.map((c) => <div key={c.id} className="rounded-xl border border-white/10 bg-coal p-5"><p className="text-sm text-muted">Before: {c.before_text}</p><p className="mt-2 text-sm text-muted">After: {c.after_text}</p>{c.caught_in_review && <p className="mt-2 text-sm text-muted">Caught in review: {c.caught_in_review}</p>}<p className="mt-2 text-xs text-muted">Status: unpublished</p></div>)}
+            {list.map((c) => <div key={c.id} className="rounded-xl border border-line bg-surface p-5"><p className="text-sm text-muted">Before: {c.before_text}</p><p className="mt-2 text-sm text-muted">After: {c.after_text}</p>{c.caught_in_review && <p className="mt-2 text-sm text-muted">Caught in review: {c.caught_in_review}</p>}<p className="mt-2 text-xs text-muted">Status: unpublished</p></div>)}
           </div>
         </>
       )}

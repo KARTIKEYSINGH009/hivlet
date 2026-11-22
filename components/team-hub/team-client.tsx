@@ -245,8 +245,8 @@ export default function TeamHubClient({
       />
 
       {!migrationReady && (
-        <div className="mt-6 rounded-xl border border-gold/40 bg-coal px-4 py-3 text-sm text-muted">
-          <strong className="text-gold-soft">Team hub migrations not yet applied.</strong>{" "}
+        <div className="mt-6 rounded-xl border border-brass-line bg-surface px-4 py-3 text-sm text-muted">
+          <strong className="text-brass-strong">Team hub migrations not yet applied.</strong>{" "}
           Projects and capacity need migration 010 (
           <code>supabase/migrations/010_team_hub.sql</code>) run in Supabase
           before they store anything. Tasks, approvals, activity and search
@@ -268,8 +268,8 @@ export default function TeamHubClient({
             aria-current={view === v.key ? "page" : undefined}
             className={`rounded-full border px-4 py-2 text-sm ${
               view === v.key
-                ? "border-gold bg-gold text-ink"
-                : "border-white/15 text-muted hover:border-gold"
+                ? "border-ink bg-ink text-white"
+                : "border-line text-muted hover:border-sand"
             }`}
           >
             {v.label}
@@ -280,29 +280,29 @@ export default function TeamHubClient({
       {view === "overview" && (
         <div className="mt-8 space-y-8">
           <section>
-            <h2 className="font-semibold text-ivory">Needs your attention</h2>
+            <h2 className="font-semibold text-ink">Needs your attention</h2>
             <div className="mt-3 grid gap-4 sm:grid-cols-3">
               <Link
                 href={`/workspace/${workspaceId}/approvals`}
-                className="rounded-xl border border-white/10 bg-coal p-5 hover:border-gold"
+                className="rounded-xl border border-line bg-surface p-5 hover:border-sand"
               >
-                <p className="text-3xl font-bold text-ivory">{attention.approvals}</p>
+                <p className="text-3xl font-bold text-ink">{attention.approvals}</p>
                 <p className="mt-1 text-sm text-muted">Pending approvals</p>
               </Link>
               <button
                 type="button"
                 onClick={() => goWork("in_review")}
-                className="rounded-xl border border-white/10 bg-coal p-5 text-left hover:border-gold"
+                className="rounded-xl border border-line bg-surface p-5 text-left hover:border-sand"
               >
-                <p className="text-3xl font-bold text-ivory">{attention.inReview}</p>
+                <p className="text-3xl font-bold text-ink">{attention.inReview}</p>
                 <p className="mt-1 text-sm text-muted">Tasks in review</p>
               </button>
               <button
                 type="button"
                 onClick={() => goWork("failed")}
-                className="rounded-xl border border-white/10 bg-coal p-5 text-left hover:border-gold"
+                className="rounded-xl border border-line bg-surface p-5 text-left hover:border-sand"
               >
-                <p className="text-3xl font-bold text-ivory">{attention.failed}</p>
+                <p className="text-3xl font-bold text-ink">{attention.failed}</p>
                 <p className="mt-1 text-sm text-muted">Failed tasks</p>
               </button>
             </div>
@@ -321,10 +321,10 @@ export default function TeamHubClient({
             />
           </section>
 
-          <section className="rounded-xl border border-white/10 bg-coal p-5">
+          <section className="rounded-xl border border-line bg-surface p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="font-semibold text-ivory">Priority tasks</h2>
+                <h2 className="font-semibold text-ink">Priority tasks</h2>
                 <p className="mt-1 text-sm text-muted">Open work, soonest due and highest priority first.</p>
               </div>
               <HubButton secondary icon={Plus} onClick={() => openTask(null)}>
@@ -356,8 +356,8 @@ export default function TeamHubClient({
               onMember={openMember}
               onTeam={() => setView("team")}
             />
-            <section className="rounded-xl border border-white/10 bg-coal p-5">
-              <h2 className="font-semibold text-ivory">Latest reports</h2>
+            <section className="rounded-xl border border-line bg-surface p-5">
+              <h2 className="font-semibold text-ink">Latest reports</h2>
               <p className="mt-1 text-sm text-muted">Verified separately on the reports page, never by marking a task done here.</p>
               <div className="mt-4 space-y-2">
                 {reports.length === 0 && (
@@ -367,9 +367,9 @@ export default function TeamHubClient({
                   <Link
                     key={r.id}
                     href={`/workspace/${workspaceId}/reports`}
-                    className="block rounded-lg border border-white/10 px-3 py-2 text-sm text-muted hover:border-gold"
+                    className="block rounded-lg border border-line px-3 py-2 text-sm text-muted hover:border-sand"
                   >
-                    <span className="font-medium text-ivory">{r.summary.slice(0, 120)}</span>
+                    <span className="font-medium text-ink">{r.summary.slice(0, 120)}</span>
                     <span className="block text-xs">
                       {r.period_date} · {r.verified ? "Verified" : "Awaiting verification"}
                     </span>
@@ -379,8 +379,8 @@ export default function TeamHubClient({
             </section>
           </section>
 
-          <section className="rounded-xl border border-white/10 bg-coal p-5">
-            <h2 className="font-semibold text-ivory">Recent activity</h2>
+          <section className="rounded-xl border border-line bg-surface p-5">
+            <h2 className="font-semibold text-ink">Recent activity</h2>
             <div className="mt-3">
               <ActivityList events={events} tasks={tasks} />
             </div>
@@ -390,11 +390,11 @@ export default function TeamHubClient({
 
       {view === "work" && (
         <div className="mt-8">
-          <section className="rounded-xl border border-white/10 bg-coal p-5">
+          <section className="rounded-xl border border-line bg-surface p-5">
             <div className="flex flex-wrap gap-2">
               <label className="flex items-center gap-2 text-sm text-muted">
                 Owner
-                <select value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value as typeof ownerFilter)} className="rounded-lg border border-white/15 bg-coal px-2 py-1.5 text-sm text-ivory">
+                <select value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value as typeof ownerFilter)} className="rounded-lg border border-line bg-surface px-2 py-1.5 text-sm text-ink">
                   <option value="all">Everyone</option>
                   <option value="me">Me</option>
                   <option value="anyone">Anyone assigned</option>
@@ -403,7 +403,7 @@ export default function TeamHubClient({
               </label>
               <label className="flex items-center gap-2 text-sm text-muted">
                 Status
-                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-lg border border-white/15 bg-coal px-2 py-1.5 text-sm text-ivory">
+                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-lg border border-line bg-surface px-2 py-1.5 text-sm text-ink">
                   <option value="all">All statuses</option>
                   <option value="todo">To do</option>
                   <option value="in_progress">In progress</option>
@@ -414,7 +414,7 @@ export default function TeamHubClient({
               </label>
               <label className="flex items-center gap-2 text-sm text-muted">
                 Due
-                <select value={dueFilter} onChange={(e) => setDueFilter(e.target.value)} className="rounded-lg border border-white/15 bg-coal px-2 py-1.5 text-sm text-ivory">
+                <select value={dueFilter} onChange={(e) => setDueFilter(e.target.value)} className="rounded-lg border border-line bg-surface px-2 py-1.5 text-sm text-ink">
                   <option value="all">Any date</option>
                   <option value="overdue">Overdue</option>
                   <option value="today">Today</option>
@@ -425,7 +425,7 @@ export default function TeamHubClient({
               </label>
               <label className="flex items-center gap-2 text-sm text-muted">
                 Sort
-                <select value={sortMode} onChange={(e) => setSortMode(e.target.value as typeof sortMode)} className="rounded-lg border border-white/15 bg-coal px-2 py-1.5 text-sm text-ivory">
+                <select value={sortMode} onChange={(e) => setSortMode(e.target.value as typeof sortMode)} className="rounded-lg border border-line bg-surface px-2 py-1.5 text-sm text-ink">
                   <option value="due">Due date</option>
                   <option value="priority">Priority</option>
                   <option value="recent">Most recent</option>
@@ -436,7 +436,7 @@ export default function TeamHubClient({
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="Search tasks…"
-                className="min-w-[180px] flex-1 rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-sm text-ivory"
+                className="min-w-[180px] flex-1 rounded-lg border border-line bg-surface px-3 py-1.5 text-sm text-ink"
               />
               <HubButton secondary onClick={exportCSV}>Export CSV</HubButton>
               <HubButton icon={Plus} onClick={() => openTask(null)}>Create a task</HubButton>
@@ -489,10 +489,10 @@ export default function TeamHubClient({
                 </div>
               )}
               {selectedProject && (
-                <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
+                <section className="mt-8 rounded-xl border border-line bg-surface p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h2 className="font-semibold text-ivory">{selectedProject.name}</h2>
+                      <h2 className="font-semibold text-ink">{selectedProject.name}</h2>
                       <p className="mt-1 text-sm text-muted">{selectedProject.description ?? "No description."}</p>
                     </div>
                     <HubButton secondary onClick={() => setDialog({ kind: "project", project: selectedProject })}>

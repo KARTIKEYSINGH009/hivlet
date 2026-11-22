@@ -3,26 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Inter, Instrument_Serif } from "next/font/google";
 import { PRODUCT_NAME } from "@/lib/brand";
 
-// Fonts: next/font replaces the embedded base64 Inter / Instrument Serif
-// blob from the supplied standalone file. The --font-* variables are set on
-// the .orbely-home wrapper below; homepage.css maps them into --f-sans /
-// --f-serif so the look stays the same.
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-inter",
-  display: "swap",
-});
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
+// Fonts (Inter / Instrument Serif) are loaded once in app/layout.tsx,
+// which sets the --font-* variables on <html>; homepage.css maps them
+// into --f-sans / --f-serif so the look stays the same.
 
 /* ============================================================
    Demo data — the illustrative workspace from the supplied
@@ -945,7 +930,7 @@ export function MarketingPage({ signedIn }: { signedIn: boolean }) {
   return (
     <div
       ref={rootRef}
-      className={`orbely-home ${inter.variable} ${instrumentSerif.variable}`}
+      className="orbely-home"
     >
       <a className="skip" href="#main">
         Skip to content

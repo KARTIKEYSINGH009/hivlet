@@ -85,7 +85,7 @@ export default function ActivityLive({
   }, [workspaceId, router]);
 
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3">
+    <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
       <p className="text-sm text-muted">
         {live === null && "Connecting live updates…"}
         {live === true &&
@@ -96,7 +96,7 @@ export default function ActivityLive({
       <button
         type="button"
         onClick={() => router.refresh()}
-        className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
+        className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:border-sand"
       >
         Refresh feed
       </button>

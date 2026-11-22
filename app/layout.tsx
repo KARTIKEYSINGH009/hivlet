@@ -1,10 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import "./homepage.css";
 import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/sign-out-button";
 import { PRODUCT_NAME, PRODUCT_DESCRIPTION } from "@/lib/brand";
+
+// Fonts for the whole app (the homepage used to load these itself in
+// components/marketing.tsx; they now live here so app pages share the
+// same Inter / Instrument Serif pair). The --font-* variables are set on
+// <html>; globals.css maps --font-sans to Inter, and homepage.css maps
+// them into --f-sans / --f-serif.
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: `${PRODUCT_NAME} — the office for AI agents`,
@@ -31,13 +51,13 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-ink text-ivory antialiased">
-        <header className="border-b border-white/10">
+    <html lang="en" className={`${inter.variable} ${instrumentSerif.variable}`}>
+      <body className="min-h-screen bg-paper font-sans text-ink antialiased">
+        <header className="border-b border-line">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
             <Link
               href="/"
-              className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.25em] text-gold"
+              className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.25em] text-brass"
             >
               <img
                 src="/orbely-logo.svg"
@@ -51,7 +71,7 @@ export default async function RootLayout({
                 <>
                   <Link
                     href="/workspaces"
-                    className="text-muted hover:text-ivory"
+                    className="text-muted hover:text-ink"
                   >
                     Workspaces
                   </Link>
@@ -60,12 +80,12 @@ export default async function RootLayout({
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="text-muted hover:text-ivory">
+                  <Link href="/login" className="text-muted hover:text-ink">
                     Sign in
                   </Link>
                   <Link
                     href="/signup"
-                    className="rounded-lg bg-gold px-4 py-2 font-medium text-ink hover:bg-gold-soft"
+                    className="rounded-lg bg-ink px-4 py-2 font-medium text-white hover:bg-ink-2"
                   >
                     Get started
                   </Link>

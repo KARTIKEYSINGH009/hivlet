@@ -59,12 +59,12 @@ export default async function BudgetsPage({ params }: { params: Promise<{ id: st
             <MetricCard label="Hard stop" value={budget?.hard_stop ? "On" : "Off"} hint={budget?.hard_stop ? "New runs block at 100%." : "Runs continue past 100%, with an alert."} />
           </section>
           {leader && (
-            <form action={saveBudget.bind(null, id)} className="mt-10 rounded-xl border border-white/10 bg-coal p-5 space-y-3">
-              <h2 className="font-semibold text-ivory">Set budget (leaders only)</h2>
-              <label className="block text-sm text-muted">Monthly token budget<input name="monthly_token_budget" type="number" min={0} defaultValue={budget?.monthly_token_budget ?? ""} className="mt-1 w-full rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm text-ivory" /></label>
-              <label className="block text-sm text-muted">Monthly cost budget, USD placeholder estimate<input name="monthly_cost_budget_usd" type="number" min={0} step="0.01" defaultValue={budget?.monthly_cost_budget_usd ?? ""} className="mt-1 w-full rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm text-ivory" /></label>
+            <form action={saveBudget.bind(null, id)} className="mt-10 rounded-xl border border-line bg-surface p-5 space-y-3">
+              <h2 className="font-semibold text-ink">Set budget (leaders only)</h2>
+              <label className="block text-sm text-muted">Monthly token budget<input name="monthly_token_budget" type="number" min={0} defaultValue={budget?.monthly_token_budget ?? ""} className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" /></label>
+              <label className="block text-sm text-muted">Monthly cost budget, USD placeholder estimate<input name="monthly_cost_budget_usd" type="number" min={0} step="0.01" defaultValue={budget?.monthly_cost_budget_usd ?? ""} className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" /></label>
               <label className="flex items-center gap-2 text-sm text-muted"><input name="hard_stop" type="checkbox" defaultChecked={budget?.hard_stop !== false} /> Hard stop at 100%</label>
-              <button type="submit" className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-ink">Save budget</button>
+              <button type="submit" className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-ink">Save budget</button>
               <p className="text-xs text-muted">Alert at 80% is automatic in the check above. Saving a budget does not charge anything.</p>
             </form>
           )}

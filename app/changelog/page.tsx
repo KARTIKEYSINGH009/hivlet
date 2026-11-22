@@ -6,14 +6,14 @@ import Link from "next/link";
 export default function ChangelogPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="font-display text-3xl font-bold text-ivory">Changelog</h1>
+      <h1 className="text-3xl font-bold text-ink">Changelog</h1>
       <p className="mt-3 text-muted">
         What changed, and what is still local only. Nothing here claims a
         live verification that has not happened.
       </p>
 
       <section className="mt-10">
-        <h2 className="font-display text-xl font-bold text-ivory">
+        <h2 className="text-xl font-bold text-ink">
           Unreleased, local only, not deployed
         </h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-muted">
@@ -27,7 +27,7 @@ export default function ChangelogPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="font-display text-xl font-bold text-ivory">Earlier, as recorded in project notes</h2>
+        <h2 className="text-xl font-bold text-ink">Earlier, as recorded in project notes</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-muted">
           <li>Workspaces, auth, invite links, task board, agent management, daily reports with verification, and approval gates.</li>
           <li>Execution engine foundation: durable queue, provider adapters, worker endpoint, approval enqueue, demo executions, and execution history. Local only at first, live verification still pending.</li>
@@ -37,7 +37,7 @@ export default function ChangelogPage() {
       </section>
 
       <p className="mt-10 text-sm text-muted">
-        <Link href="/docs" className="font-medium text-gold-soft hover:underline">
+        <Link href="/docs" className="font-medium text-brass-strong hover:underline">
           Back to Docs
         </Link>
       </p>

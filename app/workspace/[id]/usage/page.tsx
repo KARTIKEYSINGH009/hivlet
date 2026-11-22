@@ -287,8 +287,8 @@ export default async function UsagePage({
         description={`Token usage and estimated cost for ${workspace.name}. Costs are placeholder-rate estimates, not charges and not provider prices.`}
       />
 
-      <section className="mt-6 rounded-xl border border-gold/40 bg-coal p-5">
-        <p className="text-sm font-medium text-ivory">
+      <section className="mt-6 rounded-xl border border-brass-line bg-surface p-5">
+        <p className="text-sm font-medium text-ink">
           Placeholder rates only, until Kartikey picks a provider.
         </p>
         <p className="mt-1 text-sm text-muted">
@@ -341,8 +341,8 @@ export default async function UsagePage({
             to token and cost totals.
           </p>
 
-          <section className="mt-10 rounded-xl border border-white/10 bg-coal p-5">
-            <h2 className="font-semibold text-ivory">
+          <section className="mt-10 rounded-xl border border-line bg-surface p-5">
+            <h2 className="font-semibold text-ink">
               Cache hit rate, shown separately
             </h2>
             {!hasCostColumns ? (
@@ -390,7 +390,7 @@ export default async function UsagePage({
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">Per agent</h2>
+            <h2 className="font-semibold text-ink">Per agent</h2>
             <div className="mt-3 space-y-3">
               {perAgent.length === 0 && (
                 <EmptyState
@@ -401,11 +401,11 @@ export default async function UsagePage({
               {perAgent.map((a) => (
                 <div
                   key={a.id}
-                  className="rounded-xl border border-white/10 bg-coal p-5"
+                  className="rounded-xl border border-line bg-surface p-5"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="font-medium text-ivory">{a.name}</p>
+                      <p className="font-medium text-ink">{a.name}</p>
                       <p className="text-sm text-muted">
                         {a.role ?? "No role"} · {a.status.replace("_", " ")} ·{" "}
                         {a.provider ?? "custom"}
@@ -428,7 +428,7 @@ export default async function UsagePage({
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">Per model</h2>
+            <h2 className="font-semibold text-ink">Per model</h2>
             <p className="mt-1 text-sm text-muted">
               {hasCostColumns
                 ? "Grouped by the provider and model that actually ran."
@@ -444,10 +444,10 @@ export default async function UsagePage({
               {perModel.map((m) => (
                 <div
                   key={m.label}
-                  className="rounded-xl border border-white/10 bg-coal p-5"
+                  className="rounded-xl border border-line bg-surface p-5"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <p className="font-medium text-ivory">{m.label}</p>
+                    <p className="font-medium text-ink">{m.label}</p>
                     <p className="text-sm text-muted">
                       {m.executions} run{m.executions === 1 ? "" : "s"} ·
                       Estimated cost {formatUsd(m.cost)}
@@ -463,7 +463,7 @@ export default async function UsagePage({
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">Per task</h2>
+            <h2 className="font-semibold text-ink">Per task</h2>
             <div className="mt-3 space-y-3">
               {perTask.length === 0 && (
                 <EmptyState
@@ -474,11 +474,11 @@ export default async function UsagePage({
               {perTask.map((t) => (
                 <div
                   key={t.id}
-                  className="rounded-xl border border-white/10 bg-coal p-5"
+                  className="rounded-xl border border-line bg-surface p-5"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="font-medium text-ivory">{t.title}</p>
+                      <p className="font-medium text-ink">{t.title}</p>
                       <p className="text-sm text-muted">
                         Task status: {t.status.replace("_", " ")}
                       </p>
@@ -501,8 +501,8 @@ export default async function UsagePage({
             <CostPreview />
           </div>
 
-          <section className="mt-10 rounded-xl border border-white/10 bg-coal p-5">
-            <h2 className="font-semibold text-ivory">
+          <section className="mt-10 rounded-xl border border-line bg-surface p-5">
+            <h2 className="font-semibold text-ink">
               Workspace total, tokens and estimated cost
             </h2>
             <p className="mt-2 text-sm text-muted">

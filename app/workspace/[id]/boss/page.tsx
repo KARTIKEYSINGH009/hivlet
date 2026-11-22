@@ -153,7 +153,7 @@ export default async function BossPage({
         actions={
           <Link
             href={`/workspace/${id}/approvals`}
-            className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+            className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
           >
             Open approvals →
           </Link>
@@ -188,11 +188,11 @@ export default async function BossPage({
         {perMember.map((row) => (
           <article
             key={row.member.id}
-            className="rounded-xl border border-white/10 bg-coal p-5"
+            className="rounded-xl border border-line bg-surface p-5"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="font-display text-lg font-bold text-ivory">
+                <h2 className="text-lg font-bold text-ink">
                   {row.member.role === "leader" ? "Leader" : "Member"}
                 </h2>
                 <p className="mt-0.5 text-xs text-muted">
@@ -200,7 +200,7 @@ export default async function BossPage({
                   {row.agents.length === 1 ? "agent" : "agents"}
                 </p>
               </div>
-              <span className="rounded-full border border-gold/60 px-2.5 py-0.5 text-xs font-medium text-gold-soft">
+              <span className="rounded-full border border-brass-line px-2.5 py-0.5 text-xs font-medium text-brass-strong">
                 {row.member.role}
               </span>
             </div>
@@ -218,7 +218,7 @@ export default async function BossPage({
                   {row.agents.map((a) => (
                     <span
                       key={a.id}
-                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-ink px-3 py-1.5 text-sm text-ivory"
+                      className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm text-ink"
                     >
                       {a.name}
                       {a.role && (
@@ -283,7 +283,7 @@ export default async function BossPage({
 
             {row.pendingApprovals.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm font-medium text-ivory">
+                <p className="text-sm font-medium text-ink">
                   Pending approvals ({row.pendingApprovals.length})
                 </p>
                 <ul className="mt-2 space-y-1">
@@ -298,7 +298,7 @@ export default async function BossPage({
                 </ul>
                 <Link
                   href={`/workspace/${id}/approvals`}
-                  className="mt-2 inline-block text-sm font-medium text-ivory underline"
+                  className="mt-2 inline-block text-sm font-medium text-ink underline"
                 >
                   Decide on the approvals page →
                 </Link>
@@ -307,16 +307,16 @@ export default async function BossPage({
 
             {row.failedTasks.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm font-medium text-ivory">
+                <p className="text-sm font-medium text-ink">
                   Failed tasks ({row.failedTasks.length})
                 </p>
                 <div className="mt-2 space-y-2">
                   {row.failedTasks.map((t) => (
                     <p
                       key={t.id}
-                      className="rounded-lg border border-white/10 bg-ink px-4 py-3 text-sm text-muted"
+                      className="rounded-lg border border-line bg-surface px-4 py-3 text-sm text-muted"
                     >
-                      <span className="font-medium text-ivory">
+                      <span className="font-medium text-ink">
                         {t.title}
                       </span>{" "}
                       <TaskStatusPill status="failed" />

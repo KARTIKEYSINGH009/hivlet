@@ -28,11 +28,11 @@ export default function CostPreview() {
   );
 
   const inputCls =
-    "w-full rounded-lg border border-white/15 bg-ink px-3 py-2 text-sm text-ivory";
+    "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink";
 
   return (
-    <section className="rounded-xl border border-white/10 bg-coal p-5">
-      <h2 className="font-semibold text-ivory">Cost preview, estimate only</h2>
+    <section className="rounded-xl border border-line bg-surface p-5">
+      <h2 className="font-semibold text-ink">Cost preview, estimate only</h2>
       <p className="mt-2 text-sm text-muted">
         Estimate the cost of a run before it happens. Nothing here is
         charged, and nothing here is a provider price: rates are
@@ -91,7 +91,7 @@ export default function CostPreview() {
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Estimated cost
           </p>
-          <p className="mt-1 text-xl font-bold text-ivory">
+          <p className="mt-1 text-xl font-bold text-ink">
             {formatUsd(estimate.estimatedCostUsd)} <span className="text-xs font-normal text-muted">ESTIMATE</span>
           </p>
         </div>
@@ -99,7 +99,7 @@ export default function CostPreview() {
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Naive baseline, estimate
           </p>
-          <p className="mt-1 text-xl font-bold text-ivory">
+          <p className="mt-1 text-xl font-bold text-ink">
             {formatUsd(estimate.naiveCostUsd)} <span className="text-xs font-normal text-muted">ESTIMATE</span>
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function CostPreview() {
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Estimated saving vs naive
           </p>
-          <p className="mt-1 text-xl font-bold text-ivory">
+          <p className="mt-1 text-xl font-bold text-ink">
             {formatUsd(estimate.estimatedSavingUsd)}
             {estimate.estimatedSavingPct !== null && (
               <span className="text-xs font-normal text-muted">

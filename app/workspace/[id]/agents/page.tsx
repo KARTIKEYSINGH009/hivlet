@@ -244,7 +244,7 @@ export default async function AgentsPage({
   }
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-3 text-base text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-3 text-base text-ink focus:border-brass";
 
   return (
     <div>
@@ -254,22 +254,22 @@ export default async function AgentsPage({
       />
 
       {leader && (
-        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Add an agent</h2>
+        <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Add an agent</h2>
           <form
             action={createAgent.bind(null, id)}
             className="mt-4 grid gap-3 sm:grid-cols-2"
           >
             <div>
-              <label htmlFor="agent-name" className="text-sm font-medium text-ivory">Agent name</label>
+              <label htmlFor="agent-name" className="text-sm font-medium text-ink">Agent name</label>
               <input id="agent-name" name="name" required placeholder="Agent name" className={inputCls} />
             </div>
             <div>
-              <label htmlFor="agent-role" className="text-sm font-medium text-ivory">Role</label>
+              <label htmlFor="agent-role" className="text-sm font-medium text-ink">Role</label>
               <input id="agent-role" name="role" placeholder="Role (e.g. Researcher)" className={inputCls} />
             </div>
             <div>
-              <label htmlFor="agent-provider" className="text-sm font-medium text-ivory">Provider</label>
+              <label htmlFor="agent-provider" className="text-sm font-medium text-ink">Provider</label>
               <select id="agent-provider" name="provider" className={inputCls} defaultValue="custom">
                 <option value="openai">OpenAI</option>
                 <option value="anthropic">Anthropic</option>
@@ -279,11 +279,11 @@ export default async function AgentsPage({
               </select>
             </div>
             <div>
-              <label htmlFor="agent-model" className="text-sm font-medium text-ivory">Model</label>
+              <label htmlFor="agent-model" className="text-sm font-medium text-ink">Model</label>
               <input id="agent-model" name="model" placeholder="Model (e.g. gpt-4o)" className={inputCls} />
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="agent-instructions" className="text-sm font-medium text-ivory">Instructions</label>
+              <label htmlFor="agent-instructions" className="text-sm font-medium text-ink">Instructions</label>
               <textarea
                 id="agent-instructions"
                 name="system_prompt"
@@ -292,7 +292,7 @@ export default async function AgentsPage({
               />
             </div>
             <div className="sm:col-span-2">
-              <label htmlFor="agent-tools" className="text-sm font-medium text-ivory">Allowed tools</label>
+              <label htmlFor="agent-tools" className="text-sm font-medium text-ink">Allowed tools</label>
               <input
                 id="agent-tools"
                 name="allowed_tools"
@@ -302,7 +302,7 @@ export default async function AgentsPage({
             </div>
             <button
               type="submit"
-              className="w-fit rounded-lg bg-gold px-5 py-3 text-sm font-medium text-ink hover:bg-gold-soft sm:col-span-2"
+              className="w-fit rounded-lg bg-ink px-5 py-3 text-sm font-medium text-white hover:bg-ink-2 sm:col-span-2"
             >
               Add agent
             </button>
@@ -315,8 +315,8 @@ export default async function AgentsPage({
       )}
 
       {leader && (
-        <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Squad templates</h2>
+        <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Squad templates</h2>
           <p className="mt-1 text-sm text-muted">
             One click creates the template agents and their starter tasks.
             No provider call, no spend, no publish, no send. Running a
@@ -327,9 +327,9 @@ export default async function AgentsPage({
             {SQUAD_TEMPLATES.map((t) => (
               <div
                 key={t.key}
-                className="rounded-xl border border-white/10 bg-raised p-4"
+                className="rounded-xl border border-line bg-paper-2 p-4"
               >
-                <p className="font-medium text-ivory">{t.name}</p>
+                <p className="font-medium text-ink">{t.name}</p>
                 <p className="mt-1 text-sm text-muted">{t.description}</p>
                 <p className="mt-2 text-xs text-muted">
                   Agents: {t.agents.map((a) => a.name).join(", ")} · Tasks:{" "}
@@ -339,7 +339,7 @@ export default async function AgentsPage({
                   <input type="hidden" name="template_key" value={t.key} />
                   <button
                     type="submit"
-                    className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+                    className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
                   >
                     Create {t.name}
                   </button>
@@ -360,13 +360,13 @@ export default async function AgentsPage({
         {agentList.map((a) => (
           <article
             key={a.id}
-            className="rounded-xl border border-white/10 bg-coal p-5"
+            className="rounded-xl border border-line bg-surface p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <Link
                   href={`/workspace/${id}/agents/${a.id}`}
-                  className="font-semibold text-ivory hover:underline"
+                  className="font-semibold text-ink hover:underline"
                 >
                   {a.name}
                 </Link>
@@ -389,14 +389,14 @@ export default async function AgentsPage({
                 : " · No tools allowed"}
             </p>
             {leader && (
-              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/10 pt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
                 {a.status === "disabled" ? (
                   <form
                     action={setAgentStatus.bind(null, id, a.id, "idle")}
                   >
                     <button
                       type="submit"
-                      className="rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft"
+                      className="rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white hover:bg-ink-2"
                     >
                       Enable
                     </button>
@@ -407,7 +407,7 @@ export default async function AgentsPage({
                   >
                     <button
                       type="submit"
-                      className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
+                      className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:border-sand"
                     >
                       Disable
                     </button>
@@ -418,7 +418,7 @@ export default async function AgentsPage({
                     <input type="hidden" name="agent_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg bg-gold px-3 py-1.5 text-xs font-medium text-ink hover:bg-gold-soft"
+                      className="rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white hover:bg-ink-2"
                     >
                       Resume
                     </button>
@@ -429,7 +429,7 @@ export default async function AgentsPage({
                     <input type="hidden" name="agent_id" value={a.id} />
                     <button
                       type="submit"
-                      className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
+                      className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:border-sand"
                     >
                       Pause
                     </button>
@@ -484,7 +484,7 @@ export default async function AgentsPage({
                     />
                     <button
                       type="submit"
-                      className="w-fit rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-muted hover:border-gold sm:col-span-2"
+                      className="w-fit rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-muted hover:border-sand sm:col-span-2"
                     >
                       Save changes
                     </button>

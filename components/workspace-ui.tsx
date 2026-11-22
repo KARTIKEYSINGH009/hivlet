@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-// Shared presentational pieces for the DARK workspace area (Option B, gold).
-// Page background is ink, panels are coal, text is ivory, secondary text
-// is muted, gold is the only accent. Green and red are status only.
+// Shared presentational pieces for the workspace area (light paper,
+// white panels, ink text, brass accent, hairlines). Green and red are
+// status only.
 
 export function PageHeader({
   title,
@@ -16,7 +16,7 @@ export function PageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="font-display text-[28px] font-bold leading-[36px] tracking-tight text-ivory sm:text-[32px] sm:leading-[40px]">
+        <h1 className="text-[28px] font-bold leading-[36px] tracking-tight text-ink sm:text-[32px] sm:leading-[40px]">
           {title}
         </h1>
         {description && (
@@ -38,11 +38,11 @@ export function MetricCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-coal p-5">
+    <div className="rounded-xl border border-line bg-surface p-5">
       <p className="text-xs font-semibold uppercase tracking-wider text-muted">
         {label}
       </p>
-      <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ivory">
+      <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight text-ink">
         {value}
       </p>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
@@ -65,12 +65,12 @@ function pill(
 
 export function TaskStatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    todo: "border-white/15 bg-coal text-muted",
-    in_progress: "border-gold bg-gold text-ink",
-    in_review: "border-gold/60 bg-transparent text-gold-soft",
-    done: "border-[#9db89a]/40 bg-[#1a2a1d] text-[#9db89a]",
-    failed: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
-    blocked: "border-white/15 bg-coal text-muted",
+    todo: "border-line bg-transparent text-muted",
+    in_progress: "border-[#CFE5DA] bg-ok-tint text-ok",
+    in_review: "border-[#EEDFB9] bg-warn-tint text-warn",
+    done: "border-[#CFE5DA] bg-transparent text-ok",
+    failed: "border-[#EFD3CD] bg-danger-tint text-danger",
+    blocked: "border-line bg-transparent text-muted",
   };
   const labels: Record<string, string> = {
     todo: "To do",
@@ -85,13 +85,13 @@ export function TaskStatusPill({ status }: { status: string }) {
 
 export function AgentStatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    idle: "border-white/15 bg-coal text-muted",
-    working: "border-gold bg-gold text-ink",
-    awaiting_approval: "border-gold/60 bg-transparent text-gold-soft",
-    failed: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
-    disabled: "border-white/15 bg-coal text-muted",
-    paused: "border-white/15 bg-coal text-muted",
-    error: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
+    idle: "border-line bg-paper-2 text-muted",
+    working: "border-[#CFE5DA] bg-ok-tint text-ok",
+    awaiting_approval: "border-[#EEDFB9] bg-warn-tint text-warn",
+    failed: "border-[#EFD3CD] bg-danger-tint text-danger",
+    disabled: "border-line bg-transparent text-muted",
+    paused: "border-line bg-transparent text-muted",
+    error: "border-[#EFD3CD] bg-danger-tint text-danger",
   };
   const labels: Record<string, string> = {
     idle: "Idle",
@@ -108,10 +108,10 @@ export function AgentStatusPill({ status }: { status: string }) {
 export function PriorityPill({ priority }: { priority: string | null }) {
   const p = priority ?? "medium";
   const map: Record<string, string> = {
-    low: "border-white/15 bg-coal text-muted",
-    medium: "border-gold/60 bg-transparent text-gold-soft",
-    high: "border-gold bg-gold text-ink",
-    urgent: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
+    low: "border-line bg-transparent text-muted",
+    medium: "border-brass-line bg-brass-tint text-brass-strong",
+    high: "border-[#EEDFB9] bg-warn-tint text-warn",
+    urgent: "border-[#EFD3CD] bg-danger-tint text-danger",
   };
   const label = p.charAt(0).toUpperCase() + p.slice(1);
   return pill(label, map[p] ?? map.medium);
@@ -119,10 +119,10 @@ export function PriorityPill({ priority }: { priority: string | null }) {
 
 export function ApprovalStatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    pending: "border-gold/60 bg-transparent text-gold-soft",
-    approved: "border-[#9db89a]/40 bg-[#1a2a1d] text-[#9db89a]",
-    rejected: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
-    expired: "border-white/15 bg-coal text-muted",
+    pending: "border-[#EEDFB9] bg-warn-tint text-warn",
+    approved: "border-[#CFE5DA] bg-transparent text-ok",
+    rejected: "border-[#EFD3CD] bg-danger-tint text-danger",
+    expired: "border-line bg-transparent text-muted",
   };
   const labels: Record<string, string> = {
     pending: "Pending",
@@ -135,10 +135,10 @@ export function ApprovalStatusPill({ status }: { status: string }) {
 
 export function ExecutionStatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    queued: "border-white/15 bg-coal text-muted",
-    running: "border-gold bg-gold text-ink",
-    succeeded: "border-[#9db89a]/40 bg-[#1a2a1d] text-[#9db89a]",
-    failed: "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]",
+    queued: "border-line bg-transparent text-muted",
+    running: "border-[#CFE5DA] bg-ok-tint text-ok",
+    succeeded: "border-[#CFE5DA] bg-transparent text-ok",
+    failed: "border-[#EFD3CD] bg-danger-tint text-danger",
   };
   const labels: Record<string, string> = {
     queued: "Queued",
@@ -154,7 +154,7 @@ export function ExecutionStatusPill({ status }: { status: string }) {
 export function DemoPill() {
   return pill(
     "DEMO",
-    "border-gold/60 bg-transparent text-gold-soft"
+    "border-brass-line bg-brass-tint text-brass-strong"
   );
 }
 
@@ -166,8 +166,8 @@ export function EmptyState({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-white/15 bg-coal px-6 py-10 text-center">
-      <p className="font-medium text-ivory">{title}</p>
+    <div className="rounded-xl border border-dashed border-line bg-surface px-6 py-10 text-center">
+      <p className="font-medium text-ink">{title}</p>
       {hint && <p className="mx-auto mt-1 max-w-md text-sm text-muted">{hint}</p>}
     </div>
   );
@@ -176,7 +176,7 @@ export function EmptyState({
 export function ErrorBanner({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p className="rounded-lg border border-[#d98c8c]/40 bg-[#2a1515] px-4 py-3 text-sm text-[#d98c8c]">
+    <p className="rounded-lg border border-[#AC4136]/40 bg-[#FBEDEA] px-4 py-3 text-sm text-[#AC4136]">
       {message}
     </p>
   );

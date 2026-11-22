@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { PRODUCT_NAME } from "@/lib/brand";
 
-// Dark sidebar for the workspace area. Client component only so the active
+// Light sidebar for the workspace area. Client component only so the active
 // nav item and the workspace selector can react without a round trip.
 export default function WorkspaceSidebar({
   workspaceId,
@@ -46,10 +46,10 @@ export default function WorkspaceSidebar({
   ];
 
   return (
-    <aside className="flex w-full shrink-0 flex-col gap-3 border-b border-white/10 bg-coal px-4 py-3 text-ivory sm:w-56 sm:gap-6 sm:py-5 sm:border-b-0 sm:border-r">
+    <aside className="flex w-full shrink-0 flex-col gap-3 border-b border-line bg-surface px-4 py-3 text-ink sm:w-56 sm:gap-6 sm:py-5 sm:border-b-0 sm:border-r">
       <Link
         href="/dashboard"
-        className="flex items-center gap-2 px-2 text-sm font-bold uppercase tracking-[0.25em] text-gold"
+        className="flex items-center gap-2 px-2 text-sm font-bold uppercase tracking-[0.25em] text-brass"
       >
         <img src="/orbely-logo.svg" alt="Orbely logo" className="h-5 w-5" />
         {PRODUCT_NAME}
@@ -68,7 +68,7 @@ export default function WorkspaceSidebar({
           onChange={(e) =>
             router.push(`/workspace/${e.target.value}/overview`)
           }
-          className="mt-2 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold"
+          className="mt-2 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-brass"
         >
           {workspaces.map((w) => (
             <option key={w.id} value={w.id}>
@@ -77,7 +77,7 @@ export default function WorkspaceSidebar({
           ))}
         </select>
         <p className="mt-2 hidden px-2 text-xs text-muted sm:block">
-          Viewing: <span className="text-ivory">{workspaceName}</span>
+          Viewing: <span className="text-ink">{workspaceName}</span>
         </p>
       </div>
 
@@ -93,8 +93,8 @@ export default function WorkspaceSidebar({
               aria-current={active ? "page" : undefined}
               className={`shrink-0 rounded-lg px-3 py-2 text-sm ${
                 active
-                  ? "bg-white/10 font-medium text-gold-soft"
-                  : "text-muted hover:bg-white/5 hover:text-ivory"
+                  ? "bg-ink/10 font-medium text-brass-strong"
+                  : "text-muted hover:bg-ink/5 hover:text-ink"
               }`}
             >
               {item.label}
@@ -110,40 +110,40 @@ export default function WorkspaceSidebar({
         <div className="flex flex-col gap-1 pt-1">
           <Link
             href="/dashboard"
-            className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-ivory"
+            className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-ink/5 hover:text-ink"
           >
             All workspaces
           </Link>
           <Link
             href="/my-work"
-            className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-ivory"
+            className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-ink/5 hover:text-ink"
           >
             My work
           </Link>
           <Link
             href="/settings"
-            className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-ivory"
+            className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-ink/5 hover:text-ink"
           >
             My account
           </Link>
         </div>
       </details>
-      <div className="mt-auto hidden flex-col gap-1 border-t border-white/10 pt-4 sm:flex">
+      <div className="mt-auto hidden flex-col gap-1 border-t border-line pt-4 sm:flex">
         <Link
           href="/dashboard"
-          className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-ivory"
+          className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-ink/5 hover:text-ink"
         >
           All workspaces
         </Link>
         <Link
           href="/my-work"
-          className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-ivory"
+          className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-ink/5 hover:text-ink"
         >
           My work
         </Link>
         <Link
           href="/settings"
-          className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-ivory"
+          className="rounded-lg px-3 py-2 text-sm text-muted hover:bg-ink/5 hover:text-ink"
         >
           My account
         </Link>

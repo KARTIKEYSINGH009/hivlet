@@ -17,8 +17,8 @@ export default async function PricingPage({ params }: { params: Promise<{ id: st
   return (
     <div>
       <PageHeader title="Pricing" description="Transparent pricing shape for Orbely. No price is set yet, and no charge is made here." />
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <p className="text-sm text-ivory">{PRICING_SHAPE}</p>
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <p className="text-sm text-ink">{PRICING_SHAPE}</p>
         <p className="mt-2 text-sm text-muted">This is a recommendation for Kartikey to decide, not a price list. Do not quote it to a customer as a price.</p>
       </section>
       <section className="mt-8 grid gap-4 sm:grid-cols-2">

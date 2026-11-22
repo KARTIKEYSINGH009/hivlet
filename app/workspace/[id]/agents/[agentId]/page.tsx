@@ -120,7 +120,7 @@ export default async function AgentDetailPage({
         actions={
           <Link
             href={`/workspace/${id}/agents`}
-            className="rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-muted hover:border-gold"
+            className="rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-muted hover:border-sand"
           >
             ← All agents
           </Link>
@@ -128,7 +128,7 @@ export default async function AgentDetailPage({
       />
 
       <section className="mt-8 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-white/10 bg-coal p-5">
+        <div className="rounded-xl border border-line bg-surface p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Status
           </p>
@@ -136,19 +136,19 @@ export default async function AgentDetailPage({
             <AgentStatusPill status={a.status} />
           </div>
         </div>
-        <div className="rounded-xl border border-white/10 bg-coal p-5">
+        <div className="rounded-xl border border-line bg-surface p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Current task
           </p>
-          <p className="mt-2 font-medium text-ivory">
+          <p className="mt-2 font-medium text-ink">
             {current ? current.title : "Idle — nothing assigned"}
           </p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-coal p-5">
+        <div className="rounded-xl border border-line bg-surface p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
             Usage
           </p>
-          <p className="mt-2 font-medium text-ivory">
+          <p className="mt-2 font-medium text-ink">
             {taskList.filter((t) => t.status === "done").length} done /{" "}
             {taskList.length} recent tasks · {reportList.length} reports
           </p>
@@ -156,8 +156,8 @@ export default async function AgentDetailPage({
       </section>
 
       {a.system_prompt && (
-        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Instructions</h2>
+        <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Instructions</h2>
           <p className="mt-2 whitespace-pre-wrap text-sm text-muted">
             {a.system_prompt}
           </p>
@@ -165,7 +165,7 @@ export default async function AgentDetailPage({
       )}
 
       <section className="mt-8">
-        <h2 className="font-semibold text-ivory">Execution runs</h2>
+        <h2 className="font-semibold text-ink">Execution runs</h2>
         <div className="mt-3 space-y-3">
           {executionList.length === 0 && (
             <EmptyState title="No runs yet" hint="Queued, running, and completed agent runs will appear here with their output and token usage." />
@@ -173,12 +173,12 @@ export default async function AgentDetailPage({
           {executionList.map((x) => (
             <div
               key={x.id}
-              className="rounded-xl border border-white/10 bg-coal px-4 py-3"
+              className="rounded-xl border border-line bg-surface px-4 py-3"
             >
               <p className="flex flex-wrap items-center gap-2 text-sm text-muted">
                 <ExecutionStatusPill status={x.status} />
                 {x.is_demo && <DemoPill />}
-                <span className="font-medium text-ivory">
+                <span className="font-medium text-ink">
                   {x.tasks?.title ?? "No linked task"}
                 </span>
                 <span className="text-xs text-muted">
@@ -192,7 +192,7 @@ export default async function AgentDetailPage({
                 </p>
               )}
               {x.error && (
-                <p className="mt-1 text-sm text-[#d98c8c]">{x.error}</p>
+                <p className="mt-1 text-sm text-[#AC4136]">{x.error}</p>
               )}
             </div>
           ))}
@@ -200,7 +200,7 @@ export default async function AgentDetailPage({
       </section>
 
       <section className="mt-8">
-        <h2 className="font-semibold text-ivory">Assigned tasks</h2>
+        <h2 className="font-semibold text-ink">Assigned tasks</h2>
         <div className="mt-3 space-y-3">
           {taskList.length === 0 && (
             <EmptyState title="No tasks yet" hint="Tasks assigned to this agent will appear here with their status." />
@@ -208,9 +208,9 @@ export default async function AgentDetailPage({
           {taskList.map((t) => (
             <div
               key={t.id}
-              className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3"
             >
-              <span className="text-sm font-medium text-ivory">
+              <span className="text-sm font-medium text-ink">
                 {t.title}
               </span>
               <span className="flex items-center gap-3">
@@ -226,7 +226,7 @@ export default async function AgentDetailPage({
 
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
         <div>
-          <h2 className="font-semibold text-ivory">Reports</h2>
+          <h2 className="font-semibold text-ink">Reports</h2>
           <div className="mt-3 space-y-3">
             {reportList.length === 0 && (
               <EmptyState title="No reports yet" hint="This agent's daily reports will show up here once filed." />
@@ -234,9 +234,9 @@ export default async function AgentDetailPage({
             {reportList.map((r) => (
               <div
                 key={r.id}
-                className="rounded-xl border border-white/10 bg-coal p-4"
+                className="rounded-xl border border-line bg-surface p-4"
               >
-                <p className="text-sm font-medium text-ivory">
+                <p className="text-sm font-medium text-ink">
                   {r.period_date} — {r.verified ? "Verified" : "Unverified"}
                 </p>
                 <p className="mt-1 line-clamp-2 text-sm text-muted">
@@ -247,7 +247,7 @@ export default async function AgentDetailPage({
           </div>
         </div>
         <div>
-          <h2 className="font-semibold text-ivory">Handoffs</h2>
+          <h2 className="font-semibold text-ink">Handoffs</h2>
           <div className="mt-3 space-y-3">
             {handoffList.length === 0 && (
               <EmptyState title="No handoffs yet" hint="Structured work passed to or from this agent will appear here." />
@@ -255,7 +255,7 @@ export default async function AgentDetailPage({
             {handoffList.map((h) => (
               <div
                 key={h.id}
-                className="rounded-xl border border-white/10 bg-coal p-4"
+                className="rounded-xl border border-line bg-surface p-4"
               >
                 <p className="text-sm text-muted">
                   Handoff ({h.status}) · {fmtDateTime(h.created_at)}

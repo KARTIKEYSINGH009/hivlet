@@ -47,12 +47,12 @@ export default function BillingUpgradeButton({
         type="button"
         onClick={startCheckout}
         disabled={busy}
-        className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft disabled:opacity-60"
+        className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2 disabled:opacity-60"
       >
         {busy ? "Starting checkout…" : label}
       </button>
       {error && (
-        <span className="ml-3 text-xs text-[#d98c8c]">{error}</span>
+        <span className="ml-3 text-xs text-[#AC4136]">{error}</span>
       )}
     </span>
   );

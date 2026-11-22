@@ -30,12 +30,12 @@ export default async function ProofPage({ params }: { params: Promise<{ id: stri
           const appCount = ((approvals ?? []) as { task_id: string | null }[]).filter((a) => a.task_id === t.id).length;
           const handCount = ((handoffs ?? []) as { task_id: string }[]).filter((h) => h.task_id === t.id).length;
           return (
-            <div key={t.id} className="rounded-xl border border-white/10 bg-coal p-5">
-              <p className="font-medium text-ivory">{t.title}</p>
+            <div key={t.id} className="rounded-xl border border-line bg-surface p-5">
+              <p className="font-medium text-ink">{t.title}</p>
               <p className="mt-1 text-sm text-muted">{t.description ?? "No brief recorded."}</p>
               <p className="mt-2 text-sm text-muted">Status: {t.status} · Agent: {agent ? `${agent.name} (${agent.provider}${agent.model ? ` / ${agent.model}` : ""})` : "Unassigned"} · Approvals: {appCount} · Handoffs: {handCount}</p>
               <p className="mt-1 text-sm text-muted">Tokens: {tokens} · Estimated cost: {formatUsd(cost)} (placeholder rates)</p>
-              {t.result && <p className="mt-2 text-sm text-ivory">{t.result}</p>}
+              {t.result && <p className="mt-2 text-sm text-ink">{t.result}</p>}
             </div>
           );
         })}

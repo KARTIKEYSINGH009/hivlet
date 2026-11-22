@@ -136,7 +136,7 @@ export default async function WorkspaceSettingsPage({
   }[];
 
   const inputCls =
-    "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
+    "mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-brass";
 
   return (
     <div>
@@ -145,11 +145,11 @@ export default async function WorkspaceSettingsPage({
         description={`Configuration for ${workspace.name}.`}
       />
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">Invite</h2>
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">Invite</h2>
         <p className="mt-1 text-sm text-muted">
           Anyone with this link can join as a member (invite code:{" "}
-          <span className="font-medium text-ivory">
+          <span className="font-medium text-ink">
             {workspace.invite_code}
           </span>
           ).
@@ -160,28 +160,28 @@ export default async function WorkspaceSettingsPage({
       </section>
 
       {sp.invite === "not-configured" && (
-        <p className="mt-6 rounded-lg border border-gold/40 bg-coal px-4 py-3 text-sm text-gold-soft">
+        <p className="mt-6 rounded-lg border border-brass-line bg-surface px-4 py-3 text-sm text-brass-strong">
           Email and phone invites are not configured, so nothing was sent.
           Link invites work today.
         </p>
       )}
 
       {sp.webhook === "pending_column" && (
-        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="mt-6 rounded-lg border border-[#AC4136]/40 bg-surface px-4 py-3 text-sm text-[#AC4136]">
           The webhook URL could not be saved yet: the workspaces column
           for it does not exist in the database (migration pending).
           Nothing was stored.
         </p>
       )}
       {sp.webhook === "invalid_url" && (
-        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+        <p className="mt-6 rounded-lg border border-[#AC4136]/40 bg-surface px-4 py-3 text-sm text-[#AC4136]">
           That is not a valid webhook URL. Use an https URL (http is
           allowed only for localhost).
         </p>
       )}
 
-      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">
           Email and phone invites, not working yet
         </h2>
         <p className="mt-1 text-sm text-muted">
@@ -194,10 +194,10 @@ export default async function WorkspaceSettingsPage({
           {getInviteProviderStatus().map((p) => (
             <div
               key={p.channel}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/10 px-4 py-3"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line px-4 py-3"
             >
               <div>
-                <p className="text-sm font-medium text-ivory">{p.label}</p>
+                <p className="text-sm font-medium text-ink">{p.label}</p>
                 <p className="text-xs text-muted">{p.note}</p>
               </div>
               {p.configured ? (
@@ -207,7 +207,7 @@ export default async function WorkspaceSettingsPage({
                   <input type="hidden" name="channel" value={p.channel} />
                   <button
                     type="submit"
-                    className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-gold"
+                    className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:border-sand"
                   >
                     Try {p.label} (not configured)
                   </button>
@@ -219,8 +219,8 @@ export default async function WorkspaceSettingsPage({
       </section>
 
       {leader ? (
-        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Edit workspace</h2>
+        <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Edit workspace</h2>
           <form action={updateWorkspace.bind(null, id)} className="mt-4 space-y-3">
             <input name="name" defaultValue={workspace.name} className={inputCls} />
             <input
@@ -230,7 +230,7 @@ export default async function WorkspaceSettingsPage({
             />
             <button
               type="submit"
-              className="rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+              className="rounded-lg bg-ink px-5 py-2 text-sm font-medium text-white hover:bg-ink-2"
             >
               Save changes
             </button>
@@ -243,8 +243,8 @@ export default async function WorkspaceSettingsPage({
       )}
 
       {leader && (
-        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Billing</h2>
+        <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Billing</h2>
           <p className="mt-1 text-sm text-muted">
             DRAFT: billing is not live yet, no payment is taken, and
             these prices are a proposal. A verified run counts only when
@@ -254,7 +254,7 @@ export default async function WorkspaceSettingsPage({
           <div className="mt-3 space-y-1 text-sm text-muted">
             <p>
               Plan:{" "}
-              <span className="font-medium capitalize text-ivory">
+              <span className="font-medium capitalize text-ink">
                 {billingView.tier}
               </span>
               {billingView.status && billingView.status !== billingView.tier && (
@@ -263,7 +263,7 @@ export default async function WorkspaceSettingsPage({
             </p>
             <p>
               Verified runs this cycle:{" "}
-              <span className="font-medium text-ivory">
+              <span className="font-medium text-ink">
                 {billingView.runs_used_this_cycle} / {billingView.monthly_run_limit}
               </span>
               {remaining !== null && (
@@ -278,14 +278,14 @@ export default async function WorkspaceSettingsPage({
             </p>
             <p>
               Member limit:{" "}
-              <span className="font-medium text-ivory">
+              <span className="font-medium text-ink">
                 {memberList.length} / {billingView.max_members}
               </span>
             </p>
             {billingView.current_period_end && (
               <p>
                 Current period ends:{" "}
-                <span className="font-medium text-ivory">
+                <span className="font-medium text-ink">
                   {new Date(billingView.current_period_end).toLocaleDateString()}
                 </span>
               </p>
@@ -315,7 +315,7 @@ export default async function WorkspaceSettingsPage({
             )}
             <a
               href="/pricing"
-              className="text-sm font-medium text-gold-soft hover:underline"
+              className="text-sm font-medium text-brass-strong hover:underline"
             >
               See all plans
             </a>
@@ -331,13 +331,13 @@ export default async function WorkspaceSettingsPage({
       )}
 
       {leader && (
-        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Approval webhook</h2>
+        <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Approval webhook</h2>
           <p className="mt-1 text-sm text-muted">
             When a leader approves an approval, Orbely POSTs a signed JSON
-            event (<span className="font-mono text-xs text-ivory">approval.approved</span>)
+            event (<span className="font-mono text-xs text-ink">approval.approved</span>)
             to this URL, with an HMAC-SHA256 signature in the{" "}
-            <span className="font-mono text-xs text-ivory">X-Hivlet-Signature</span>{" "}
+            <span className="font-mono text-xs text-ink">X-Hivlet-Signature</span>{" "}
             header. It fires only on approval, never automatically and
             never from a demo run. Delivery status shows on the Approvals
             page, where a failed delivery can be retried. The signing
@@ -348,7 +348,7 @@ export default async function WorkspaceSettingsPage({
             {webhookUrl ? (
               <>
                 Configured:{" "}
-                <span className="font-mono text-ivory">{webhookUrl}</span>
+                <span className="font-mono text-ink">{webhookUrl}</span>
               </>
             ) : (
               "No webhook URL configured — approvals will not notify any endpoint."
@@ -364,7 +364,7 @@ export default async function WorkspaceSettingsPage({
             />
             <button
               type="submit"
-              className="rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+              className="rounded-lg bg-ink px-5 py-2 text-sm font-medium text-white hover:bg-ink-2"
             >
               Save webhook URL
             </button>
@@ -372,8 +372,8 @@ export default async function WorkspaceSettingsPage({
         </section>
       )}
 
-      <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-semibold text-ivory">
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+        <h2 className="font-semibold text-ink">
           Members ({memberList.length})
         </h2>
         <div className="mt-3 space-y-2">
@@ -383,7 +383,7 @@ export default async function WorkspaceSettingsPage({
           {memberList.map((m) => (
             <div
               key={m.id}
-              className="flex items-center justify-between gap-3 rounded-lg border border-white/10 px-4 py-3"
+              className="flex items-center justify-between gap-3 rounded-lg border border-line px-4 py-3"
             >
               <span className="text-sm text-muted">
                 {m.user_id === membership.user_id
@@ -398,7 +398,7 @@ export default async function WorkspaceSettingsPage({
                   <input type="hidden" name="member_id" value={m.id} />
                   <button
                     type="submit"
-                    className="rounded-lg border border-white/15 bg-coal px-3 py-1.5 text-xs font-medium text-muted hover:border-[#d98c8c] hover:text-[#d98c8c]"
+                    className="rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:border-[#AC4136] hover:text-[#AC4136]"
                   >
                     {m.id === membership.id ? "Leave" : "Remove"}
                   </button>
@@ -410,8 +410,8 @@ export default async function WorkspaceSettingsPage({
       </section>
 
       {leader && (
-        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
-          <h2 className="font-semibold text-ivory">Danger zone</h2>
+        <section className="mt-6 rounded-xl border border-line bg-surface p-5">
+          <h2 className="font-semibold text-ink">Danger zone</h2>
           <p className="mt-1 text-sm text-muted">
             Deleting a workspace removes its agents, tasks, reports, and
             approvals permanently.

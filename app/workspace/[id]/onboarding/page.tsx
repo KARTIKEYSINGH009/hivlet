@@ -81,20 +81,20 @@ export default async function OnboardingPage({
         {steps.map((s) => (
           <article
             key={s.title}
-            className="rounded-xl border border-white/10 bg-coal p-5"
+            className="rounded-xl border border-line bg-surface p-5"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="font-medium text-ivory">{s.title}</p>
+                <p className="font-medium text-ink">{s.title}</p>
                 <p className="mt-1 text-sm text-muted">{s.detail}</p>
               </div>
-              <span className="rounded-full border border-white/15 px-2.5 py-0.5 text-xs font-medium text-muted">
+              <span className="rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-muted">
                 {s.done ? "Done" : "To do"}
               </span>
             </div>
             <Link
               href={s.href}
-              className="mt-4 inline-block rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+              className="mt-4 inline-block rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
             >
               {s.action}
             </Link>
@@ -107,7 +107,7 @@ export default async function OnboardingPage({
           hint="The Docs page explains workspaces, agents, tasks, handoffs, approvals, limits, security, and data deletion in plain words."
         />
         <p className="mt-3">
-          <Link href="/docs" className="text-sm font-medium text-gold-soft hover:underline">
+          <Link href="/docs" className="text-sm font-medium text-brass-strong hover:underline">
             Open Docs
           </Link>
         </p>

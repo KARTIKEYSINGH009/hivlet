@@ -26,24 +26,24 @@ export default async function ContactPage({
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="font-display text-3xl font-bold text-ivory">
+      <h1 className="text-3xl font-bold text-ink">
         Contact
       </h1>
       <p className="mt-4 text-muted">
         Write to the Orbely team at{" "}
-        <span className="font-medium text-gold-soft">help@orbely</span>.
+        <span className="font-medium text-brass-strong">help@orbely</span>.
         Messages sent through the form below go to the Orbely team.
       </p>
 
       {sent ? (
-        <p className="mt-8 rounded-lg border border-gold/40 bg-coal px-4 py-3 text-sm font-medium text-gold-soft">
+        <p className="mt-8 rounded-lg border border-brass-line bg-surface px-4 py-3 text-sm font-medium text-brass-strong">
           Thanks, your message is on its way to the Orbely team.
         </p>
       ) : (
         <form
           action="https://formsubmit.co/ks3676423@gmail.com"
           method="POST"
-          className="mt-8 space-y-5 rounded-xl border border-white/10 bg-coal p-5"
+          className="mt-8 space-y-5 rounded-xl border border-line bg-surface p-5"
         >
           <input type="hidden" name="_subject" value="Orbely contact form" />
           <input type="hidden" name="_template" value="table" />
@@ -57,7 +57,7 @@ export default async function ContactPage({
           <div>
             <label
               htmlFor="contact-name"
-              className="block text-sm font-medium text-ivory"
+              className="block text-sm font-medium text-ink"
             >
               Your name
             </label>
@@ -68,14 +68,14 @@ export default async function ContactPage({
               required
               autoComplete="name"
               placeholder="Your name"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass"
             />
           </div>
 
           <div>
             <label
               htmlFor="contact-email"
-              className="block text-sm font-medium text-ivory"
+              className="block text-sm font-medium text-ink"
             >
               Your email
             </label>
@@ -86,14 +86,14 @@ export default async function ContactPage({
               required
               autoComplete="email"
               placeholder="you@example.com"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass"
             />
           </div>
 
           <div>
             <label
               htmlFor="contact-topic"
-              className="block text-sm font-medium text-ivory"
+              className="block text-sm font-medium text-ink"
             >
               Topic
             </label>
@@ -102,7 +102,7 @@ export default async function ContactPage({
               name="topic"
               required
               defaultValue={TOPICS[0]}
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink focus:border-brass"
             >
               {TOPICS.map((t) => (
                 <option key={t} value={t}>
@@ -115,7 +115,7 @@ export default async function ContactPage({
           <div>
             <label
               htmlFor="contact-message"
-              className="block text-sm font-medium text-ivory"
+              className="block text-sm font-medium text-ink"
             >
               Message
             </label>
@@ -125,13 +125,13 @@ export default async function ContactPage({
               required
               rows={6}
               placeholder="What do you need help with?"
-              className="mt-1.5 w-full rounded-lg border border-white/15 bg-ink px-4 py-2.5 text-sm text-ivory placeholder:text-muted focus:border-gold"
+              className="mt-1.5 w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-muted focus:border-brass"
             />
           </div>
 
           <button
             type="submit"
-            className="rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-ink hover:bg-gold-soft"
+            className="rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-2"
           >
             Send message
           </button>
@@ -143,14 +143,14 @@ export default async function ContactPage({
         Officer. See the{" "}
         <Link
           href="/legal/terms"
-          className="font-medium text-gold-soft hover:underline"
+          className="font-medium text-brass-strong hover:underline"
         >
           Terms
         </Link>{" "}
         and{" "}
         <Link
           href="/legal/privacy"
-          className="font-medium text-gold-soft hover:underline"
+          className="font-medium text-brass-strong hover:underline"
         >
           Privacy Policy
         </Link>{" "}

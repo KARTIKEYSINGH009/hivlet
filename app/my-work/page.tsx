@@ -110,7 +110,7 @@ export default async function MyWorkPage() {
         actions={
           <Link
             href="/dashboard"
-            className="rounded-lg border border-white/15 bg-coal px-4 py-2 text-sm font-medium text-ivory hover:border-gold"
+            className="rounded-lg border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:border-sand"
           >
             Back to dashboard
           </Link>
@@ -126,7 +126,7 @@ export default async function MyWorkPage() {
           <div className="text-center">
             <Link
               href="/workspaces"
-              className="inline-block rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+              className="inline-block rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
             >
               Manage workspaces
             </Link>
@@ -146,7 +146,7 @@ export default async function MyWorkPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">My agents</h2>
+            <h2 className="font-semibold text-ink">My agents</h2>
             <div className="mt-3 space-y-3">
               {agents.length === 0 && (
                 <>
@@ -157,7 +157,7 @@ export default async function MyWorkPage() {
                   <div className="text-center">
                     <Link
                       href="/workspaces"
-                      className="inline-block rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+                      className="inline-block rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
                     >
                       Manage workspaces
                     </Link>
@@ -168,10 +168,10 @@ export default async function MyWorkPage() {
                 <Link
                   key={a.id}
                   href={`/workspace/${a.workspace_id}/agents/${a.id}`}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3 hover:border-gold"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 hover:border-sand"
                 >
                   <span>
-                    <span className="font-medium text-ivory">{a.name}</span>
+                    <span className="font-medium text-ink">{a.name}</span>
                     {a.role && (
                       <span className="ml-2 text-sm text-muted">{a.role}</span>
                     )}
@@ -186,7 +186,7 @@ export default async function MyWorkPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">My tasks</h2>
+            <h2 className="font-semibold text-ink">My tasks</h2>
             <div className="mt-3 space-y-3">
               {tasks.length === 0 && (
                 <>
@@ -197,7 +197,7 @@ export default async function MyWorkPage() {
                   <div className="text-center">
                     <Link
                       href="/dashboard"
-                      className="inline-block rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+                      className="inline-block rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
                     >
                       Back to dashboard
                     </Link>
@@ -207,10 +207,10 @@ export default async function MyWorkPage() {
               {tasks.map((t) => (
                 <article
                   key={t.id}
-                  className="rounded-xl border border-white/10 bg-coal p-4"
+                  className="rounded-xl border border-line bg-surface p-4"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-ivory">{t.title}</p>
+                    <p className="text-sm font-medium text-ink">{t.title}</p>
                     <span className="flex shrink-0 items-center gap-2">
                       <PriorityPill priority={t.priority} />
                       <TaskStatusPill status={t.status} />
@@ -221,7 +221,7 @@ export default async function MyWorkPage() {
                   </p>
                   <Link
                     href={`/workspace/${t.workspace_id}/tasks`}
-                    className="mt-2 inline-block text-sm font-medium text-ivory underline"
+                    className="mt-2 inline-block text-sm font-medium text-ink underline"
                   >
                     Open task board →
                   </Link>
@@ -231,7 +231,7 @@ export default async function MyWorkPage() {
           </section>
 
           <section className="mt-10">
-            <h2 className="font-semibold text-ivory">My reports</h2>
+            <h2 className="font-semibold text-ink">My reports</h2>
             <div className="mt-3 space-y-3">
               {reports.length === 0 && (
                 <>
@@ -242,7 +242,7 @@ export default async function MyWorkPage() {
                   <div className="text-center">
                     <Link
                       href="/dashboard"
-                      className="inline-block rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+                      className="inline-block rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-2"
                     >
                       Back to dashboard
                     </Link>
@@ -252,10 +252,10 @@ export default async function MyWorkPage() {
               {reports.map((r) => (
                 <article
                   key={r.id}
-                  className="rounded-xl border border-white/10 bg-coal p-4"
+                  className="rounded-xl border border-line bg-surface p-4"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-ivory">
+                    <p className="text-sm font-medium text-ink">
                       {r.agents?.name ?? "Agent"} — {fmtDate(r.period_date)}
                     </p>
                     <span className="text-xs font-medium text-muted">
@@ -270,7 +270,7 @@ export default async function MyWorkPage() {
                   </p>
                   <Link
                     href={`/workspace/${r.workspace_id}/agents/${r.agent_id}`}
-                    className="mt-2 inline-block text-sm font-medium text-ivory underline"
+                    className="mt-2 inline-block text-sm font-medium text-ink underline"
                   >
                     View agent →
                   </Link>

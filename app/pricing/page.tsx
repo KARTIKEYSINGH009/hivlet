@@ -52,12 +52,12 @@ const TIERS = [
 export default function PricingPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <p className="rounded-lg border border-gold/40 bg-coal px-4 py-3 text-sm font-medium text-gold-soft">
+      <p className="rounded-lg border border-brass-line bg-surface px-4 py-3 text-sm font-medium text-brass-strong">
         DRAFT, NOT LIVE. Billing is not switched on yet: no payment is
         taken, no checkout works, and these prices are a proposal, not
         set prices. Do not rely on this page as a price list.
       </p>
-      <h1 className="mt-8 font-display text-3xl font-bold text-ivory">
+      <h1 className="mt-8 text-3xl font-bold text-ink">
         Pricing
       </h1>
       <p className="mt-4 text-muted">
@@ -72,13 +72,13 @@ export default function PricingPage() {
         {TIERS.map((t) => (
           <section
             key={t.tier}
-            className="rounded-xl border border-white/10 bg-coal p-5"
+            className="rounded-xl border border-line bg-surface p-5"
           >
-            <h2 className="font-display text-xl font-bold text-ivory">
+            <h2 className="text-xl font-bold text-ink">
               {t.name}
             </h2>
             <p className="mt-1 text-sm text-muted">{t.tagline}</p>
-            <p className="mt-4 text-2xl font-bold text-ivory">
+            <p className="mt-4 text-2xl font-bold text-ink">
               {t.usd === 0 ? "$0" : `$${t.usd}`}
               <span className="text-sm font-normal text-muted"> / month</span>
             </p>
@@ -96,8 +96,8 @@ export default function PricingPage() {
         ))}
       </div>
 
-      <section className="mt-8 rounded-xl border border-white/10 bg-coal p-5">
-        <h2 className="font-display text-xl font-bold text-ivory">
+      <section className="mt-8 rounded-xl border border-line bg-surface p-5">
+        <h2 className="text-xl font-bold text-ink">
           Top-ups
         </h2>
         <p className="mt-2 text-sm text-muted">
@@ -119,14 +119,14 @@ export default function PricingPage() {
         stated before any charge is taken, and the{" "}
         <Link
           href="/legal/terms"
-          className="font-medium text-gold-soft hover:underline"
+          className="font-medium text-brass-strong hover:underline"
         >
           Terms
         </Link>{" "}
         and{" "}
         <Link
           href="/legal/refunds"
-          className="font-medium text-gold-soft hover:underline"
+          className="font-medium text-brass-strong hover:underline"
         >
           Refund and Cancellation Policy
         </Link>{" "}
