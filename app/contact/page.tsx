@@ -51,7 +51,7 @@ export default async function ContactPage({
           <input
             type="hidden"
             name="_next"
-            value="https://hivlet.vercel.app/contact?sent=1"
+            value="https://orbely.vercel.app/contact?sent=1"
           />
 
           <div>

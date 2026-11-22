@@ -1,6 +1,6 @@
 # Orbely Tiny Team — Specifications
 
-Kartikey's side-chat team for Orbely (live at hivlet.vercel.app). Each member
+Kartikey's side-chat team for Orbely (live at orbely.vercel.app). Each member
 has one area, one set of deliverables, and one rule: Kartikey decides, the
 team advises. Nothing ships, posts, or deploys without his yes.
 

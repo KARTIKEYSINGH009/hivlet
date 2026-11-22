@@ -79,7 +79,7 @@ export async function POST(req: Request) {
   }
 
   const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ?? "https://hivlet.vercel.app";
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://orbely.vercel.app";
 
   const response = await fetch(LEMON_SQUEEZY_API, {
     method: "POST",
