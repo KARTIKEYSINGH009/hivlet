@@ -3,10 +3,22 @@ import { redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
 import { enqueueExecutionForApproval, processNextExecutionForWorkspace } from "@/lib/execution";
+import { verifyActionPayload } from "@/lib/verification";
+import {
+  deliverApprovalWebhook,
+  fetchWebhookDeliveryStatuses,
+} from "@/lib/approval-webhook";
+import {
+  recordHumanEdit,
+  fetchHumanEditedIds,
+  fetchWasHumanEditedFlags,
+  updateWithOptionalColumns,
+} from "@/lib/human-edits";
 import {
   PageHeader,
   EmptyState,
   ApprovalStatusPill,
+  ErrorBanner,
   fmtDateTime,
 } from "@/components/workspace-ui";
 
@@ -60,7 +72,7 @@ async function decideApproval(
     .eq("workspace_id", workspaceId)
     .eq("status", "pending") // decide only once
     .select(
-      "id, workspace_id, agent_id, task_id, action_type, action_detail, status"
+      "id, workspace_id, agent_id, task_id, action_type, action_detail, status, decided_by_member_id, decided_at"
     )
     .single();
   if (updated && decision === "approved") {
@@ -75,8 +87,107 @@ async function decideApproval(
       action_detail: updated.action_detail as Record<string, unknown>,
       status: updated.status,
     });
+    // Signed outbound webhook: fires ONLY here, after a leader
+    // approves. Never automatic, never from a demo run. Delivery
+    // failure never blocks the approval itself: the outcome is
+    // recorded on the approval (best-effort columns + audit log) and
+    // the leader can retry it from the decision history below.
+    await deliverApprovalWebhook(supabase, {
+      id: updated.id,
+      workspace_id: updated.workspace_id,
+      agent_id: updated.agent_id,
+      task_id: updated.task_id,
+      action_type: updated.action_type,
+      action_detail: updated.action_detail as Record<string, unknown>,
+      status: updated.status,
+      decided_by_member_id: updated.decided_by_member_id,
+      decided_at: updated.decided_at,
+    });
   }
   revalidatePath(`/workspace/${workspaceId}/approvals`);
+}
+
+// Leader-only edit-before-approve: save an edited action payload on a
+// still-pending approval. The edited JSON passes the verification gate
+// (cheap JSON repair only, never a re-run) and is what gets enqueued
+// when the leader approves afterwards — approve as-is or as-edited,
+// zero agent re-run. The human edit is logged (audit log always; the
+// pending was_human_edited / human_edited_payload columns when they
+// exist) so the decision history can show the payload was human-edited.
+async function saveEditedApprovalPayload(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const approvalId = String(formData.get("approval_id") ?? "");
+  const { data: approval } = await supabase
+    .from("approvals")
+    .select("id, action_detail, status")
+    .eq("id", approvalId)
+    .eq("workspace_id", workspaceId)
+    .single();
+  if (!approval || approval.status !== "pending") {
+    redirect(`/workspace/${workspaceId}/approvals?edit_error=not_pending`);
+  }
+  const checked = verifyActionPayload(String(formData.get("payload") ?? ""));
+  if (!checked.ok || !checked.payload) {
+    redirect(`/workspace/${workspaceId}/approvals?edit_error=invalid_json`);
+  }
+  const original = approval.action_detail as Record<string, unknown>;
+  const saved = await updateWithOptionalColumns(
+    supabase,
+    "approvals",
+    approvalId,
+    { action_detail: checked.payload },
+    { was_human_edited: true, human_edited_payload: original }
+  );
+  if (!saved) {
+    redirect(`/workspace/${workspaceId}/approvals?edit_error=save_failed`);
+  }
+  await recordHumanEdit(supabase, {
+    workspaceId,
+    memberId: membership.id,
+    action: "approval_payload_edited",
+    targetId: approvalId,
+    summary: {
+      repaired_json: checked.repaired,
+      edited_by_member_id: membership.id,
+    },
+  });
+  revalidatePath(`/workspace/${workspaceId}/approvals`);
+}
+
+// Leader-only retry of a failed webhook delivery, for an approval that
+// is already approved. Re-sends the same signed event; never sends for
+// a pending or rejected approval (deliverApprovalWebhook enforces that).
+async function redeliverApprovalWebhook(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const approvalId = String(formData.get("approval_id") ?? "");
+  const { data: approval } = await supabase
+    .from("approvals")
+    .select(
+      "id, workspace_id, agent_id, task_id, action_type, action_detail, status, decided_by_member_id, decided_at"
+    )
+    .eq("id", approvalId)
+    .eq("workspace_id", workspaceId)
+    .single();
+  if (!approval) return;
+  const outcome = await deliverApprovalWebhook(supabase, {
+    id: approval.id,
+    workspace_id: approval.workspace_id,
+    agent_id: approval.agent_id,
+    task_id: approval.task_id,
+    action_type: approval.action_type,
+    action_detail: approval.action_detail as Record<string, unknown>,
+    status: approval.status,
+    decided_by_member_id: approval.decided_by_member_id,
+    decided_at: approval.decided_at,
+  });
+  revalidatePath(`/workspace/${workspaceId}/approvals`);
+  redirect(
+    `/workspace/${workspaceId}/approvals?webhook=${outcome.status === "delivered" ? "redelivered" : outcome.status === "skipped" ? "not_approved" : "failed"}`
+  );
 }
 
 // Leader-only manual worker trigger. Approving an approval only enqueues
@@ -144,6 +255,8 @@ export default async function ApprovalsPage({
     typeof sp.run_succeeded === "string" ? sp.run_succeeded : null;
   const runFailed = typeof sp.run_failed === "string" ? sp.run_failed : null;
   const runError = typeof sp.run_error === "string" ? sp.run_error : null;
+  const editError = typeof sp.edit_error === "string" ? sp.edit_error : null;
+  const webhookNotice = typeof sp.webhook === "string" ? sp.webhook : null;
   const { count: queuedCount } = await supabase
     .from("task_executions")
     .select("id", { count: "exact", head: true })
@@ -185,6 +298,17 @@ export default async function ApprovalsPage({
     .order("updated_at", { ascending: false })
     .limit(50);
 
+  // Human-edit provenance (audit log; the pending was_human_edited
+  // columns add to it once the migration lands) and webhook delivery
+  // outcomes (pending columns when they exist, audit log otherwise).
+  // All three reads degrade to empty sets/maps on an older database.
+  const humanEdited = await fetchHumanEditedIds(supabase, id);
+  const humanEditedFlags = await fetchWasHumanEditedFlags(supabase, "approvals", id);
+  for (const approvalId of humanEditedFlags) humanEdited.approvals.add(approvalId);
+  const webhookStatuses = await fetchWebhookDeliveryStatuses(supabase, id);
+  const isHumanEdited = (approvalId: string) =>
+    humanEdited.approvals.has(approvalId);
+
   const inputCls =
     "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
 
@@ -207,6 +331,33 @@ export default async function ApprovalsPage({
           Worker not configured: the server-only service key is unset, so no
           queued execution was run. Set SUPABASE_SERVICE_ROLE_KEY in Vercel,
           then try again.
+        </p>
+      )}
+      <ErrorBanner
+        message={
+          editError === "invalid_json"
+            ? "That payload is not valid JSON and the repair path could not fix it. Nothing was saved."
+            : editError === "not_pending"
+              ? "That approval is already decided, so its payload can no longer be edited."
+              : editError === "save_failed"
+                ? "The edited payload could not be saved. Try again."
+                : null
+        }
+      />
+      {webhookNotice === "redelivered" && (
+        <p className="mt-8 rounded-xl border border-[#9db89a]/40 bg-[#1a2a1d] px-4 py-3 text-sm text-[#9db89a]">
+          Webhook re-delivered: the endpoint answered 2xx.
+        </p>
+      )}
+      {webhookNotice === "failed" && (
+        <p className="mt-8 rounded-xl border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+          Webhook delivery failed again. Check the configured URL in Settings
+          and that HIVLET_WEBHOOK_SECRET is set on the server, then retry.
+        </p>
+      )}
+      {webhookNotice === "not_approved" && (
+        <p className="mt-8 rounded-xl border border-white/10 bg-coal px-4 py-3 text-sm text-muted">
+          Webhooks only fire for approved approvals, so nothing was sent.
         </p>
       )}
 
@@ -311,9 +462,45 @@ export default async function ApprovalsPage({
               {a.reason && (
                 <p className="mt-2 text-sm text-muted">Reason: {a.reason}</p>
               )}
+              {isHumanEdited(a.id) && (
+                <p className="mt-2 w-fit rounded-full border border-gold/60 bg-transparent px-2.5 py-0.5 text-xs font-medium text-gold-soft">
+                  Human edited — payload changed by a leader, not the agent
+                </p>
+              )}
               <pre className="mt-3 overflow-x-auto rounded-lg bg-ink p-3 text-xs text-ivory">
                 {JSON.stringify(a.action_detail, null, 2)}
               </pre>
+              {leader && (
+                <details className="mt-3 rounded-lg border border-white/10 px-3 py-2">
+                  <summary className="cursor-pointer text-xs font-medium text-muted">
+                    Edit payload before approving
+                  </summary>
+                  <p className="mt-2 text-xs text-muted">
+                    Change the JSON, save it, then approve as-edited. Saving
+                    never re-runs the agent, and the edit is logged as a
+                    human edit. Broken JSON goes through a cheap repair
+                    (trailing commas, unbalanced braces) or is rejected.
+                  </p>
+                  <form
+                    action={saveEditedApprovalPayload.bind(null, id)}
+                    className="mt-2 space-y-2"
+                  >
+                    <input type="hidden" name="approval_id" value={a.id} />
+                    <textarea
+                      name="payload"
+                      rows={6}
+                      defaultValue={JSON.stringify(a.action_detail, null, 2)}
+                      className="w-full rounded-lg border border-white/15 bg-ink px-3 py-2 font-mono text-xs text-ivory focus:border-gold"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-lg border border-gold/60 bg-transparent px-4 py-2 text-sm font-medium text-gold-soft hover:border-gold"
+                    >
+                      Save edited payload
+                    </button>
+                  </form>
+                </details>
+              )}
               {leader ? (
                 <div className="mt-3 flex gap-2">
                   <form
@@ -324,7 +511,7 @@ export default async function ApprovalsPage({
                       type="submit"
                       className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
                     >
-                      Approve exact payload
+                      Approve{isHumanEdited(a.id) ? " as edited" : " exact payload"}
                     </button>
                   </form>
                   <form
@@ -353,23 +540,62 @@ export default async function ApprovalsPage({
         <section className="mt-10">
           <h2 className="font-semibold text-ivory">Decision history</h2>
           <div className="mt-3 space-y-3">
-            {decided.map((a) => (
-              <div
-                key={a.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3"
-              >
-                <p className="text-sm text-muted">
-                  {a.agents?.name ?? "Agent"} — {a.action_type.replace("_", " ")}
-                  {a.tasks ? ` (${a.tasks.title})` : ""}
-                </p>
-                <span className="flex items-center gap-3">
-                  <span className="hidden text-xs text-muted sm:inline">
-                    {a.decided_at ? fmtDateTime(a.decided_at) : ""}
+            {decided.map((a) => {
+              const webhook = webhookStatuses.get(a.id);
+              return (
+                <div
+                  key={a.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-coal px-4 py-3"
+                >
+                  <p className="text-sm text-muted">
+                    {a.agents?.name ?? "Agent"} — {a.action_type.replace("_", " ")}
+                    {a.tasks ? ` (${a.tasks.title})` : ""}
+                    {isHumanEdited(a.id) && (
+                      <span className="ml-2 rounded-full border border-gold/60 px-2 py-0.5 text-xs font-medium text-gold-soft">
+                        Human edited
+                      </span>
+                    )}
+                  </p>
+                  <span className="flex flex-wrap items-center gap-3">
+                    <span className="hidden text-xs text-muted sm:inline">
+                      {a.decided_at ? fmtDateTime(a.decided_at) : ""}
+                    </span>
+                    {a.status === "approved" && webhook && (
+                      <span
+                        className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
+                          webhook.status === "delivered"
+                            ? "border-[#9db89a]/40 bg-[#1a2a1d] text-[#9db89a]"
+                            : webhook.status === "delivery_failed"
+                              ? "border-[#d98c8c]/40 bg-[#2a1515] text-[#d98c8c]"
+                              : "border-white/15 bg-coal text-muted"
+                        }`}
+                      >
+                        Webhook:{" "}
+                        {webhook.status === "delivered"
+                          ? `delivered${webhook.httpStatus ? ` (${webhook.httpStatus})` : ""}`
+                          : webhook.status === "delivery_failed"
+                            ? `delivery failed${webhook.httpStatus ? ` (${webhook.httpStatus})` : ""}`
+                            : webhook.status}
+                      </span>
+                    )}
+                    {a.status === "approved" &&
+                      leader &&
+                      webhook?.status === "delivery_failed" && (
+                        <form action={redeliverApprovalWebhook.bind(null, id)}>
+                          <input type="hidden" name="approval_id" value={a.id} />
+                          <button
+                            type="submit"
+                            className="rounded-lg border border-gold/60 bg-transparent px-3 py-1.5 text-xs font-medium text-gold-soft hover:border-gold"
+                          >
+                            Retry webhook
+                          </button>
+                        </form>
+                      )}
+                    <ApprovalStatusPill status={a.status} />
                   </span>
-                  <ApprovalStatusPill status={a.status} />
-                </span>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </section>
       )}

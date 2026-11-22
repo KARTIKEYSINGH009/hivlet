@@ -4,6 +4,10 @@ import { logTaskEvent } from "@/lib/events";
 import { logAudit } from "@/lib/execution";
 import { demoResult } from "@/lib/agents/demo";
 import {
+  verifyAgentOutput,
+  type VerificationResult,
+} from "@/lib/verification";
+import {
   PageHeader,
   EmptyState,
   ErrorBanner,
@@ -115,7 +119,7 @@ async function changeStatus(
   const taskId = String(formData.get("task_id") ?? "");
   const { data: task } = await supabase
     .from("tasks")
-    .select("id, status")
+    .select("id, status, result")
     .eq("id", taskId)
     .eq("workspace_id", workspaceId)
     .single();
@@ -131,14 +135,58 @@ async function changeStatus(
     patch.result = String(formData.get("result") ?? "").trim() || null;
   }
   await supabase.from("tasks").update(patch).eq("id", taskId);
+  // Revision requested (in_review -> in_progress): the next run is
+  // scoped to ONLY the previous output plus the human correction note
+  // — never a restart, never the whole task re-sent. Both are stored
+  // on the append-only task event so the worker prompt builder can
+  // pick them up (see getLatestRevisionContext in lib/human-edits.ts).
+  const detail: Record<string, unknown> = { from: task.status, to: next };
+  if (eventType === "revision_requested") {
+    detail.correction_note =
+      String(formData.get("correction_note") ?? "").trim() || null;
+    detail.previous_output = task.result ?? null;
+  }
   await logTaskEvent(supabase, {
     workspaceId,
     taskId,
     eventType,
     memberId: membership.id,
-    detail: { from: task.status, to: next },
+    detail,
   });
   revalidatePath(`/workspace/${workspaceId}/tasks`);
+}
+
+// Pre-flight gate verdict for an in_review task's result, rendered in
+// the review UI. The gate itself is deterministic (lib/verification.ts)
+// and runs at render time; the worker is expected to run the same gate
+// before moving a task to in_review (Piece 2 owns that wiring).
+function ReviewGateNote({ gate }: { gate: VerificationResult }) {
+  if (gate.ok) {
+    return (
+      <p className="mt-2 font-medium text-[#9db89a]">
+        Pre-flight: passed — output is non-empty and within the length cap.
+      </p>
+    );
+  }
+  return (
+    <div className="mt-2">
+      <p className="font-medium text-[#d98c8c]">
+        Pre-flight: {gate.issues.length} issue{gate.issues.length === 1 ? "" : "s"} —
+        review before accepting:
+      </p>
+      <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[#d98c8c]">
+        {gate.issues.map((issue, i) => (
+          <li key={i}>{issue.message}</li>
+        ))}
+      </ul>
+      {gate.repaired && (
+        <p className="mt-1 text-muted">
+          The cheap JSON repair fixed the output; the repaired version is
+          what the worker should record.
+        </p>
+      )}
+    </div>
+  );
 }
 
 // Demo execution: a fixture run, completed synchronously, always labeled
@@ -229,6 +277,16 @@ export default async function TasksPage({
     .eq("workspace_id", id)
     .order("updated_at", { ascending: false });
   const taskList = (tasks ?? []) as TaskRow[];
+
+  // Deterministic pre-flight gate on every in_review result, computed
+  // at render time so reviewers see the verdict. The worker runs the
+  // same gate before the in_review transition (Piece 2 wiring).
+  const reviewGates = new Map<string, VerificationResult>();
+  for (const t of taskList) {
+    if (t.status === "in_review" && t.result) {
+      reviewGates.set(t.id, verifyAgentOutput(t.result));
+    }
+  }
 
   const { data: agents } = await supabase
     .from("agents")
@@ -492,6 +550,19 @@ export default async function TasksPage({
                             Result: {t.result}
                           </p>
                         )}
+                        {t.status === "in_review" && t.result && (
+                          <div className="mt-2 rounded-lg border border-gold/40 px-3 py-2 text-xs">
+                            <p className="font-medium text-ivory">
+                              Result awaiting review:
+                            </p>
+                            <p className="mt-1 whitespace-pre-wrap text-muted">
+                              {t.result}
+                            </p>
+                            {reviewGates.get(t.id) && (
+                              <ReviewGateNote gate={reviewGates.get(t.id)!} />
+                            )}
+                          </div>
+                        )}
 
                         <div className="mt-3 flex flex-wrap gap-2">
                           {next.includes("in_progress") &&
@@ -505,12 +576,24 @@ export default async function TasksPage({
                                     ? "revision_requested"
                                     : "task_started"
                                 )}
+                                className={
+                                  t.status === "in_review"
+                                    ? "flex flex-wrap gap-2"
+                                    : undefined
+                                }
                               >
                                 <input
                                   type="hidden"
                                   name="task_id"
                                   value={t.id}
                                 />
+                                {t.status === "in_review" && (
+                                  <input
+                                    name="correction_note"
+                                    placeholder="What should change? Only this note + the previous output go back to the agent."
+                                    className="w-full rounded-lg border border-white/15 px-2 py-1.5 text-xs"
+                                  />
+                                )}
                                 <button type="submit" className={btnCls}>
                                   {t.status === "in_review"
                                     ? "Request revision"

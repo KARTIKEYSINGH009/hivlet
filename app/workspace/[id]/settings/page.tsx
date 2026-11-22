@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireWorkspace, isLeader } from "@/lib/workspace";
+import { isValidWebhookUrl } from "@/lib/verification";
+import { getWorkspaceWebhookUrl } from "@/lib/approval-webhook";
 import CopyInviteLink from "@/components/copy-invite-link";
 import DeleteWorkspaceForm from "@/components/delete-workspace-form";
 import {
@@ -65,17 +67,46 @@ async function deleteWorkspace(workspaceId: string, formData: FormData) {
   redirect("/workspaces");
 }
 
+// Leader-only approval webhook URL. The URL is stored in the PENDING
+// column workspaces.approval_webhook_url (Piece 1 owns the migration):
+// until that column exists the save fails cleanly with a banner and
+// nothing is stored anywhere else. The URL must be https (http only
+// for localhost). The signing secret is server-only
+// (HIVLET_WEBHOOK_SECRET env), never stored here and never shown.
+async function saveApprovalWebhookUrl(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const url = String(formData.get("approval_webhook_url") ?? "").trim();
+  if (url && !isValidWebhookUrl(url)) {
+    redirect(`/workspace/${workspaceId}/settings?webhook=invalid_url`);
+  }
+  const { error } = await supabase
+    .from("workspaces")
+    .update({ approval_webhook_url: url || null })
+    .eq("id", workspaceId);
+  if (error) {
+    console.error("approval webhook URL save failed:", error.message);
+    redirect(`/workspace/${workspaceId}/settings?webhook=pending_column`);
+  }
+  revalidatePath(`/workspace/${workspaceId}/settings`);
+}
+
 export default async function WorkspaceSettingsPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ invite?: string }>;
+  searchParams: Promise<{ invite?: string; webhook?: string }>;
 }) {
   const { id } = await params;
   const sp = await searchParams;
   const { supabase, workspace, membership } = await requireWorkspace(id);
   const leader = isLeader(membership);
+
+  // Best-effort read: null when the pending column does not exist yet
+  // or no URL is configured.
+  const webhookUrl = leader ? await getWorkspaceWebhookUrl(supabase, id) : null;
 
   const { data: members } = await supabase
     .from("workspace_members")
@@ -117,6 +148,20 @@ export default async function WorkspaceSettingsPage({
         <p className="mt-6 rounded-lg border border-gold/40 bg-coal px-4 py-3 text-sm text-gold-soft">
           Email and phone invites are not configured, so nothing was sent.
           Link invites work today.
+        </p>
+      )}
+
+      {sp.webhook === "pending_column" && (
+        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+          The webhook URL could not be saved yet: the workspaces column
+          for it does not exist in the database (migration pending).
+          Nothing was stored.
+        </p>
+      )}
+      {sp.webhook === "invalid_url" && (
+        <p className="mt-6 rounded-lg border border-[#d98c8c]/40 bg-coal px-4 py-3 text-sm text-[#d98c8c]">
+          That is not a valid webhook URL. Use an https URL (http is
+          allowed only for localhost).
         </p>
       )}
 
@@ -180,6 +225,48 @@ export default async function WorkspaceSettingsPage({
         <p className="mt-6 text-sm text-muted">
           Only workspace leaders can edit settings. You are a member.
         </p>
+      )}
+
+      {leader && (
+        <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">
+          <h2 className="font-semibold text-ivory">Approval webhook</h2>
+          <p className="mt-1 text-sm text-muted">
+            When a leader approves an approval, Hivlet POSTs a signed JSON
+            event (<span className="font-mono text-xs text-ivory">approval.approved</span>)
+            to this URL, with an HMAC-SHA256 signature in the{" "}
+            <span className="font-mono text-xs text-ivory">X-Hivlet-Signature</span>{" "}
+            header. It fires only on approval, never automatically and
+            never from a demo run. Delivery status shows on the Approvals
+            page, where a failed delivery can be retried. The signing
+            secret lives only on the server (HIVLET_WEBHOOK_SECRET) and
+            is never shown here.
+          </p>
+          <p className="mt-2 text-xs text-muted">
+            {webhookUrl ? (
+              <>
+                Configured:{" "}
+                <span className="font-mono text-ivory">{webhookUrl}</span>
+              </>
+            ) : (
+              "No webhook URL configured — approvals will not notify any endpoint."
+            )}
+          </p>
+          <form action={saveApprovalWebhookUrl.bind(null, id)} className="mt-4 space-y-3">
+            <input
+              name="approval_webhook_url"
+              type="url"
+              placeholder="https://example.com/hivlet-approvals"
+              defaultValue={webhookUrl ?? ""}
+              className={inputCls}
+            />
+            <button
+              type="submit"
+              className="rounded-lg bg-gold px-5 py-2 text-sm font-medium text-ink hover:bg-gold-soft"
+            >
+              Save webhook URL
+            </button>
+          </form>
+        </section>
       )}
 
       <section className="mt-6 rounded-xl border border-white/10 bg-coal p-5">

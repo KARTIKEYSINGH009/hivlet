@@ -17,13 +17,31 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { costForRun } from "@/lib/cost";
-import { routeTask, outputCapForTier } from "@/lib/routing";
 import { prunePrompt } from "@/lib/pruning";
 import { checkBudget } from "@/lib/budgets";
-import { executeAgent } from "@/lib/agents";
 import { demoResult } from "@/lib/agents/demo";
 import { sanitizeErrorMessage } from "@/lib/agents/errors";
 import { logTaskEvent } from "@/lib/events";
+// Piece 2: unified LLM router + prefix-cached worker. Routing is the
+// cheap-first unified router (lib/llm-router.ts, which reuses the
+// simple-task detection in lib/routing.ts); cost math stays in
+// lib/cost.ts; pruning stays in lib/pruning.ts.
+import { routeTask, outputCapForRoute } from "@/lib/llm-router";
+import { buildPrefixLockedPrompt } from "@/lib/prompt-layout";
+import {
+  buildHandoffPacket,
+  readTaskHandoff,
+  renderHandoffPacket,
+  writeTaskHandoff,
+} from "@/lib/handoff";
+import {
+  computeInputHash,
+  lookupCachedExecution,
+  storeExecutionDedup,
+} from "@/lib/dedup";
+import { taskExpectsJson } from "@/lib/validation";
+import { verifyAgentOutput } from "@/lib/verification";
+import { checkDailyBudgetAndPause, executeWithRouter } from "@/lib/llm-worker";
 
 export type ExecutionRow = {
   id: string;
@@ -230,22 +248,40 @@ export async function processClaimedExecution(
     // database without migration 005 never breaks the token update.
     // They are written best-effort afterwards, and always recorded in
     // the append-only audit summary below, which needs no new column.
+    // Piece 2 dedup fields (is_cached / input_hash, migration 011)
+    // are likewise stripped from the main update and stored best-effort
+    // via storeExecutionDedup, so a database without 011 never breaks
+    // the run: dedup simply stays unavailable until 011 runs live.
     const {
       cachedTokens,
       estimatedCostUsd,
       provider,
       model,
+      isCached,
+      inputHash,
       ...mainPatch
     } = patch as Record<string, unknown> & {
       cachedTokens?: number | null;
       estimatedCostUsd?: number | null;
       provider?: string | null;
       model?: string | null;
+      isCached?: boolean;
+      inputHash?: string;
     };
     await serviceClient
       .from("task_executions")
       .update({ ...mainPatch, status, finished_at: new Date().toISOString() })
       .eq("id", execution.id);
+    if (inputHash !== undefined) {
+      await storeExecutionDedup(serviceClient, execution.id, {
+        inputHash,
+        idempotencyKey:
+          typeof execution.input.idempotency_key === "string"
+            ? execution.input.idempotency_key
+            : null,
+        isCached: isCached ?? false,
+      });
+    }
     if (
       cachedTokens !== undefined ||
       estimatedCostUsd !== undefined ||
@@ -302,16 +338,22 @@ export async function processClaimedExecution(
         provider: provider ?? null,
         model: model ?? null,
         estimated_cost_usd: estimatedCostUsd ?? null,
+        is_cached: isCached ?? false,
         cost_is_placeholder: estimatedCostUsd !== undefined,
       },
     });
     return { claimed: true as const, executionId: execution.id, status };
   };
 
-  if (!agent || agent.status === "disabled") {
+  // A paused agent never runs: the daily-budget auto-pause (see
+  // checkDailyBudgetAndPause below) and the leader's manual pause
+  // both land here. Resume from the Agents page to run it again.
+  if (!agent || agent.status === "disabled" || agent.status === "paused") {
     const reason = !agent
       ? "Agent no longer exists."
-      : "Agent is disabled.";
+      : agent.status === "paused"
+        ? "Agent is paused (resume it from the Agents page)."
+        : "Agent is disabled.";
     if (task && (task.status === "todo" || task.status === "in_progress")) {
       await serviceClient
         .from("tasks")
@@ -351,53 +393,206 @@ export async function processClaimedExecution(
     }
   } catch { /* budget table missing or unreadable: do not block on it */ }
 
+  // Piece 2 daily-budget hard stop, after the monthly check above.
+  // When reached, the workspace's agents are auto-paused and the run
+  // fails before any provider call. The pause is the surfaced state:
+  // the Agents page shows 'paused' and a leader resumes them.
+  try {
+    const daily = await checkDailyBudgetAndPause(
+      serviceClient,
+      execution.workspace_id
+    );
+    if (daily.reached) {
+      await logAudit(serviceClient, {
+        workspaceId: execution.workspace_id,
+        actorType: "worker",
+        actorId: workerId,
+        action: "daily_budget_reached",
+        targetType: "workspace",
+        targetId: execution.workspace_id,
+        summary: {
+          task_id: execution.task_id,
+          agent_id: execution.agent_id,
+          paused_agents: daily.pausedAgents,
+          used_cost_usd: daily.usedCostUsd,
+          used_tokens: daily.usedTokens,
+          daily_cost_budget_usd: daily.dailyCostBudgetUsd,
+          daily_token_budget: daily.dailyTokenBudget,
+        },
+      });
+      if (task && (task.status === "todo" || task.status === "in_progress")) {
+        await serviceClient
+          .from("tasks")
+          .update({ status: "failed", failure_reason: daily.reason })
+          .eq("id", task.id);
+      }
+      return finish("failed", { error: daily.reason }, "execution_failed");
+    }
+  } catch { /* daily budget unreadable: do not block on it */ }
+
   await serviceClient
     .from("agents")
     .update({ status: "working" })
     .eq("id", agent.id);
 
+  // ── Piece 2 unified routing + prefix-locked prompt ─────────────────────
+  // Cheap first (Groq openai/gpt-oss-20b); escalate only on a leader
+  // pin (already reflected in `routed`) or a failed cheap-run
+  // validation (inside executeWithRouter).
   const rawPrompt = buildUserPrompt(execution.input, task);
-  const routed = routeTask({ provider: agent.provider, configuredModel: agent.model, title: task?.title ?? "", description: task?.description ?? null });
-  const routedAgent = { ...agent, model: routed.model };
+  const routed = routeTask({
+    provider: agent.provider,
+    configuredModel: agent.model,
+    title: task?.title ?? "",
+    description: task?.description ?? null,
+  });
   const prunedPrompt = prunePrompt(rawPrompt);
 
+  // Previous compact handoff packet (migration 011; degrades to null
+  // until 011 runs live). Only the packet travels forward, never a
+  // full transcript.
+  const previousHandoff = task
+    ? await readTaskHandoff(serviceClient, task.id)
+    : { packet: null, hopsUsed: 0, degraded: false };
+
+  // Static prefix first (identical across runs for this agent, so
+  // provider prefix caching can hit), dynamic payload last.
+  const { systemPrompt, userPrompt } = buildPrefixLockedPrompt({
+    agentName: agent.name,
+    agentSystemPrompt: agent.system_prompt,
+    dynamicPayload: prunedPrompt,
+    previousHandoff: previousHandoff.packet
+      ? renderHandoffPacket(previousHandoff.packet)
+      : null,
+  });
+
+  const startedAt = execution.started_at ?? new Date().toISOString();
+  const idempotencyKey =
+    typeof execution.input.idempotency_key === "string"
+      ? execution.input.idempotency_key
+      : null;
+  const inputHash = computeInputHash({
+    provider: routed.provider,
+    model: routed.model,
+    systemPrompt,
+    userPrompt,
+  });
+
+  // Dedup before any provider call (real runs only). A succeeded run
+  // of the same inputs in the last 24h returns its output with zero
+  // new cost and zero new tokens. Demo runs never hit the cache.
+  if (!execution.is_demo) {
+    const cached = await lookupCachedExecution(serviceClient, {
+      inputHash,
+      idempotencyKey,
+      workspaceId: execution.workspace_id,
+    });
+    if (cached.hit) {
+      // Cache hit: the task still moves to in_review (never straight
+      // to done) and a human still accepts the work.
+      if (task && (task.status === "todo" || task.status === "in_progress")) {
+        await serviceClient
+          .from("tasks")
+          .update({ status: "in_review", result: cached.hit.output })
+          .eq("id", task.id);
+      }
+      await serviceClient
+        .from("agents")
+        .update({ status: "idle" })
+        .eq("id", agent.id);
+      return finish(
+        "succeeded",
+        {
+          output: cached.hit.output,
+          prompt_tokens: null,
+          completion_tokens: null,
+          total_tokens: null,
+          cachedTokens: null,
+          estimatedCostUsd: 0,
+          provider: cached.hit.provider,
+          model: cached.hit.model,
+          isCached: true,
+          inputHash,
+        },
+        "execution_succeeded"
+      );
+    }
+  }
+
   try {
-    const result = execution.is_demo
-      ? demoResult({
+    const outcome = execution.is_demo
+      ? {
+          result: demoResult({
+            agent: {
+              id: agent.id,
+              name: agent.name,
+              provider: routed.provider,
+              model: routed.model,
+              system_prompt: systemPrompt,
+            },
+            task: task
+              ? { id: task.id, title: task.title, description: task.description }
+              : null,
+            userPrompt,
+            approvedPayload:
+              (execution.input.payload as Record<string, unknown> | undefined) ??
+              undefined,
+          }),
+          route: routed,
+          hopsUsed: previousHandoff.hopsUsed,
+          retriesUsed: 0,
+          escalated: false,
+        }
+      : await executeWithRouter({
           agent: {
-            id: routedAgent.id,
-            name: routedAgent.name,
-            provider: routedAgent.provider,
-            model: routedAgent.model,
-            system_prompt: routedAgent.system_prompt,
+            id: agent.id,
+            name: agent.name,
+            provider: agent.provider,
+            model: agent.model,
+            system_prompt: agent.system_prompt,
           },
           task: task
             ? { id: task.id, title: task.title, description: task.description }
             : null,
-          userPrompt: prunedPrompt,
-          approvedPayload:
-            (execution.input.payload as Record<string, unknown> | undefined) ??
-            undefined,
-        })
-      : await executeAgent(
-          {
-            id: routedAgent.id,
-            name: routedAgent.name,
-            provider: routedAgent.provider,
-            model: routedAgent.model,
-            system_prompt: routedAgent.system_prompt,
-          },
-          task
-            ? { id: task.id, title: task.title, description: task.description }
-            : null,
-          {
-            userPrompt: prunedPrompt,
-            maxTokens: outputCapForTier(routed.tier),
-            approvedPayload:
-              (execution.input.payload as Record<string, unknown> | undefined) ??
-              undefined,
-          }
-        );
+          systemPrompt,
+          userPrompt,
+          route: routed,
+          maxTokens: outputCapForRoute(routed),
+          expectJson: taskExpectsJson(task?.title ?? "", task?.description ?? null),
+          hopsUsed: previousHandoff.hopsUsed,
+        });
+    const result = outcome.result;
+
+    // Deterministic pre-flight gate (Piece 3, lib/verification.ts):
+    // zero tokens, no re-run. A repaired JSON output is used as-is.
+    // An unrepairable output never reaches in_review: the task fails
+    // with the gate reasons, so a human never reviews broken output
+    // and the agent is not re-run to fix it here.
+    let gatedOutput = result.output;
+    if (!execution.is_demo) {
+      const gate = verifyAgentOutput(result.output, {
+        expectJson: taskExpectsJson(task?.title ?? "", task?.description ?? null),
+      });
+      if (gate.repaired && gate.repairedOutput !== null) {
+        gatedOutput = gate.repairedOutput;
+      }
+      if (!gate.ok) {
+        const reason =
+          "Output failed pre-flight check: " +
+          gate.issues.map((i) => `${i.field} (${i.code})`).join("; ");
+        if (task && (task.status === "todo" || task.status === "in_progress")) {
+          await serviceClient
+            .from("tasks")
+            .update({ status: "failed", failure_reason: reason })
+            .eq("id", task.id);
+        }
+        await serviceClient
+          .from("agents")
+          .update({ status: "idle" })
+          .eq("id", agent.id);
+        return finish("failed", { error: reason }, "execution_failed");
+      }
+    }
 
     // Success moves the task to in_review, never straight to done: a
     // human still accepts the work. Tasks already moved by a human
@@ -405,13 +600,23 @@ export async function processClaimedExecution(
     if (task && (task.status === "todo" || task.status === "in_progress")) {
       await serviceClient
         .from("tasks")
-        .update({ status: "in_review", result: result.output })
+        .update({ status: "in_review", result: gatedOutput })
         .eq("id", task.id);
     }
     await serviceClient
       .from("agents")
       .update({ status: "idle" })
       .eq("id", agent.id);
+    // Piece 2: compact handoff packet for the next agent (real runs
+    // only). Best-effort: a no-op until migration 011 runs live.
+    if (task && !execution.is_demo) {
+      await writeTaskHandoff(serviceClient, task.id, {
+        packet: buildHandoffPacket({ output: gatedOutput }),
+        hopsUsed: outcome.hopsUsed,
+        retryCount: outcome.retriesUsed,
+        startedAt,
+      });
+    }
     // Phase 1: real runs only. Demo runs keep null tokens and null
     // cost, exactly as demoResult() already returns. The cost is a
     // placeholder-rate estimate (see lib/cost.ts), never a charge.
@@ -435,6 +640,8 @@ export async function processClaimedExecution(
         estimatedCostUsd,
         provider: result.provider,
         model: result.model,
+        isCached: false,
+        inputHash: execution.is_demo ? undefined : inputHash,
       },
       "execution_succeeded"
     );

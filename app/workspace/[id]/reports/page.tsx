@@ -1,5 +1,13 @@
 import { revalidatePath } from "next/cache";
-import { requireWorkspace } from "@/lib/workspace";
+import { redirect } from "next/navigation";
+import { requireWorkspace, isLeader } from "@/lib/workspace";
+import { verifyReportContent } from "@/lib/verification";
+import {
+  recordHumanEdit,
+  fetchHumanEditedIds,
+  fetchWasHumanEditedFlags,
+  updateWithOptionalColumns,
+} from "@/lib/human-edits";
 import {
   PageHeader,
   EmptyState,
@@ -38,6 +46,27 @@ async function verifyReport(workspaceId: string, formData: FormData) {
   "use server";
   const { supabase, membership } = await requireWorkspace(workspaceId);
   const reportId = String(formData.get("report_id") ?? "");
+  const { data: report } = await supabase
+    .from("reports")
+    .select("summary, completed_tasks, blockers, next_steps, verified")
+    .eq("id", reportId)
+    .eq("workspace_id", workspaceId)
+    .single();
+  if (!report || report.verified) return;
+  // Deterministic pre-flight gate: a report with an empty or over-long
+  // field cannot be verified. The leader edits it first (editReport
+  // below) instead of the stamp going on broken content.
+  const gate = verifyReportContent({
+    summary: String(report.summary ?? ""),
+    completedTasks: Array.isArray(report.completed_tasks)
+      ? (report.completed_tasks as string[])
+      : [],
+    blockers: report.blockers,
+    nextSteps: report.next_steps,
+  });
+  if (!gate.ok) {
+    redirect(`/workspace/${workspaceId}/reports?error=verification`);
+  }
   await supabase
     .from("reports")
     .update({
@@ -47,6 +76,64 @@ async function verifyReport(workspaceId: string, formData: FormData) {
     })
     .eq("id", reportId)
     .eq("workspace_id", workspaceId);
+  revalidatePath(`/workspace/${workspaceId}/reports`);
+}
+
+// Leader-only edit-before-verify: fix a report's markdown in place,
+// then verify it as-edited with zero agent re-run. Only unverified
+// reports can be edited — once verified, the human stamp stands and
+// the content is locked. The edit is logged (audit log always; the
+// pending reports.was_human_edited column when it exists).
+async function editReport(workspaceId: string, formData: FormData) {
+  "use server";
+  const { supabase, membership } = await requireWorkspace(workspaceId);
+  if (!isLeader(membership)) return;
+  const reportId = String(formData.get("report_id") ?? "");
+  const { data: report } = await supabase
+    .from("reports")
+    .select("id, verified")
+    .eq("id", reportId)
+    .eq("workspace_id", workspaceId)
+    .single();
+  if (!report || report.verified) {
+    redirect(`/workspace/${workspaceId}/reports?error=already_verified`);
+  }
+  const completed = String(formData.get("completed_tasks") ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const edited = {
+    summary: String(formData.get("summary") ?? "").trim(),
+    completed_tasks: completed,
+    blockers: String(formData.get("blockers") ?? "").trim() || null,
+    next_steps: String(formData.get("next_steps") ?? "").trim() || null,
+  };
+  const gate = verifyReportContent({
+    summary: edited.summary,
+    completedTasks: edited.completed_tasks,
+    blockers: edited.blockers,
+    nextSteps: edited.next_steps,
+  });
+  if (!gate.ok) {
+    redirect(`/workspace/${workspaceId}/reports?error=verification`);
+  }
+  const saved = await updateWithOptionalColumns(
+    supabase,
+    "reports",
+    reportId,
+    edited,
+    { was_human_edited: true }
+  );
+  if (!saved) {
+    redirect(`/workspace/${workspaceId}/reports?error=save_failed`);
+  }
+  await recordHumanEdit(supabase, {
+    workspaceId,
+    memberId: membership.id,
+    action: "report_edited",
+    targetId: reportId,
+    summary: { edited_by_member_id: membership.id },
+  });
   revalidatePath(`/workspace/${workspaceId}/reports`);
 }
 
@@ -92,6 +179,14 @@ export default async function ReportsPage({
     .order("name");
   const myAgentList = (myAgents ?? []) as { id: string; name: string }[];
 
+  // Human-edit provenance (audit log; the pending was_human_edited
+  // column adds to it once the migration lands). Degrades to an empty
+  // set on an older database.
+  const humanEdited = await fetchHumanEditedIds(supabase, id);
+  const humanEditedFlags = await fetchWasHumanEditedFlags(supabase, "reports", id);
+  for (const reportId of humanEditedFlags) humanEdited.reports.add(reportId);
+  const leader = isLeader(membership);
+
   const inputCls =
     "mt-1 w-full rounded-lg border border-white/15 bg-coal px-3 py-2 text-sm text-ivory focus:border-gold";
 
@@ -105,7 +200,13 @@ export default async function ReportsPage({
         message={
           sp.error === "duplicate"
             ? "A report already exists for that agent on that date (one per agent per day)."
-            : null
+            : sp.error === "verification"
+              ? "That report did not pass the pre-flight check (empty summary or an over-long field). Edit it, then verify."
+              : sp.error === "already_verified"
+                ? "That report is already verified, so it can no longer be edited."
+                : sp.error === "save_failed"
+                  ? "The edited report could not be saved. Try again."
+                  : null
         }
       />
 
@@ -174,6 +275,11 @@ export default async function ReportsPage({
               <div>
                 <h3 className="font-semibold text-ivory">
                   {r.agents?.name ?? "Agent"} — {r.period_date}
+                  {humanEdited.reports.has(r.id) && (
+                    <span className="ml-2 rounded-full border border-gold/60 px-2 py-0.5 text-xs font-medium text-gold-soft">
+                      Human edited
+                    </span>
+                  )}
                 </h3>
                 <p className="mt-1 text-sm text-muted">{r.summary}</p>
               </div>
@@ -193,6 +299,55 @@ export default async function ReportsPage({
                 </form>
               )}
             </div>
+            {!r.verified && leader && (
+              <details className="mt-3 rounded-lg border border-white/10 px-3 py-2">
+                <summary className="cursor-pointer text-xs font-medium text-muted">
+                  Edit report before verifying
+                </summary>
+                <p className="mt-2 text-xs text-muted">
+                  Fix the markdown in place, save, then verify as-edited.
+                  Saving never re-runs the agent, and the edit is logged
+                  as a human edit. Verified reports cannot be edited.
+                </p>
+                <form
+                  action={editReport.bind(null, id)}
+                  className="mt-2 grid gap-3 sm:grid-cols-2"
+                >
+                  <input type="hidden" name="report_id" value={r.id} />
+                  <textarea
+                    name="summary"
+                    required
+                    rows={3}
+                    defaultValue={r.summary}
+                    className={`${inputCls} sm:col-span-2`}
+                  />
+                  <textarea
+                    name="completed_tasks"
+                    rows={3}
+                    defaultValue={(r.completed_tasks ?? []).join("\n")}
+                    className={inputCls}
+                  />
+                  <textarea
+                    name="next_steps"
+                    rows={3}
+                    defaultValue={r.next_steps ?? ""}
+                    className={inputCls}
+                  />
+                  <textarea
+                    name="blockers"
+                    rows={2}
+                    defaultValue={r.blockers ?? ""}
+                    className={`${inputCls} sm:col-span-2`}
+                  />
+                  <button
+                    type="submit"
+                    className="w-fit rounded-lg border border-gold/60 bg-transparent px-4 py-2 text-sm font-medium text-gold-soft hover:border-gold sm:col-span-2"
+                  >
+                    Save edited report
+                  </button>
+                </form>
+              </details>
+            )}
             {r.completed_tasks && r.completed_tasks.length > 0 && (
               <div className="mt-3">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted">
