@@ -75,7 +75,7 @@ export async function lookupCachedExecution(
       .from("task_executions")
       .select("output, provider, model, prompt_tokens, completion_tokens, total_tokens")
       .eq("workspace_id", args.workspaceId)
-      .eq("idempotency", args.idempotencyKey)
+      .eq("idempotency_key", args.idempotencyKey)
       .eq("status", "succeeded")
       .eq("is_demo", false)
       .gte("created_at", since)
@@ -121,7 +121,7 @@ export async function storeExecutionDedup(
     .from("task_executions")
     .update({
       input_hash: args.inputHash,
-      idempotency: args.idempotencyKey ?? null,
+      idempotency_key: args.idempotencyKey ?? null,
       is_cached: args.isCached,
     })
     .eq("id", executionId);
