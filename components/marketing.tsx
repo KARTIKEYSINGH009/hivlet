@@ -1368,7 +1368,8 @@ export function MarketingPage({ signedIn }: { signedIn: boolean }) {
           aria-label="Agents work. People decide."
           ref={kineticSectionRef}
         >
-          <div className="kinetic__track" id="kinetic-track" ref={kineticTrackRef}>
+          <div className="wrap kinetic__wrap">
+            <div className="kinetic__track" id="kinetic-track" ref={kineticTrackRef}>
             <div className="kinetic__group">
               <span className="kinetic__phrase">
                 Agents work. <em>People decide.</em>
@@ -1399,6 +1400,7 @@ export function MarketingPage({ signedIn }: { signedIn: boolean }) {
               </span>
               <span className="kinetic__sep" />
             </div>
+          </div>
           </div>
         </section>
 

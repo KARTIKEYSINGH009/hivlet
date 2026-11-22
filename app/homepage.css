@@ -1044,17 +1044,18 @@ html:has(.orbely-home){-webkit-text-size-adjust:100%;scroll-behavior:smooth;scro
 /* ---------- kinetic statement band ---------- */
 .orbely-home .kinetic{
   position:relative;overflow:hidden;background:var(--ink);color:var(--paper);
-  padding-block:clamp(1.75rem,3.4vw,3rem);
+  padding-block:clamp(.85rem,1.6vw,1.4rem);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -1px 0 rgba(255,255,255,.06);
 }
+.orbely-home .kinetic__wrap{overflow:hidden}
 .orbely-home .kinetic__track{display:flex;width:max-content;will-change:transform}
-.orbely-home .kinetic__group{display:flex;align-items:center;gap:clamp(1.5rem,3.2vw,3rem);padding-right:clamp(1.5rem,3.2vw,3rem);flex:none}
+.orbely-home .kinetic__group{display:flex;align-items:center;gap:clamp(1rem,2vw,1.75rem);padding-right:clamp(1rem,2vw,1.75rem);flex:none}
 .orbely-home .kinetic__phrase{
   display:flex;align-items:center;gap:.34em;white-space:nowrap;
-  font-size:clamp(2.1rem,6.6vw,5.75rem);font-weight:600;letter-spacing:-.045em;line-height:.92;
+  font-size:clamp(1.45rem,3.2vw,2.75rem);font-weight:600;letter-spacing:-.045em;line-height:.92;
 }
 .orbely-home .kinetic__phrase em{font-family:var(--f-serif);font-style:italic;font-weight:400;letter-spacing:-.012em;color:var(--sand)}
-.orbely-home .kinetic__sep{width:clamp(6px,.9vw,11px);height:clamp(6px,.9vw,11px);border-radius:50%;background:var(--sand);flex:none;opacity:.75}
+.orbely-home .kinetic__sep{width:clamp(5px,.6vw,8px);height:clamp(5px,.6vw,8px);border-radius:50%;background:var(--sand);flex:none;opacity:.75}
 
 /* ---------- demo, staged on ink ---------- */
 .orbely-home .showcase{
@@ -1207,8 +1208,8 @@ html:has(.orbely-home){-webkit-text-size-adjust:100%;scroll-behavior:smooth;scro
 }
 @media (max-width:820px){
   .orbely-home{--fs-display:clamp(2.6rem,9.2vw,4rem)}
-  .orbely-home .kinetic{padding-block:1.25rem}
-  .orbely-home .kinetic__phrase{font-size:clamp(1.75rem,7.4vw,2.6rem)}
+  .orbely-home .kinetic{padding-block:.85rem}
+  .orbely-home .kinetic__phrase{font-size:clamp(1.3rem,5.4vw,1.9rem)}
   .orbely-home .showcase{padding-block:3rem}
   .orbely-home .plan--ink{box-shadow:var(--sh-2)}
 }
@@ -1269,8 +1270,8 @@ html:has(.orbely-home){-webkit-text-size-adjust:100%;scroll-behavior:smooth;scro
   .orbely-home .hero{padding-top:1.5rem}
   .orbely-home .hero__head{margin-bottom:1.5rem}
   .orbely-home .hero__head h1{font-size:clamp(2.5rem,10.5vw,3.1rem)}
-  .orbely-home .kinetic__phrase{font-size:clamp(1.6rem,7.6vw,2.2rem);gap:.28em}
-  .orbely-home .kinetic__group{gap:1.25rem;padding-right:1.25rem}
+  .orbely-home .kinetic__phrase{font-size:clamp(1.25rem,6vw,1.7rem);gap:.28em}
+  .orbely-home .kinetic__group{gap:.9rem;padding-right:.9rem}
   .orbely-home .showcase h2{font-size:clamp(1.9rem,7.4vw,2.4rem)}
   .orbely-home .phase h3{font-size:1.25rem}
   .orbely-home .gate-card{width:100%}
